@@ -7,6 +7,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.*;
 import javafx.scene.text.*;
+import javafx.scene.transform.Rotate;
 import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 import javafx.stage.*;
@@ -44,9 +45,27 @@ public class Game2DSTARTER extends Application {
    }
 
    // start() method, called via launch
-   public void start(Stage _stage) {
-      // stage seteup
-      stage = _stage;
+   public void start(Stage stage) {
+      startGame(stage);
+   }
+
+   public void startGame(Stage stage) {
+      initializeScene(stage);
+      // TODO - restart game call method
+
+   }
+
+   public void cleanup() {
+   }
+
+   public void restart(Stage stage) {
+      // cleanup();
+      start(stage);
+   }
+
+   // start the race
+   public void initializeScene(Stage stage) {
+      this.stage = stage;
       stage.setTitle("Game2D Starter");
       stage.setOnCloseRequest(
             new EventHandler<WindowEvent>() {
@@ -54,20 +73,7 @@ public class Game2DSTARTER extends Application {
                   System.exit(0);
                }
             });
-
-      // lukaJeGej
-      // vitovitovito
-      // root pane
-      root = new VBox();
-
-      // create an array of Racers (Panes) and start
-      initializeScene();
-      scene.setOnKeyPressed(racer);
-
-   }
-
-   // start the race
-   public void initializeScene() {
+      root = new VBox(8);
 
       // Make an icon image to find its size
       try {
@@ -89,6 +95,8 @@ public class Game2DSTARTER extends Application {
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
       stage.setScene(scene);
       stage.show();
+
+      scene.setOnKeyPressed(racer);
 
       System.out.println("Starting race...");
 
@@ -149,31 +157,52 @@ public class Game2DSTARTER extends Application {
          switch (code) {
             case UP:
             case W:
-               racePosY -= 10;
-               raceROT = 270;
-
+               this.goUp();
                break;
-
-            case RIGHT:
-            case D:
-               racePosX += 10;
-               raceROT = 0;
+            case LEFT:
+            case A:
+               this.goLeft();
                break;
 
             case DOWN:
             case S:
-               racePosY += 10;
-               raceROT = 90;
+               this.goDown();
                break;
 
-            case LEFT:
-            case A:
-               racePosX -= 10;
-               raceROT = 180;
+            case RIGHT:
+            case D:
+               this.goRight();
                break;
             default:
                break;
          }
+
+      }
+
+      public void goUp() {
+         racePosY -= 10;
+         raceROT = 270;
+         this.aPicView.setScaleY(1);
+      }
+
+      public void goLeft() {
+         racePosX -= 10;
+         raceROT = 180;
+         this.aPicView.setScaleY(-1);
+
+      }
+
+      public void goDown() {
+         racePosY += 10;
+         raceROT = 90;
+         this.aPicView.setScaleY(-1);
+
+      }
+
+      public void goRight() {
+         racePosX += 10;
+         raceROT = 0;
+         this.aPicView.setScaleY(1);
 
       }
 
