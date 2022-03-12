@@ -55,6 +55,7 @@ public class Game2DSTARTER extends Application {
                }
             });
 
+      // lukaJeGej
       // root pane
       root = new VBox();
 
