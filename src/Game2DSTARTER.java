@@ -18,7 +18,10 @@ import javafx.util.Duration;
 import java.util.*;
 
 /**
- * PackmanGEOStarter with JavaFX and Thread
+ * LePacJames - Main class for Pacman Game
+ * @author V.Schuster
+ * @author L.Krpan
+ * @version 1203
  */
 
 public class Game2DSTARTER extends Application {
