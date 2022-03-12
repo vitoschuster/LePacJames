@@ -2,19 +2,19 @@ import javafx.application.*;
 import javafx.event.*;
 import javafx.scene.*;
 import javafx.scene.image.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.*;
 import javafx.scene.text.*;
-import javafx.scene.transform.Rotate;
+import javafx.scene.transform.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.*;
 import javafx.stage.*;
 import javafx.geometry.*;
 import javafx.animation.*;
 import java.io.*;
-import java.security.Key;
+import java.security.*;
+import javafx.util.Duration;
 import java.util.*;
 
 /**
@@ -27,9 +27,14 @@ public class Game2DSTARTER extends Application {
    private Scene scene;
    private VBox root;
 
+   // animation attributes
+   private ArrayList<Image> images = new ArrayList<>();
+   private ArrayList<Timeline> timelines = new ArrayList<>();
+   private int counterAnim = 0;
+
    private static String[] args;
 
-   private static final String ICON_IMAGE = "pixil-frame-0.png"; // file with icon for a racer
+   private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
 
    private int iconWidth; // width (in pixels) of the icon
    private int iconHeight; // height (in pixels) or the icon
@@ -63,6 +68,22 @@ public class Game2DSTARTER extends Application {
       start(stage);
    }
 
+   /**
+    * Trying to open the images for animation
+    */
+   void doOpen() {
+      try {
+
+         // adding pictures to arraylist
+         for (int i = 1; i < 7; i++) {
+            images.add(new Image(new FileInputStream(new File(ICON_IMAGE + i + ".png"))));
+         }
+
+      } catch (Exception e) {
+         System.out.println("Exception " + e);
+      }
+   }
+
    // start the race
    public void initializeScene(Stage stage) {
       this.stage = stage;
@@ -75,17 +96,11 @@ public class Game2DSTARTER extends Application {
             });
       root = new VBox(8);
 
-      // Make an icon image to find its size
-      try {
-         carImage = new Image(new FileInputStream(ICON_IMAGE));
-      } catch (Exception e) {
-         System.out.println("Exception: " + e);
-         System.exit(1);
-      }
+      doOpen();
 
-      // Get image size
-      iconWidth = (int) carImage.getWidth();
-      iconHeight = (int) carImage.getHeight();
+      // Get image size from first element in arraylist
+      iconWidth = (int) images.get(0).getWidth();
+      iconHeight = (int) images.get(0).getHeight();
 
       racer = new PacmanRacer();
       root.getChildren().add(racer);
@@ -98,8 +113,11 @@ public class Game2DSTARTER extends Application {
 
       scene.setOnKeyPressed(racer);
 
-      System.out.println("Starting race...");
+      animationTimerCreate();
+      animationTimerStart();
+   }
 
+   void animationTimerStart() {
       // Use an animation to update the screen
       timer = new AnimationTimer() {
          public void handle(long now) {
@@ -107,7 +125,11 @@ public class Game2DSTARTER extends Application {
             // System.out.println("He");
          }
       };
+      System.out.println("Starting race...");
 
+   }
+
+   void animationTimerCreate() {
       // TimerTask to delay start of race for 2 seconds
       TimerTask task = new TimerTask() {
          public void run() {
@@ -127,12 +149,39 @@ public class Game2DSTARTER extends Application {
       private int racePosX = 0; // x position of the racer
       private int racePosY = 0; // x position of the racer
       private int raceROT = 0; // x position of the racer
-      private ImageView aPicView; // a view of the icon ... used to display and move the image
+      private ArrayList<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the
+                                                                   // animation
+      private Group pacmanGroup;
 
       public PacmanRacer() {
-         // Draw the icon for the racer
-         aPicView = new ImageView(carImage);
-         this.getChildren().add(aPicView);
+
+         // Draw the icon - add the cycle animation frames
+         for (int i = 0; i < images.size(); i++) {
+            imageViews.add(new ImageView(images.get(i)));
+         }
+
+         for (int i = 4; i >= 0; i--) {
+            imageViews.add(new ImageView(images.get(i)));
+         }
+
+         // setting the first frame in the timeline (to group)
+         pacmanGroup = new Group(imageViews.get(0));
+
+         timelines.add(new Timeline()); // creating timeline
+         timelines.get(counterAnim).setCycleCount(javafx.animation.Animation.INDEFINITE); // setting cycle to infinite
+
+         for (int i = 0; i < imageViews.size(); i++) {
+            final int finalI = i;
+            timelines.get(counterAnim).getKeyFrames().add(new KeyFrame(
+                     Duration.millis(50.0 * i),
+                    (ActionEvent event) -> {
+                        pacmanGroup.getChildren().setAll(imageViews.get(finalI));
+                    }));
+        }
+        counterAnim++;
+
+        this.getChildren().add(pacmanGroup);
+
       }
 
       /**
@@ -140,9 +189,11 @@ public class Game2DSTARTER extends Application {
        */
       public void update() {
 
-         aPicView.setTranslateX(racePosX);
-         aPicView.setTranslateY(racePosY);
-         aPicView.setRotate(raceROT);
+         pacmanGroup.setTranslateX(racePosX);
+         pacmanGroup.setTranslateY(racePosY);
+         pacmanGroup.setRotate(raceROT);
+         
+         timelines.get(0).play(); //play the animation
 
          if (racePosX > 800)
             racePosX = 0;
@@ -181,28 +232,29 @@ public class Game2DSTARTER extends Application {
 
       public void goUp() {
          racePosY -= 10;
+         // g
          raceROT = 270;
-         this.aPicView.setScaleY(1);
+         this.pacmanGroup.setScaleY(1);
       }
 
       public void goLeft() {
          racePosX -= 10;
          raceROT = 180;
-         this.aPicView.setScaleY(-1);
+         this.pacmanGroup.setScaleY(-1);
 
       }
 
       public void goDown() {
          racePosY += 10;
          raceROT = 90;
-         this.aPicView.setScaleY(-1);
+         this.pacmanGroup.setScaleY(-1);
 
       }
 
       public void goRight() {
          racePosX += 10;
          raceROT = 0;
-         this.aPicView.setScaleY(1);
+         this.pacmanGroup.setScaleY(1);
 
       }
 
