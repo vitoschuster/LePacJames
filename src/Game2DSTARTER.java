@@ -16,7 +16,6 @@ import java.io.*;
 import java.security.*;
 import javafx.util.Duration;
 import java.util.*;
-//pohlhoh
 /**
  * LePacJames - Main class for Pacman Game
  * @author V.Schuster
@@ -64,6 +63,7 @@ public class Game2DSTARTER extends Application {
    }
 
    public void cleanup() {
+      
    }
 
    public void restart(Stage stage) {
@@ -156,6 +156,8 @@ public class Game2DSTARTER extends Application {
                                                                    // animation
       private Group pacmanGroup;
 
+      //load image and get pixel position
+
       public PacmanRacer() {
 
          // Draw the icon - add the cycle animation frames
@@ -195,6 +197,8 @@ public class Game2DSTARTER extends Application {
          pacmanGroup.setTranslateX(racePosX);
          pacmanGroup.setTranslateY(racePosY);
          pacmanGroup.setRotate(raceROT);
+
+        
          
          timelines.get(0).play(); //play the animation
 
@@ -202,6 +206,10 @@ public class Game2DSTARTER extends Application {
             racePosX = 0;
          if (racePosY > 500)
             racePosY = 0;
+
+         //ogranicenje kretanja s obzirom na pixel
+         //full collion
+         //offset of the picture - the center needs to be the cneter of
 
       } // end update()
 
