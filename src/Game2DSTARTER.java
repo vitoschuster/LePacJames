@@ -16,11 +16,13 @@ import java.io.*;
 import java.security.*;
 import javafx.util.Duration;
 import java.util.*;
+
 /**
  * LePacJames - Main class for Pacman Game
+ * 
  * @author V.Schuster
  * @author L.Krpan
- * @version 1203
+ * @version 2203
  */
 
 public class Game2DSTARTER extends Application {
@@ -63,7 +65,7 @@ public class Game2DSTARTER extends Application {
    }
 
    public void cleanup() {
-      
+
    }
 
    public void restart(Stage stage) {
@@ -105,16 +107,14 @@ public class Game2DSTARTER extends Application {
       iconWidth = (int) images.get(0).getWidth();
       iconHeight = (int) images.get(0).getHeight();
 
-      racer = new PacmanRacer();
+      // display the
+      scene = new Scene(root, 800, 500);
+      racer = new PacmanRacer(this.scene);
       root.getChildren().add(racer);
       root.setId("pane");
-      // display the window
-      scene = new Scene(root, 800, 500);
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
       stage.setScene(scene);
       stage.show();
-
-      scene.setOnKeyPressed(racer);
 
       animationTimerCreate();
       animationTimerStart();
@@ -148,17 +148,24 @@ public class Game2DSTARTER extends Application {
     * Racer creates the race lane (Pane) and the ability to
     * keep itself going (Runnable)
     */
-   class PacmanRacer extends Pane implements EventHandler<KeyEvent> {
+   class PacmanRacer extends Pane {
+      private Scene scene;
       private int racePosX = 0; // x position of the racer
       private int racePosY = 0; // x position of the racer
-      private int raceROT = 0; // x position of the racer
+      private int raceROT = 0; // x rotation
+      private char movement;
       private ArrayList<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the
                                                                    // animation
       private Group pacmanGroup;
+      private TimerTask timerTaskMover;
+      private Timer timerMover;
+      private boolean goingForward = true;
 
-      //load image and get pixel position
+      // load image and get pixel position
 
-      public PacmanRacer() {
+      public PacmanRacer(Scene scene) {
+
+         this.scene = scene;
 
          // Draw the icon - add the cycle animation frames
          for (int i = 0; i < images.size(); i++) {
@@ -178,15 +185,71 @@ public class Game2DSTARTER extends Application {
          for (int i = 0; i < imageViews.size(); i++) {
             final int finalI = i;
             timelines.get(counterAnim).getKeyFrames().add(new KeyFrame(
-                     Duration.millis(50.0 * i),
-                    (ActionEvent event) -> {
-                        pacmanGroup.getChildren().setAll(imageViews.get(finalI));
-                    }));
-        }
-        counterAnim++;
+                  Duration.millis(50.0 * i),
+                  (ActionEvent event) -> {
+                     pacmanGroup.getChildren().setAll(imageViews.get(finalI));
+                  }));
+         }
+         counterAnim++;
 
-        this.getChildren().add(pacmanGroup);
+         this.getChildren().add(pacmanGroup);
+         checkMovement();
+      }
 
+      public void checkMovement() {
+
+         // handle key events
+         this.scene.setOnKeyPressed(evt -> {
+            KeyCode code = evt.getCode();
+            switch (code) {
+               case UP:
+               case W:
+                  this.move(true, 'w');
+                  break;
+               case LEFT:
+               case A:
+                  this.move(true, 'a');
+                  break;
+
+               case DOWN:
+               case S:
+                  this.move(true, 's');
+                  break;
+
+               case RIGHT:
+               case D:
+                  this.move(true, 'd');
+                  break;
+               default:
+                  break;
+            }
+         });
+
+         this.scene.setOnKeyReleased(evt -> {
+            KeyCode code = evt.getCode();
+            switch (code) {
+               case UP:
+               case W:
+                  this.move(false, 'w');
+                  break;
+               case LEFT:
+               case A:
+                  this.move(false, 'a');
+                  break;
+
+               case DOWN:
+               case S:
+                  this.move(false, 's');
+                  break;
+
+               case RIGHT:
+               case D:
+                  this.move(false, 'd');
+                  break;
+               default:
+                  break;
+            }
+         });
       }
 
       /**
@@ -198,76 +261,103 @@ public class Game2DSTARTER extends Application {
          pacmanGroup.setTranslateY(racePosY);
          pacmanGroup.setRotate(raceROT);
 
-        
-         
-         timelines.get(0).play(); //play the animation
+         timelines.get(0).play(); // play the animation
 
          if (racePosX > 800)
             racePosX = 0;
          if (racePosY > 500)
             racePosY = 0;
 
-         //ogranicenje kretanja s obzirom na pixel
-         //full collion
-         //offset of the picture - the center needs to be the cneter of
+         // ogranicenje kretanja s obzirom na pixel
+         // full collion
+         // offset of the picture - the center needs to be the cneter of
 
       } // end update()
 
-      @Override
-      public void handle(KeyEvent evt) {
-         KeyCode code = evt.getCode();
-         switch (code) {
-            case UP:
-            case W:
-               this.goUp();
-               break;
-            case LEFT:
-            case A:
-               this.goLeft();
-               break;
-
-            case DOWN:
-            case S:
-               this.goDown();
-               break;
-
-            case RIGHT:
-            case D:
-               this.goRight();
-               break;
-            default:
-               break;
+      public void move(boolean isMoving, char movement) {
+         
+         timerMover = new Timer();
+         if (isMoving && !goingForward) {
+            timerTaskMover = new TimerTask() {
+               @Override public void run() {
+                  synchronized (timerMover) {
+                     if (movement == 'w') {
+                        racePosY -= 10;
+                        raceROT = 270;
+                        pacmanGroup.setScaleY(1);
+                     } else if (movement == 'a') {
+                        racePosX -= 10;
+                        raceROT = 180;
+                        pacmanGroup.setScaleY(-1);
+                     } else if (movement == 's') {
+                        racePosY += 10;
+                        raceROT = 90;
+                        pacmanGroup.setScaleY(-1);
+                     } else if (movement == 'd') {
+                        racePosX += 10;
+                        raceROT = 0;
+                        pacmanGroup.setScaleY(1);
+                     }
+                 }
+               }
+            };
+            timerMover.scheduleAtFixedRate(timerTaskMover, 0, 1000 / 60);
+            goingForward = true;
+         } else if (!isMoving && goingForward) {
+            timerMover.cancel();
+            goingForward = false;
          }
-
       }
 
-      public void goUp() {
-         racePosY -= 10;
-         // g
-         raceROT = 270;
-         this.pacmanGroup.setScaleY(1);
-      }
+      // public void goLeft(boolean isMoving) {
+      // TimerTask timerTaskL = new TimerTask() {
+      // @Override public void run() {
+      // if (isMoving) {
+      // racePosX -= 10;
+      // raceROT = 180;
+      // pacmanGroup.setScaleY(-1);
+      // }
+      // }
+      // };
+      // Timer timerL = new Timer();
+      // timerL.scheduleAtFixedRate(timerTaskL, 0, 30);
 
-      public void goLeft() {
-         racePosX -= 10;
-         raceROT = 180;
-         this.pacmanGroup.setScaleY(-1);
+      // }
 
-      }
+      // public void goDown(boolean isMoving) {
+      // TimerTask timerTaskD = new TimerTask() {
+      // @Override public void run() {
+      // if (isMoving) {
+      // racePosY += 10;
+      // raceROT = 90;
+      // pacmanGroup.setScaleY(-1);
+      // }
+      // }
+      // };
+      // Timer timerD = new Timer();
+      // timerD.scheduleAtFixedRate(timerTaskD,0, 30);
 
-      public void goDown() {
-         racePosY += 10;
-         raceROT = 90;
-         this.pacmanGroup.setScaleY(-1);
+      // }
 
-      }
+      // public void goRight(boolean isMoving) {
+      // TimerTask timerTaskR = new TimerTask() {
+      // @Override public void run() {
+      // synchronized (pacmanGroup) {
+      // if (isMoving) {
+      // racePosX += 10;
+      // raceROT = 0;
+      // pacmanGroup.setScaleY(1);
 
-      public void goRight() {
-         racePosX += 10;
-         raceROT = 0;
-         this.pacmanGroup.setScaleY(1);
-
-      }
+      // } else {
+      // racePosX -= 10;
+      // pacmanGroup.setScaleY(1);
+      // }
+      // }
+      // }
+      // };
+      // Timer timerR = new Timer();
+      // timerR.scheduleAtFixedRate(timerTaskR,0, 1000/60);
+      // }
 
    } // end inner class Racer
 
