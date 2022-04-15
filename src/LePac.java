@@ -8,6 +8,7 @@ import javafx.scene.control.Alert.*;
 import javafx.scene.text.*;
 import javafx.scene.transform.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.*;
 import javafx.geometry.*;
@@ -25,7 +26,7 @@ import java.util.*;
  * @version 2203
  */
 
-public class Game2DSTARTER extends Application {
+public class LePac extends Application {
    // Window attributes
    private Stage stage;
    private Scene scene;
@@ -39,11 +40,14 @@ public class Game2DSTARTER extends Application {
    private static String[] args;
 
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
+   private static final String BG_PROP = "bgProps.png";
+
 
    private int iconWidth; // width (in pixels) of the icon
    private int iconHeight; // height (in pixels) or the icon
    private PacmanRacer racer = null; // array of racers
-   private Image carImage = null;
+   private Image bgProps = null;
+
 
    private AnimationTimer timer; // timer to control animation
 
@@ -83,6 +87,10 @@ public class Game2DSTARTER extends Application {
          for (int i = 1; i < 7; i++) {
             images.add(new Image(new FileInputStream(new File(ICON_IMAGE + i + ".png"))));
          }
+         bgProps = new Image(new FileInputStream(new File(BG_PROP)));
+
+         //adding fake bg
+         
 
       } catch (Exception e) {
          System.out.println("Exception " + e);
@@ -125,7 +133,7 @@ public class Game2DSTARTER extends Application {
       timer = new AnimationTimer() {
          public void handle(long now) {
             racer.update();
-            // System.out.println("He");
+            // System.out.println("He"); 
          }
       };
       System.out.println("Starting race...");
@@ -153,13 +161,18 @@ public class Game2DSTARTER extends Application {
       private int racePosX = 0; // x position of the racer
       private int racePosY = 0; // x position of the racer
       private int raceROT = 0; // x rotation
-      private char movement;
+
+      private int curX = 0; //
+      private int curY = 0; //
+      private int speed = 0;
+
+
       private ArrayList<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the
                                                                    // animation
       private Group pacmanGroup;
       private TimerTask timerTaskMover;
-      private Timer timerMover;
-      private boolean goingForward = true;
+      private Timer timerMover = new Timer();
+      private boolean goingForward = false;
 
       // load image and get pixel position
 
@@ -171,7 +184,6 @@ public class Game2DSTARTER extends Application {
          for (int i = 0; i < images.size(); i++) {
             imageViews.add(new ImageView(images.get(i)));
          }
-
          for (int i = 4; i >= 0; i--) {
             imageViews.add(new ImageView(images.get(i)));
          }
@@ -186,13 +198,10 @@ public class Game2DSTARTER extends Application {
             final int finalI = i;
             timelines.get(counterAnim).getKeyFrames().add(new KeyFrame(
                   Duration.millis(50.0 * i),
-                  (ActionEvent event) -> {
-                     pacmanGroup.getChildren().setAll(imageViews.get(finalI));
-                  }));
+                  (ActionEvent event) -> pacmanGroup.getChildren().setAll(imageViews.get(finalI))));
          }
          counterAnim++;
-
-         this.getChildren().add(pacmanGroup);
+         this.getChildren().add(pacmanGroup); // adding the background to the root
          checkMovement();
       }
 
@@ -256,10 +265,11 @@ public class Game2DSTARTER extends Application {
        * update() method keeps the thread (racer) alive and moving.
        */
       public void update() {
-
+         checkCollision();
          pacmanGroup.setTranslateX(racePosX);
          pacmanGroup.setTranslateY(racePosY);
          pacmanGroup.setRotate(raceROT);
+       
 
          timelines.get(0).play(); // play the animation
 
@@ -270,94 +280,73 @@ public class Game2DSTARTER extends Application {
 
          // ogranicenje kretanja s obzirom na pixel
          // full collion
+
          // offset of the picture - the center needs to be the cneter of
 
       } // end update()
 
+      public void checkCollision() {
+         try {
+            // get pixel reader
+            PixelReader pixelReader = bgProps.getPixelReader();
+            
+            curX = (int) images.get(0).getWidth() + racePosX;
+            curY = (int) images.get(0).getHeight() + racePosY;
+
+            //loop
+            for (int x = racePosX; x <= curX; x++) {
+               for (int y = racePosY; y <= curY; y++) {
+                  if(x == racePosX || x == curX ||
+                     y == racePosY || y == curY) {
+                     if (pixelReader.getColor(x, y).equals(Color.RED)) {
+                           speed = -4;
+                        }
+                     } else {
+                        speed = 2;
+                     }
+               }
+            }
+
+
+         } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+         }
+      }
+
       public void move(boolean isMoving, char movement) {
-         
-         timerMover = new Timer();
+
          if (isMoving && !goingForward) {
             timerTaskMover = new TimerTask() {
-               @Override public void run() {
+               @Override
+               public void run() {
                   synchronized (timerMover) {
                      if (movement == 'w') {
-                        racePosY -= 10;
+                        racePosY -= speed;
                         raceROT = 270;
                         pacmanGroup.setScaleY(1);
                      } else if (movement == 'a') {
-                        racePosX -= 10;
+                        racePosX -= speed;
                         raceROT = 180;
                         pacmanGroup.setScaleY(-1);
                      } else if (movement == 's') {
-                        racePosY += 10;
+                        racePosY += speed;
                         raceROT = 90;
                         pacmanGroup.setScaleY(-1);
                      } else if (movement == 'd') {
-                        racePosX += 10;
+                        racePosX += speed;
                         raceROT = 0;
                         pacmanGroup.setScaleY(1);
                      }
-                 }
+                  }
                }
             };
             timerMover.scheduleAtFixedRate(timerTaskMover, 0, 1000 / 60);
             goingForward = true;
          } else if (!isMoving && goingForward) {
-            timerMover.cancel();
+            timerTaskMover.cancel();
             goingForward = false;
          }
       }
-
-      // public void goLeft(boolean isMoving) {
-      // TimerTask timerTaskL = new TimerTask() {
-      // @Override public void run() {
-      // if (isMoving) {
-      // racePosX -= 10;
-      // raceROT = 180;
-      // pacmanGroup.setScaleY(-1);
-      // }
-      // }
-      // };
-      // Timer timerL = new Timer();
-      // timerL.scheduleAtFixedRate(timerTaskL, 0, 30);
-
-      // }
-
-      // public void goDown(boolean isMoving) {
-      // TimerTask timerTaskD = new TimerTask() {
-      // @Override public void run() {
-      // if (isMoving) {
-      // racePosY += 10;
-      // raceROT = 90;
-      // pacmanGroup.setScaleY(-1);
-      // }
-      // }
-      // };
-      // Timer timerD = new Timer();
-      // timerD.scheduleAtFixedRate(timerTaskD,0, 30);
-
-      // }
-
-      // public void goRight(boolean isMoving) {
-      // TimerTask timerTaskR = new TimerTask() {
-      // @Override public void run() {
-      // synchronized (pacmanGroup) {
-      // if (isMoving) {
-      // racePosX += 10;
-      // raceROT = 0;
-      // pacmanGroup.setScaleY(1);
-
-      // } else {
-      // racePosX -= 10;
-      // pacmanGroup.setScaleY(1);
-      // }
-      // }
-      // }
-      // };
-      // Timer timerR = new Timer();
-      // timerR.scheduleAtFixedRate(timerTaskR,0, 1000/60);
-      // }
 
    } // end inner class Racer
 
