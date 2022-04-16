@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch LePac",
+            "request": "launch",
+            "mainClass": "LePac",
+            "projectName": "LePacJames_309bcfbe"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

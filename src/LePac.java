@@ -42,12 +42,10 @@ public class LePac extends Application {
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
    private static final String BG_PROP = "bgProps.png";
 
-
    private int iconWidth; // width (in pixels) of the icon
    private int iconHeight; // height (in pixels) or the icon
    private PacmanRacer racer = null; // array of racers
    private Image bgProps = null;
-
 
    private AnimationTimer timer; // timer to control animation
 
@@ -88,9 +86,7 @@ public class LePac extends Application {
             images.add(new Image(new FileInputStream(new File(ICON_IMAGE + i + ".png"))));
          }
          bgProps = new Image(new FileInputStream(new File(BG_PROP)));
-
-         //adding fake bg
-         
+         // adding fake bg
 
       } catch (Exception e) {
          System.out.println("Exception " + e);
@@ -133,7 +129,7 @@ public class LePac extends Application {
       timer = new AnimationTimer() {
          public void handle(long now) {
             racer.update();
-            // System.out.println("He"); 
+            // System.out.println("He");
          }
       };
       System.out.println("Starting race...");
@@ -161,11 +157,10 @@ public class LePac extends Application {
       private int racePosX = 0; // x position of the racer
       private int racePosY = 0; // x position of the racer
       private int raceROT = 0; // x rotation
-
+      private char collionM = 'R';
       private int curX = 0; //
       private int curY = 0; //
       private int speed = 0;
-
 
       private ArrayList<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the
                                                                    // animation
@@ -269,15 +264,14 @@ public class LePac extends Application {
          pacmanGroup.setTranslateX(racePosX);
          pacmanGroup.setTranslateY(racePosY);
          pacmanGroup.setRotate(raceROT);
-       
 
          timelines.get(0).play(); // play the animation
-
+         /*
          if (racePosX > 800)
-            racePosX = 0;
+            racePosX = 1;
          if (racePosY > 500)
-            racePosY = 0;
-
+            racePosY = 1;
+         */
          // ogranicenje kretanja s obzirom na pixel
          // full collion
 
@@ -286,30 +280,54 @@ public class LePac extends Application {
       } // end update()
 
       public void checkCollision() {
-         try {
-            // get pixel reader
-            PixelReader pixelReader = bgProps.getPixelReader();
-            
-            curX = (int) images.get(0).getWidth() + racePosX;
-            curY = (int) images.get(0).getHeight() + racePosY;
+         if (racePosX >= 0 && racePosX <= 800 && racePosY >= 0 && racePosY <= 500) {
+            try {
+               // get pixel reader
+               PixelReader pixelReader = bgProps.getPixelReader();
+               curX = (int) images.get(0).getWidth() + racePosX;
+               curY = (int) images.get(0).getHeight() + racePosY;
 
-            //loop
-            for (int x = racePosX; x <= curX; x++) {
-               for (int y = racePosY; y <= curY; y++) {
-                  if(x == racePosX || x == curX ||
-                     y == racePosY || y == curY) {
-                     if (pixelReader.getColor(x, y).equals(Color.RED)) {
-                           speed = -4;
-                        }
+               // loop
+
+               switch (collionM) {
+                  case 'd':
+                     if (pixelReader.getColor(curX, curY).equals(Color.RED)
+                           || pixelReader.getColor(curX, racePosY).equals(Color.RED)) {
+                              speed=-10;
                      } else {
-                        speed = 2;
+                        speed = 4;
                      }
+                     break;
+                  case 's':
+                     if (pixelReader.getColor(racePosX, curY).equals(Color.RED) || pixelReader.getColor(curX, curY).equals(Color.RED)  ) {
+                        speed = -10;
+                     } else {
+                        speed = 4;
+                     }
+                     break;
+                  case 'w':
+                     if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
+                           || pixelReader.getColor(curX, racePosY).equals(Color.RED)) {
+                        speed = -10;
+                       
+                     } else {
+                        speed = 4;
+                     }
+                     break;
+                  case 'a':
+                     if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
+                           || pixelReader.getColor(racePosX, curY).equals(Color.RED)) {
+                        speed = -10;
+                        
+                     } else {
+                        speed = 4;
+                     }
+                     break;
+
                }
+            } catch (IndexOutOfBoundsException e) {
+               e.printStackTrace();
             }
-
-
-         } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
          }
       }
 
@@ -324,18 +342,22 @@ public class LePac extends Application {
                         racePosY -= speed;
                         raceROT = 270;
                         pacmanGroup.setScaleY(1);
+                        collionM = 'w';
                      } else if (movement == 'a') {
                         racePosX -= speed;
                         raceROT = 180;
+                        collionM = 'a';
                         pacmanGroup.setScaleY(-1);
                      } else if (movement == 's') {
                         racePosY += speed;
                         raceROT = 90;
                         pacmanGroup.setScaleY(-1);
+                        collionM = 's';
                      } else if (movement == 'd') {
                         racePosX += speed;
                         raceROT = 0;
                         pacmanGroup.setScaleY(1);
+                        collionM = 'd';
                      }
                   }
                }
