@@ -293,14 +293,14 @@ public class LePac extends Application {
                   case 'd':
                      if (pixelReader.getColor(curX, curY).equals(Color.RED)
                            || pixelReader.getColor(curX, racePosY).equals(Color.RED)) {
-                              speed=-10;
+                              racePosX-=speed;
                      } else {
                         speed = 4;
                      }
                      break;
                   case 's':
                      if (pixelReader.getColor(racePosX, curY).equals(Color.RED) || pixelReader.getColor(curX, curY).equals(Color.RED)  ) {
-                        speed = -10;
+                        racePosY-=speed;
                      } else {
                         speed = 4;
                      }
@@ -308,7 +308,7 @@ public class LePac extends Application {
                   case 'w':
                      if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
                            || pixelReader.getColor(curX, racePosY).equals(Color.RED)) {
-                        speed = -10;
+                        racePosY+=speed;
                        
                      } else {
                         speed = 4;
@@ -317,7 +317,7 @@ public class LePac extends Application {
                   case 'a':
                      if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
                            || pixelReader.getColor(racePosX, curY).equals(Color.RED)) {
-                        speed = -10;
+                              racePosX+=speed;
                         
                      } else {
                         speed = 4;
