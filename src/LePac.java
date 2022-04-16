@@ -112,7 +112,7 @@ public class LePac extends Application {
       iconHeight = (int) images.get(0).getHeight();
 
       // display the
-      scene = new Scene(root, 800, 500);
+      scene = new Scene(root, 1120, 700);
       racer = new PacmanRacer(this.scene);
       root.getChildren().add(racer);
       root.setId("pane");
@@ -160,7 +160,8 @@ public class LePac extends Application {
       private char collionM = 'R';
       private int curX = 0; //
       private int curY = 0; //
-      private int speed = 0;
+      private static final int SPEED = 4;
+      private static final int REFRESH_RATE = 1000 / 60;
 
       private ArrayList<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the
                                                                    // animation
@@ -201,7 +202,6 @@ public class LePac extends Application {
       }
 
       public void checkMovement() {
-
          // handle key events
          this.scene.setOnKeyPressed(evt -> {
             KeyCode code = evt.getCode();
@@ -267,11 +267,11 @@ public class LePac extends Application {
 
          timelines.get(0).play(); // play the animation
          /*
-         if (racePosX > 800)
-            racePosX = 1;
-         if (racePosY > 500)
-            racePosY = 1;
-         */
+          * if (racePosX > 800)
+          * racePosX = 1;
+          * if (racePosY > 500)
+          * racePosY = 1;
+          */
          // ogranicenje kretanja s obzirom na pixel
          // full collion
 
@@ -280,55 +280,36 @@ public class LePac extends Application {
       } // end update()
 
       public void checkCollision() {
-         if (racePosX >= 0 && racePosX <= 800 && racePosY >= 0 && racePosY <= 500) {
-            try {
-               // get pixel reader
-               PixelReader pixelReader = bgProps.getPixelReader();
-               curX = (int) images.get(0).getWidth() + racePosX;
-               curY = (int) images.get(0).getHeight() + racePosY;
 
-               // loop
+         // get pixel reader
+         PixelReader pixelReader = bgProps.getPixelReader();
+         curX = (int) images.get(0).getWidth() + racePosX;
+         curY = (int) images.get(0).getHeight() + racePosY;
 
-               switch (collionM) {
-                  case 'd':
-                     if (pixelReader.getColor(curX, curY).equals(Color.RED)
-                           || pixelReader.getColor(curX, racePosY).equals(Color.RED)) {
-                              racePosX-=speed;
-                     } else {
-                        speed = 4;
-                     }
-                     break;
-                  case 's':
-                     if (pixelReader.getColor(racePosX, curY).equals(Color.RED) || pixelReader.getColor(curX, curY).equals(Color.RED)  ) {
-                        racePosY-=speed;
-                     } else {
-                        speed = 4;
-                     }
-                     break;
-                  case 'w':
-                     if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
-                           || pixelReader.getColor(curX, racePosY).equals(Color.RED)) {
-                        racePosY+=speed;
-                       
-                     } else {
-                        speed = 4;
-                     }
-                     break;
-                  case 'a':
-                     if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
-                           || pixelReader.getColor(racePosX, curY).equals(Color.RED)) {
-                              racePosX+=speed;
-                        
-                     } else {
-                        speed = 4;
-                     }
-                     break;
-
-               }
-            } catch (IndexOutOfBoundsException e) {
-               e.printStackTrace();
-            }
+         // loop
+         switch (collionM) {
+            case 'd':
+               if (pixelReader.getColor(curX, curY).equals(Color.RED)
+                     || pixelReader.getColor(curX, racePosY).equals(Color.RED))
+                  racePosX -= SPEED;
+               break;
+            case 's':
+               if (pixelReader.getColor(racePosX, curY).equals(Color.RED)
+                     || pixelReader.getColor(curX, curY).equals(Color.RED))
+                  racePosY -= SPEED;
+               break;
+            case 'w':
+               if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
+                     || pixelReader.getColor(curX, racePosY).equals(Color.RED))
+                  racePosY += SPEED;
+               break;
+            case 'a':
+               if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
+                     || pixelReader.getColor(racePosX, curY).equals(Color.RED))
+                  racePosX += SPEED;
+               break;
          }
+
       }
 
       public void move(boolean isMoving, char movement) {
@@ -339,22 +320,22 @@ public class LePac extends Application {
                public void run() {
                   synchronized (timerMover) {
                      if (movement == 'w') {
-                        racePosY -= speed;
+                        racePosY -= SPEED;
                         raceROT = 270;
                         pacmanGroup.setScaleY(1);
                         collionM = 'w';
                      } else if (movement == 'a') {
-                        racePosX -= speed;
+                        racePosX -= SPEED;
                         raceROT = 180;
                         collionM = 'a';
                         pacmanGroup.setScaleY(-1);
                      } else if (movement == 's') {
-                        racePosY += speed;
+                        racePosY += SPEED;
                         raceROT = 90;
                         pacmanGroup.setScaleY(-1);
                         collionM = 's';
                      } else if (movement == 'd') {
-                        racePosX += speed;
+                        racePosX += SPEED;
                         raceROT = 0;
                         pacmanGroup.setScaleY(1);
                         collionM = 'd';
@@ -362,14 +343,13 @@ public class LePac extends Application {
                   }
                }
             };
-            timerMover.scheduleAtFixedRate(timerTaskMover, 0, 1000 / 60);
+            timerMover.scheduleAtFixedRate(timerTaskMover, 0, REFRESH_RATE);
             goingForward = true;
          } else if (!isMoving && goingForward) {
             timerTaskMover.cancel();
             goingForward = false;
          }
       }
-
    } // end inner class Racer
 
 } // end class Races
