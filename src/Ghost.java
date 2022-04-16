@@ -26,19 +26,20 @@ import java.security.*;
 import javafx.util.Duration;
 import java.util.*;
 
-public class Ghost extends StackPane {
+public class Ghost extends Pane {
 
     private static final int SPEED = 3;
     private int posX;
     private int posY;
     private ImageView ghostView;
-
+    private int moveGhost;
     public Ghost(int posX, int posY, ImageView ghostView) {
         //saving data
         this.posX = posX;
         this.posY = posY;
         this.ghostView = ghostView;
-
+        System.out.println(posX+" "+posY);
+        moveGhost=(int)Math.floor(Math.random()*(4-1+1)+1);
         ///setting spawn location and adding to root
         this.ghostView.setTranslateX(this.posX);
         this.ghostView.setTranslateY(this.posY);
@@ -49,9 +50,29 @@ public class Ghost extends StackPane {
     public void update() {
         Platform.runLater(new Runnable() {
             @Override public void run() {
-
+                switch(moveGhost){
+                    case 1:
+                        posX--;
+                        ghostView.setTranslateX(posX);
+                        break;
+                    case 2:
+                        posX++;
+                        ghostView.setTranslateX(posX);
+                        break;
+                    case 3:
+                        posY--;
+                        ghostView.setTranslateY(posY);
+                        break;
+                    case 4:
+                        posY++;
+                        ghostView.setTranslateY(posY);
+                        break;
+                }
             }
         });
+    }
+    public void checkCollision(){
+        
     }
 
 

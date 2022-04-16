@@ -35,7 +35,7 @@ public class LePac extends Application {
    // animation attributes
    private List<Image> images = new ArrayList<>();
    private List<Timeline> timelines = new ArrayList<>();
-   private List<Ghost> ghosts = new ArrayList<>();
+   private ArrayList<Ghost> ghosts = new ArrayList<>();
    private int counterAnim = 0;
 
    private static String[] args;
@@ -117,20 +117,17 @@ public class LePac extends Application {
       // display the
       scene = new Scene(root, 1120, 700);
       racer = new PacmanRacer(this.scene);
-      
-      // for (int i = 1; i < GHOST_NUM; i++) {
-      //    try {
-      //       ghosts.add(new Ghost(i * 30, i * 50,
-      //             new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))))));
-      //       root.getChildren().add(ghosts.get(i-1));
-      //    } catch (FileNotFoundException e) {
-      //       // TODO Auto-generated catch block
-      //       e.printStackTrace();
-      //    }
-      // }
-
-
       root.getChildren().add(racer);
+      for (int i = 1; i < GHOST_NUM; i++) {
+         try {
+            ghosts.add(new Ghost((GHOST_NUM-i)*220-20,i*100,
+                 new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))))));
+           root.getChildren().add(ghosts.get(i-1));
+        } catch (FileNotFoundException e) {
+           // TODO Auto-generated catch block
+            e.printStackTrace();
+       }
+      }
       root.setId("pane");
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
       stage.setScene(scene);
@@ -145,6 +142,9 @@ public class LePac extends Application {
       timer = new AnimationTimer() {
          public void handle(long now) {
             racer.update();
+            for(int i=0;i<ghosts.size();i++){
+               ghosts.get(i).update();
+            }
             // System.out.println("He");
          }
       };
@@ -170,8 +170,8 @@ public class LePac extends Application {
     */
    class PacmanRacer extends Pane {
       private Scene scene;
-      private int racePosX = 200; // x position of the racer
-      private int racePosY = 200; // x position of the racer
+      private int racePosX = 50; // x position of the racer
+      private int racePosY = 50; // x position of the racer
       private int raceROT = 0; // x rotation
       private char collionM = 'R';
       private int curX = 0; //
