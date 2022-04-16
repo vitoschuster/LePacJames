@@ -106,7 +106,7 @@ public class LePac extends Application {
                   System.exit(0);
                }
             });
-      root = new VBox(8);
+      root = new VBox();
 
       doOpen();
 
