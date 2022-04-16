@@ -33,14 +33,17 @@ public class LePac extends Application {
    private VBox root;
 
    // animation attributes
-   private ArrayList<Image> images = new ArrayList<>();
-   private ArrayList<Timeline> timelines = new ArrayList<>();
+   private List<Image> images = new ArrayList<>();
+   private List<Timeline> timelines = new ArrayList<>();
+   private List<Ghost> ghosts = new ArrayList<>();
    private int counterAnim = 0;
 
    private static String[] args;
 
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
    private static final String BG_PROP = "bgProps.png";
+   private static final String GHOST_IMAGE = "ghost";
+   private static final int GHOST_NUM = 5;
 
    private int iconWidth; // width (in pixels) of the icon
    private int iconHeight; // height (in pixels) or the icon
@@ -114,6 +117,19 @@ public class LePac extends Application {
       // display the
       scene = new Scene(root, 1120, 700);
       racer = new PacmanRacer(this.scene);
+      
+      // for (int i = 1; i < GHOST_NUM; i++) {
+      //    try {
+      //       ghosts.add(new Ghost(i * 30, i * 50,
+      //             new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))))));
+      //       root.getChildren().add(ghosts.get(i-1));
+      //    } catch (FileNotFoundException e) {
+      //       // TODO Auto-generated catch block
+      //       e.printStackTrace();
+      //    }
+      // }
+
+
       root.getChildren().add(racer);
       root.setId("pane");
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
@@ -154,8 +170,8 @@ public class LePac extends Application {
     */
    class PacmanRacer extends Pane {
       private Scene scene;
-      private int racePosX = 0; // x position of the racer
-      private int racePosY = 0; // x position of the racer
+      private int racePosX = 200; // x position of the racer
+      private int racePosY = 200; // x position of the racer
       private int raceROT = 0; // x rotation
       private char collionM = 'R';
       private int curX = 0; //
