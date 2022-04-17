@@ -1,3 +1,4 @@
+
 /**
  * Ghost - Class that represents a ghost following a pacman
  * 
@@ -27,43 +28,51 @@ import java.util.*;
 
 public class Ghost extends Pane {
 
-    private int speed = 1;
-    private int posX;
-    private int posY;
-    private ImageView ghostView;
-    private int moveGhost;
-    private boolean ifCollision = false;
+    // ghost location
+    private int xspeed = 3;
+    private int yspeed = 3;
+    private int x;
+    private int y;
     private int curX = 0;
     private int curY = 0;
-    private char collionM = 'C';
-    private PixelReader pixelReader = null;
-    private int sizeWG = 0;
-    private int sizeHG = 0;
-    private Object lock = new Object();
+    private int widthG;
+    private int heightG;
     private int angleX = 0;
     private int angleY = 0;
-    private int backgroundH = 0;
-    private int backgroundW = 0;
+    private int moveGhost;
+    private boolean ifCollision = false;
+    private char collionM = 'C';
+    private ImageView ghostView;
+    private PixelReader pixelReader = null;
 
-    public Ghost(int posX, int posY, ImageView ghostView) {
+    private Object lock = new Object();
+
+    private int widthB;
+    private int heightB; 
+   
+
+    public Ghost(int x, int y, ImageView ghostView) {
         // saving data
-        this.posX = posX;
-        this.posY = posY;
+        this.x = x;
+        this.y = y;
         this.ghostView = ghostView;
         moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1);
         /// setting spawn location and adding to root
-        this.ghostView.setTranslateX(this.posX);
-        this.ghostView.setTranslateY(this.posY);
+        this.ghostView.setTranslateX(this.x);
+        this.ghostView.setTranslateY(this.y);
         this.getChildren().add(this.ghostView);
     }
 
     public void doOpen(Image background, Image ghost) {
         System.out.println(background.getWidth() + " " + background.getHeight());
+
         pixelReader = background.getPixelReader();
-        backgroundW = (int) background.getWidth();
-        backgroundH = (int) background.getHeight();
-        sizeWG = (int) ghost.getWidth();
-        sizeHG = (int) ghost.getHeight();
+
+        widthB = (int) background.getWidth() - 25;
+        heightB = (int) background.getHeight() - 20;
+
+        widthG = (int) ghost.getWidth();
+        heightG = (int) ghost.getHeight();
     }
 
     public void update() {
@@ -71,31 +80,26 @@ public class Ghost extends Pane {
             @Override
             public void run() {
                 switch (moveGhost) {
-                    case 1:
-                        posX -= speed;
-                        posY += angleY;
-                        ghostView.setTranslateX(posX);
-                        ghostView.setTranslateY(posY);
+                    case 1: // left down
+                        x -= xspeed;
+                        y += yspeed;
                         break;
-                    case 2:
-                        posX += speed;
-                        posY -= angleY;
-                        ghostView.setTranslateX(posX);
-                        ghostView.setTranslateY(posY);
+                    case 2: // right down
+                        x += xspeed;
+                        y += yspeed;
                         break;
-                    case 3:
-                        posY -= speed;
-                        posX += angleX;
-                        ghostView.setTranslateX(posX);
-                        ghostView.setTranslateY(posY);
+                    case 3: //left up
+                        y -= yspeed;
+                        x -= xspeed;
                         break;
-                    case 4:
-                        posY += speed;
-                        posX -= angleX;
-                        ghostView.setTranslateX(posX);
-                        ghostView.setTranslateY(posY);
+                    case 4: //right up
+                        x += xspeed;
+                        y -= yspeed;
                         break;
                 }
+                ghostView.setTranslateX(x);
+                ghostView.setTranslateY(y);
+
                 checkCollision();
             }
         });
@@ -105,21 +109,21 @@ public class Ghost extends Pane {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                curX = sizeWG + posX;
-                curY = sizeHG + posY;
-                // loop
-                if (pixelReader.getColor(posX, posY).equals(Color.RED)
-                        || pixelReader.getColor(curX, posY).equals(Color.RED)
-                        || pixelReader.getColor(posX, curY).equals(Color.RED)
-                        || pixelReader.getColor(curX, curY).equals(Color.RED)) {
-                    speed = speed * -1;
-                    if (moveGhost == 1 || moveGhost == 2) {
-                        angleY = 1;
-                    }
-                    if (moveGhost == 3 || moveGhost == 4) {
-                        angleX = 1;
-                    }
+              
+                if (x + widthG > widthB || x < 35) {
+                    xspeed = -xspeed;
+                }
+                if (y + heightG > heightB || y < 30) {
+                    yspeed = -yspeed;
+                }
 
+
+                int newX = x + xspeed;
+                int newY = y + yspeed;
+
+                //check if x position in next frame is inside box
+                if (pixelReader.getColor(newX + widthG, y + heightG).equals(Color.RED)) {
+                    xspeed = -xspeed;
                 }
             }
         });
