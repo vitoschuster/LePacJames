@@ -28,8 +28,8 @@ import java.util.*;
 public class Ghost extends Pane {
 
     // ghost location
-    private int xspeed = 3;
-    private int yspeed = 3;
+    private int xspeed = 1;
+    private int yspeed = 1;
     private int x;
     private int y;
     private int widthG;
@@ -80,8 +80,8 @@ public class Ghost extends Pane {
     public void doOpen(Image background, Image ghost) {
         System.out.println(background.getWidth() + " " + background.getHeight());
         pixelReader = background.getPixelReader(); // getting pixel reader from background
-        widthB = (int) background.getWidth() - 25; // bg width
-        heightB = (int) background.getHeight() - 20; // bg height
+        widthB = (int) background.getWidth() - 30; // bg width
+        heightB = (int) background.getHeight() - 25; // bg height
         widthG = (int) ghost.getWidth(); // ghost width
         heightG = (int) ghost.getHeight(); // ghost height
     }
@@ -138,6 +138,40 @@ public class Ghost extends Pane {
             //     xspeed = -xspeed; //changing speed direction on collision
             //     yspeed = -yspeed;
             // }
+
+            //box col=lision on all side
+
+            // if moving right
+            if (xspeed > 0) { //check projected position to right 
+                if (pixelReader.getColor(x + widthG + xspeed, y).equals(Color.RED)
+                        || pixelReader.getColor(x + widthG + xspeed, y + heightG).equals(Color.RED)) {
+                    xspeed = -xspeed;
+                }
+            }
+            //if moving left
+             if (xspeed < 0) { 
+                if (pixelReader.getColor(x + xspeed, y).equals(Color.RED)
+                        || pixelReader.getColor(x + xspeed, y + heightG).equals(Color.RED)) {
+                    xspeed = -xspeed;
+                }
+
+            }
+            
+            //if moving down
+             if (yspeed < 0) {
+                if(pixelReader.getColor(x,y+yspeed).equals(Color.RED)
+                    || pixelReader.getColor(x + widthG, y + yspeed).equals(Color.RED)) {
+                yspeed = -yspeed;
+                }
+
+            // if moving up
+            }  if (yspeed > 0) {
+                if(pixelReader.getColor(x, y + heightG +yspeed).equals(Color.RED)
+                        || pixelReader.getColor(x + widthG, y + heightG+yspeed).equals(Color.RED)) {
+                        yspeed = -yspeed;
+                    }
+            }
+                    
         });
     }
 }
