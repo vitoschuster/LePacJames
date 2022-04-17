@@ -100,12 +100,7 @@ public class LePac extends Application {
    public void initializeScene(Stage stage) {
       this.stage = stage;
       stage.setTitle("Game2D Starter");
-      stage.setOnCloseRequest(
-            new EventHandler<WindowEvent>() {
-               public void handle(WindowEvent evt) {
-                  System.exit(0);
-               }
-            });
+      stage.setOnCloseRequest(evt -> System.exit(0));
       root = new BorderPane();
 
       doOpen();
@@ -120,14 +115,14 @@ public class LePac extends Application {
       root.getChildren().add(racer);
       for (int i = 1; i < GHOST_NUM; i++) {
          try {
-            ghosts.add(new Ghost((GHOST_NUM-i)*220-20,i*100,
-                 new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))))));
-            ghosts.get(i-1).doOpen(bgProps,new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))));
-           root.getChildren().add(ghosts.get(i-1));
-        } catch (FileNotFoundException e) {
-           // TODO Auto-generated catch block
+            ghosts.add(new Ghost((GHOST_NUM - i) * 220 - 20, i * 100,
+                  new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))))));
+            ghosts.get(i - 1).doOpen(bgProps, new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))));
+            root.getChildren().add(ghosts.get(i - 1));
+         } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
-       }
+         }
       }
       root.setId("pane");
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
@@ -143,7 +138,7 @@ public class LePac extends Application {
       timer = new AnimationTimer() {
          public void handle(long now) {
             racer.update();
-            for(int i=0;i<ghosts.size();i++){
+            for (int i = 0; i < ghosts.size(); i++) {
                ghosts.get(i).update();
             }
             // System.out.println("He");
@@ -217,6 +212,7 @@ public class LePac extends Application {
          this.getChildren().add(pacmanGroup); // adding the background to the root
          checkMovement();
       }
+
       public void checkMovement() {
          // handle key events
          this.scene.setOnKeyPressed(evt -> {
@@ -280,7 +276,6 @@ public class LePac extends Application {
          pacmanGroup.setTranslateX(racePosX);
          pacmanGroup.setTranslateY(racePosY);
          pacmanGroup.setRotate(raceROT);
-
          timelines.get(0).play(); // play the animation
          /*
           * if (racePosX > 800)
@@ -324,6 +319,12 @@ public class LePac extends Application {
                      || pixelReader.getColor(racePosX, curY).equals(Color.RED))
                   racePosX += SPEED;
                break;
+         }
+         for (int i = 0; i < ghosts.size(); i++) {
+            if (racePosX < (ghosts.get(i).getX() + ghosts.get(i).getW()) && curX > ghosts.get(i).getX()
+                  && racePosY < ghosts.get(i).getY() + ghosts.get(i).getH() && curY > ghosts.get(i).getY()) {
+               System.out.println("Col " + i);
+            }
          }
       }
 

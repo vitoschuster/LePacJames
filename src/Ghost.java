@@ -1,4 +1,3 @@
-
 /**
  * Ghost - Class that represents a ghost following a pacman
  * 
@@ -33,99 +32,112 @@ public class Ghost extends Pane {
     private int yspeed = 3;
     private int x;
     private int y;
-    private int curX = 0;
-    private int curY = 0;
     private int widthG;
     private int heightG;
-    private int angleX = 0;
-    private int angleY = 0;
+    private int widthB;
+    private int heightB;
     private int moveGhost;
-    private boolean ifCollision = false;
-    private char collionM = 'C';
     private ImageView ghostView;
     private PixelReader pixelReader = null;
-
     private Object lock = new Object();
 
-    private int widthB;
-    private int heightB; 
-   
 
     public Ghost(int x, int y, ImageView ghostView) {
         // saving data
         this.x = x;
         this.y = y;
         this.ghostView = ghostView;
-        moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1);
+        moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); //generating random 1-4 num for start of movement
+
         /// setting spawn location and adding to root
         this.ghostView.setTranslateX(this.x);
         this.ghostView.setTranslateY(this.y);
         this.getChildren().add(this.ghostView);
     }
 
-    public void doOpen(Image background, Image ghost) {
-        System.out.println(background.getWidth() + " " + background.getHeight());
-
-        pixelReader = background.getPixelReader();
-
-        widthB = (int) background.getWidth() - 25;
-        heightB = (int) background.getHeight() - 20;
-
-        widthG = (int) ghost.getWidth();
-        heightG = (int) ghost.getHeight();
+    //getters and setters for coordinates and dimensions of ghost
+    public int getX() {
+        return x;
     }
 
-    public void update() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                switch (moveGhost) {
-                    case 1: // left down
-                        x -= xspeed;
-                        y += yspeed;
-                        break;
-                    case 2: // right down
-                        x += xspeed;
-                        y += yspeed;
-                        break;
-                    case 3: //left up
-                        y -= yspeed;
-                        x -= xspeed;
-                        break;
-                    case 4: //right up
-                        x += xspeed;
-                        y -= yspeed;
-                        break;
-                }
-                ghostView.setTranslateX(x);
-                ghostView.setTranslateY(y);
+    public int getY() {
+        return y;
+    }
 
-                checkCollision();
+    public int getH() {
+        return heightG;
+    }
+
+    public int getW() {
+        return widthG;
+    }
+
+    /**
+     * Opening picture of ghost and background
+     * @param background
+     * @param ghost
+     */
+    public void doOpen(Image background, Image ghost) {
+        System.out.println(background.getWidth() + " " + background.getHeight());
+        pixelReader = background.getPixelReader(); // getting pixel reader from background
+        widthB = (int) background.getWidth() - 25; // bg width
+        heightB = (int) background.getHeight() - 20; // bg height
+        widthG = (int) ghost.getWidth(); // ghost width
+        heightG = (int) ghost.getHeight(); // ghost height
+    }
+
+    /**
+     * Calling this method in game loop 
+     * Starting the movement of each ghost based on random number chosen 1-4
+     */
+    public void update() {
+        Platform.runLater(() -> {
+            switch (moveGhost) {
+                case 1: // left down
+                    x -= xspeed;
+                    y += yspeed;
+                    break;
+                case 2: // right down
+                    x += xspeed;
+                    y += yspeed;
+                    break;
+                case 3: // left up
+                    y -= yspeed;
+                    x -= xspeed;
+                    break;
+                case 4: // right up
+                    x += xspeed;
+                    y -= yspeed;
+                    break;
+                default:
+                    break;
             }
+            ghostView.setTranslateX(x);
+            ghostView.setTranslateY(y);
+            checkCollision(); //checking collision with borders and pacman
         });
     }
 
     public void checkCollision() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-              
-                if (x + widthG > widthB || x < 35) {
-                    xspeed = -xspeed;
-                }
-                if (y + heightG > heightB || y < 30) {
-                    yspeed = -yspeed;
-                }
-
-
-                int newX = x + xspeed;
-                int newY = y + yspeed;
-
-                //check if x position in next frame is inside box
-                if (pixelReader.getColor(newX + widthG, y + heightG).equals(Color.RED)) {
-                    xspeed = -xspeed;
-                }
+        Platform.runLater(() -> {
+            //border collision
+            if (x + widthG > widthB || x < 35) {
+                xspeed = -xspeed;
             }
+            if (y + heightG > heightB || y < 30) {
+                yspeed = -yspeed;
+            }
+
+            int newX = x + xspeed;
+            int newY = y + yspeed;
+            // check if x position in next frame is inside box
+            // if (pixelReader.getColor(x + widthG, y + heightG).equals(Color.RED)
+            //         || pixelReader.getColor(x, y + heightG).equals(Color.RED)
+            //         || pixelReader.getColor(x, y).equals(Color.RED)
+            //         || pixelReader.getColor(x + widthG, y).equals(Color.RED)) {
+            //     xspeed = -xspeed; //changing speed direction on collision
+            //     yspeed = -yspeed;
+            // }
         });
     }
 }
