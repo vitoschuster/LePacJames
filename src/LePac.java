@@ -30,7 +30,7 @@ public class LePac extends Application {
    // Window attributes
    private Stage stage;
    private Scene scene;
-   private VBox root;
+   private BorderPane root;
 
    // animation attributes
    private List<Image> images = new ArrayList<>();
@@ -106,7 +106,7 @@ public class LePac extends Application {
                   System.exit(0);
                }
             });
-      root = new VBox();
+      root = new BorderPane();
 
       doOpen();
 
@@ -122,6 +122,7 @@ public class LePac extends Application {
          try {
             ghosts.add(new Ghost((GHOST_NUM-i)*220-20,i*100,
                  new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))))));
+            ghosts.get(i-1).doOpen(bgProps,new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))));
            root.getChildren().add(ghosts.get(i-1));
         } catch (FileNotFoundException e) {
            // TODO Auto-generated catch block
@@ -216,7 +217,6 @@ public class LePac extends Application {
          this.getChildren().add(pacmanGroup); // adding the background to the root
          checkMovement();
       }
-
       public void checkMovement() {
          // handle key events
          this.scene.setOnKeyPressed(evt -> {
@@ -325,7 +325,6 @@ public class LePac extends Application {
                   racePosX += SPEED;
                break;
          }
-
       }
 
       public void move(boolean isMoving, char movement) {
