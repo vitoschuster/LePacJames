@@ -17,6 +17,7 @@ import java.io.*;
 import java.security.*;
 import javafx.util.Duration;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * LePacJames - Main class for Pacman Game
@@ -40,9 +41,19 @@ public class LePac extends Application {
 
    private static String[] args;
 
+
+   // grid
+   private List<List<ImageView>> grid3 = new ArrayList<>();
+   private int gridWidth = 5;
+   private int gridHeight = 5;
+   private Ball[][] balls = new Ball[gridHeight][gridWidth];
+   
+
+
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
    private static final String BG_PROP = "bgProps.png";
    private static final String GHOST_IMAGE = "ghost";
+   private static final String BALL = "ball.png";
    private static final int GHOST_NUM = 5;
 
    private int iconWidth; // width (in pixels) of the icon
@@ -111,8 +122,12 @@ public class LePac extends Application {
 
       // display the
       scene = new Scene(root, 1120, 700);
+      
+      //adding pacman icon
       racer = new PacmanRacer(this.scene);
       root.getChildren().add(racer);
+
+      //adding ghosts
       for (int i = 1; i < GHOST_NUM; i++) {
          try {
             ghosts.add(new Ghost((GHOST_NUM - i) * 220 - 20, i * 100,
@@ -124,6 +139,23 @@ public class LePac extends Application {
             e.printStackTrace();
          }
       }
+      PixelReader bgReaderForBall = bgProps.getPixelReader();
+      try {
+         for (int i = 0; i < gridHeight; i++) {
+            for (int j = 0; j < gridWidth; j++) {
+               int xBall = i* ThreadLocalRandom.current().nextInt(220,261) + 50;
+               int yBall = j* ThreadLocalRandom.current().nextInt(120,160) + 50;
+               if (!bgReaderForBall.getColor(xBall + 12, yBall + 12).equals(Color.RED) && xBall < bgProps.getWidth() - 50 && yBall < bgProps.getHeight() -50) {
+                  balls[i][j] = new Ball(new Point2D(xBall, yBall), new ImageView(new Image(new FileInputStream(new File(BALL)))));
+                  root.getChildren().add(balls[i][j]);
+               }
+            }
+         }
+      } catch (Exception e) {
+         //TODO: handle exception
+      }
+      
+
       root.setId("pane");
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
       stage.setScene(scene);
@@ -166,12 +198,12 @@ public class LePac extends Application {
     */
    class PacmanRacer extends Pane {
       private Scene scene;
-      private int racePosX = 50; // x position of the racer
-      private int racePosY = 50; // x position of the racer
+      private int x = 50; // x position of the racer
+      private int y = 50; // x position of the racer
       private int raceROT = 0; // x rotation
       private char collionM = 'R';
-      private int curX = 0; //
-      private int curY = 0; //
+      private int xw = 0; //
+      private int yh = 0; //
       private static final int SPEED = 4;
       private static final int REFRESH_RATE = 1000 / 60;
 
@@ -273,8 +305,8 @@ public class LePac extends Application {
        */
       public void update() {
          checkCollision();
-         pacmanGroup.setTranslateX(racePosX);
-         pacmanGroup.setTranslateY(racePosY);
+         pacmanGroup.setTranslateX(x);
+         pacmanGroup.setTranslateY(y);
          pacmanGroup.setRotate(raceROT);
          timelines.get(0).play(); // play the animation
          /*
@@ -294,36 +326,49 @@ public class LePac extends Application {
 
          // get pixel reader
          PixelReader pixelReader = bgProps.getPixelReader();
-         curX = (int) images.get(0).getWidth() + racePosX;
-         curY = (int) images.get(0).getHeight() + racePosY;
+         xw = (int) images.get(0).getWidth() + x;
+         yh = (int) images.get(0).getHeight() + y;
 
-         // loop
+         //player collision
+         // loop 
          switch (collionM) {
             case 'd':
-               if (pixelReader.getColor(curX, curY).equals(Color.RED)
-                     || pixelReader.getColor(curX, racePosY).equals(Color.RED))
-                  racePosX -= SPEED;
+               if (pixelReader.getColor(xw, yh).equals(Color.RED)
+                     || pixelReader.getColor(xw, y).equals(Color.RED))
+                  x -= SPEED;
                break;
             case 's':
-               if (pixelReader.getColor(racePosX, curY).equals(Color.RED)
-                     || pixelReader.getColor(curX, curY).equals(Color.RED))
-                  racePosY -= SPEED;
+               if (pixelReader.getColor(x, yh).equals(Color.RED)
+                     || pixelReader.getColor(xw, yh).equals(Color.RED))
+                  y -= SPEED;
                break;
             case 'w':
-               if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
-                     || pixelReader.getColor(curX, racePosY).equals(Color.RED))
-                  racePosY += SPEED;
+               if (pixelReader.getColor(x, y).equals(Color.RED)
+                     || pixelReader.getColor(xw, y).equals(Color.RED))
+                  y += SPEED;
                break;
             case 'a':
-               if (pixelReader.getColor(racePosX, racePosY).equals(Color.RED)
-                     || pixelReader.getColor(racePosX, curY).equals(Color.RED))
-                  racePosX += SPEED;
+               if (pixelReader.getColor(x, y).equals(Color.RED)
+                     || pixelReader.getColor(x, yh).equals(Color.RED))
+                  x += SPEED;
                break;
          }
+
+         //player vs ghost collision
          for (int i = 0; i < ghosts.size(); i++) {
-            if (racePosX < (ghosts.get(i).getX() + ghosts.get(i).getW()) && curX > ghosts.get(i).getX()
-                  && racePosY < ghosts.get(i).getY() + ghosts.get(i).getH() && curY > ghosts.get(i).getY()) {
+            if (x < (ghosts.get(i).getX() + ghosts.get(i).getW()) && xw > ghosts.get(i).getX()
+                  && y < ghosts.get(i).getY() + ghosts.get(i).getH() && yh > ghosts.get(i).getY()) {
                System.out.println("Col " + i);
+
+            }
+         }
+
+         //player vs ball collison
+         for (int i = 0; i < balls.length; i++) {
+            for (int j = 0; j < balls[i].length; j++) {
+               if(balls[i][j].getX() < this.xw && balls[i][j].getXW() > this.x && balls[i][j].getY() < this.yh && balls[i][j].getYH() > this.y) {
+                  System.out.println("BaLL EAT");
+               }
             }
          }
       }
@@ -336,22 +381,22 @@ public class LePac extends Application {
                public void run() {
                   synchronized (timerMover) {
                      if (movement == 'w') {
-                        racePosY -= SPEED;
+                        y -= SPEED;
                         raceROT = 270;
                         pacmanGroup.setScaleY(1);
                         collionM = 'w';
                      } else if (movement == 'a') {
-                        racePosX -= SPEED;
+                        x -= SPEED;
                         raceROT = 180;
                         collionM = 'a';
                         pacmanGroup.setScaleY(-1);
                      } else if (movement == 's') {
-                        racePosY += SPEED;
+                        y += SPEED;
                         raceROT = 90;
                         pacmanGroup.setScaleY(-1);
                         collionM = 's';
                      } else if (movement == 'd') {
-                        racePosX += SPEED;
+                        x += SPEED;
                         raceROT = 0;
                         pacmanGroup.setScaleY(1);
                         collionM = 'd';
