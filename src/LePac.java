@@ -41,14 +41,12 @@ public class LePac extends Application {
 
    private static String[] args;
 
-
    // grid
-   private List<List<ImageView>> grid3 = new ArrayList<>();
+   private List<List<Ball>> balls = new ArrayList<>();
    private int gridWidth = 5;
    private int gridHeight = 5;
-   private Ball[][] balls = new Ball[gridHeight][gridWidth];
-   
-
+   private int counterBall = 0;
+   private int endBall = 0;
 
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
    private static final String BG_PROP = "bgProps.png";
@@ -122,12 +120,12 @@ public class LePac extends Application {
 
       // display the
       scene = new Scene(root, 1120, 700);
-      
-      //adding pacman icon
+
+      // adding pacman icon
       racer = new PacmanRacer(this.scene);
       root.getChildren().add(racer);
 
-      //adding ghosts
+      // adding ghosts
       for (int i = 1; i < GHOST_NUM; i++) {
          try {
             ghosts.add(new Ghost((GHOST_NUM - i) * 220 - 20, i * 100,
@@ -142,19 +140,25 @@ public class LePac extends Application {
       PixelReader bgReaderForBall = bgProps.getPixelReader();
       try {
          for (int i = 0; i < gridHeight; i++) {
+            balls.add(new ArrayList<>());
             for (int j = 0; j < gridWidth; j++) {
-               int xBall = i* ThreadLocalRandom.current().nextInt(220,261) + 50;
-               int yBall = j* ThreadLocalRandom.current().nextInt(120,160) + 50;
-               if (!bgReaderForBall.getColor(xBall + 12, yBall + 12).equals(Color.RED) && xBall < bgProps.getWidth() - 50 && yBall < bgProps.getHeight() -50) {
-                  balls[i][j] = new Ball(new Point2D(xBall, yBall), new ImageView(new Image(new FileInputStream(new File(BALL)))));
-                  root.getChildren().add(balls[i][j]);
+               int xBall = i * ThreadLocalRandom.current().nextInt(220, 261) + 50;
+               int yBall = j * ThreadLocalRandom.current().nextInt(120, 160) + 50;
+               if (!bgReaderForBall.getColor(xBall + 12, yBall + 12).equals(Color.RED)
+                     && xBall < bgProps.getWidth() - 30 && yBall < bgProps.getHeight() - 30) {
+
+                  balls.get(balls.size() - 1).add(new Ball(new Point2D(xBall, yBall),
+                        new ImageView(new Image(new FileInputStream(new File(BALL))))));
+                  
+                  counterBall++;
+                  root.getChildren().add(balls.get(balls.size() - 1).get(balls.get(i).size() - 1));
+                  System.out.println("s");
                }
             }
          }
       } catch (Exception e) {
-         //TODO: handle exception
+         e.printStackTrace();
       }
-      
 
       root.setId("pane");
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
@@ -204,7 +208,7 @@ public class LePac extends Application {
       private char collionM = 'R';
       private int xw = 0; //
       private int yh = 0; //
-      private static final int SPEED = 4;
+      private static final int SPEED = 5;
       private static final int REFRESH_RATE = 1000 / 60;
 
       private ArrayList<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the
@@ -323,14 +327,14 @@ public class LePac extends Application {
       } // end update()
 
       public void checkCollision() {
-
          // get pixel reader
+         
          PixelReader pixelReader = bgProps.getPixelReader();
          xw = (int) images.get(0).getWidth() + x;
          yh = (int) images.get(0).getHeight() + y;
 
-         //player collision
-         // loop 
+         // player collision
+         // loop
          switch (collionM) {
             case 'd':
                if (pixelReader.getColor(xw, yh).equals(Color.RED)
@@ -354,7 +358,7 @@ public class LePac extends Application {
                break;
          }
 
-         //player vs ghost collision
+         // player vs ghost collision
          for (int i = 0; i < ghosts.size(); i++) {
             if (x < (ghosts.get(i).getX() + ghosts.get(i).getW()) && xw > ghosts.get(i).getX()
                   && y < ghosts.get(i).getY() + ghosts.get(i).getH() && yh > ghosts.get(i).getY()) {
@@ -363,14 +367,45 @@ public class LePac extends Application {
             }
          }
 
-         //player vs ball collison
-         for (int i = 0; i < balls.length; i++) {
-            for (int j = 0; j < balls[i].length; j++) {
-               if(balls[i][j].getX() < this.xw && balls[i][j].getXW() > this.x && balls[i][j].getY() < this.yh && balls[i][j].getYH() > this.y) {
-                  System.out.println("BaLL EAT");
+         // player vs ball collison
+         try {
+
+            balls.forEach(ballList -> {
+               ballList.forEach(ball -> {
+                  if (ball.getX() <= this.xw &&
+                        ball.getXW() >= this.x &&
+                        ball.getY() <= this.yh &&
+                        ball.getYH() >= this.y) {
+                     System.out.println("eat ball");
+                     ball.setVisible(false);
+                  }
+               });
+            });
+
+            for (List<Ball> ballList : balls) {
+               for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
+                  Ball ball = iter.next();
+                  if (!ball.isVisible()) {
+                     iter.remove();
+                  }
+               }
+               if (ballList.isEmpty()) {
+                  balls.remove(ballList);
                }
             }
+            if (balls.isEmpty()) {
+               Thread.sleep(200); //end game
+               System.exit(0);
+            }
+            
+          
+            System.out.println(balls.size() + " ballLists");
+         } catch (Exception e) {
+            e.printStackTrace();
          }
+         //cant use enhanced foreach for deleting
+         //copy to another arraylist and remove all elements
+         //subtract the two arrays or use Iterator
       }
 
       public void move(boolean isMoving, char movement) {

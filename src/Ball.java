@@ -13,6 +13,7 @@ import javafx.scene.image.*;
 public class Ball extends Pane {
     private Point2D pos;
     private ImageView ballView;
+    private final int padding = 3;
 
     public Ball(Point2D pos, ImageView ballView) {
         this.pos = pos;
@@ -23,7 +24,7 @@ public class Ball extends Pane {
     }
     
     public double getX() {
-        return this.pos.getX();
+        return this.pos.getX() - padding;
     }
 
     public double getXW() {
@@ -35,14 +36,14 @@ public class Ball extends Pane {
     }
 
     public double getY() {
-        return this.pos.getY();
+        return this.pos.getY() - padding;
     }
     public double getW() {
-        return this.ballView.getFitWidth();
+        return this.ballView.getFitWidth() + padding;
     }
 
     public double getH() {
-        return  this.ballView.getFitHeight();
+        return  this.ballView.getFitHeight() + padding;
     }
 
 }
