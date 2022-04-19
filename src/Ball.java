@@ -14,13 +14,17 @@ public class Ball extends Pane {
     private Point2D pos;
     private ImageView ballView;
     private final int padding = 3;
+    private int height;
+    private int width;
 
-    public Ball(Point2D pos, ImageView ballView) {
+    public Ball(Point2D pos, ImageView ballView,Image ball) {
         this.pos = pos;
         this.ballView = ballView;
         this.ballView.setTranslateX(this.pos.getX());
         this.ballView.setTranslateY(this.pos.getY());
         this.getChildren().add(ballView);
+        this.height=(int) ball.getHeight();
+        this.width=(int) ball.getWidth();
     }
     
     public double getX() {
@@ -39,11 +43,11 @@ public class Ball extends Pane {
         return this.pos.getY() - padding;
     }
     public double getW() {
-        return this.ballView.getFitWidth() + padding;
+        return this.width + padding;
     }
 
     public double getH() {
-        return  this.ballView.getFitHeight() + padding;
+        return  this.height + padding;
     }
 
 }

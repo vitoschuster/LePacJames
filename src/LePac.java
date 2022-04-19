@@ -18,6 +18,7 @@ import java.security.*;
 import javafx.util.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import javafx.scene.control.Alert;
 
 /**
  * LePacJames - Main class for Pacman Game
@@ -148,9 +149,9 @@ public class LePac extends Application {
                      && xBall < bgProps.getWidth() - 30 && yBall < bgProps.getHeight() - 30) {
 
                   balls.get(balls.size() - 1).add(new Ball(new Point2D(xBall, yBall),
-                        new ImageView(new Image(new FileInputStream(new File(BALL))))));
+                        new ImageView(new Image(new FileInputStream(new File(BALL)))),new Image(new FileInputStream(new File(BALL)))));
                   
-                  counterBall++;
+                  endBall++;
                   root.getChildren().add(balls.get(balls.size() - 1).get(balls.get(i).size() - 1));
                   System.out.println("s");
                }
@@ -362,7 +363,9 @@ public class LePac extends Application {
          for (int i = 0; i < ghosts.size(); i++) {
             if (x < (ghosts.get(i).getX() + ghosts.get(i).getW()) && xw > ghosts.get(i).getX()
                   && y < ghosts.get(i).getY() + ghosts.get(i).getH() && yh > ghosts.get(i).getY()) {
-               System.out.println("Col " + i);
+                     System.out.println("You lost");
+                      //end game
+                     System.exit(0);
 
             }
          }
@@ -376,7 +379,6 @@ public class LePac extends Application {
                         ball.getXW() >= this.x &&
                         ball.getY() <= this.yh &&
                         ball.getYH() >= this.y) {
-                     System.out.println("eat ball");
                      ball.setVisible(false);
                   }
                });
@@ -387,19 +389,17 @@ public class LePac extends Application {
                   Ball ball = iter.next();
                   if (!ball.isVisible()) {
                      iter.remove();
+                     counterBall++;
                   }
                }
-               if (ballList.isEmpty()) {
-                  balls.remove(ballList);
-               }
+               
             }
-            if (balls.isEmpty()) {
-               Thread.sleep(200); //end game
+            if (counterBall==endBall) {
+               Thread.sleep(1000);
+               System.out.println("You won");
+                //end game
                System.exit(0);
             }
-            
-          
-            System.out.println(balls.size() + " ballLists");
          } catch (Exception e) {
             e.printStackTrace();
          }
