@@ -49,6 +49,10 @@ public class LePac extends Application {
    private int counterBall = 0;
    private int endBall = 0;
 
+   // hud
+   private TextField tfScore = new TextField("0");
+
+
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
    private static final String BG_PROP = "bgProps.png";
    private static final String GHOST_IMAGE = "ghost";
@@ -149,25 +153,44 @@ public class LePac extends Application {
                      && xBall < bgProps.getWidth() - 30 && yBall < bgProps.getHeight() - 30) {
 
                   balls.get(balls.size() - 1).add(new Ball(new Point2D(xBall, yBall),
-                        new ImageView(new Image(new FileInputStream(new File(BALL)))),new Image(new FileInputStream(new File(BALL)))));
-                  
+                        new ImageView(new Image(new FileInputStream(new File(BALL)))),
+                        new Image(new FileInputStream(new File(BALL)))));
+
                   endBall++;
                   root.getChildren().add(balls.get(balls.size() - 1).get(balls.get(i).size() - 1));
                   System.out.println("s");
                }
             }
          }
+
+         //displaying the score
+
       } catch (Exception e) {
          e.printStackTrace();
       }
 
+      createHUD();
+      displayScore();
+      root.getChildren().addAll(tfScore);
       root.setId("pane");
+
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
       stage.setScene(scene);
       stage.show();
 
       animationTimerCreate();
       animationTimerStart();
+
+   }
+
+   void createHUD() {
+      int padding = 40;
+      tfScore.resizeRelocate(scene.getWidth() - padding,0, 40, 25);
+      tfScore.setEditable(false);
+      tfScore.setFocusTraversable(false);
+   }
+   void displayScore() {
+      Platform.runLater(() -> tfScore.setText(String.valueOf(counterBall))); 
    }
 
    void animationTimerStart() {
@@ -209,7 +232,7 @@ public class LePac extends Application {
       private char collionM = 'R';
       private int xw = 0; //
       private int yh = 0; //
-      private static final int SPEED = 5;
+      private static final int SPEED = 4;
       private static final int REFRESH_RATE = 1000 / 60;
 
       private ArrayList<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the
@@ -314,6 +337,7 @@ public class LePac extends Application {
          pacmanGroup.setTranslateY(y);
          pacmanGroup.setRotate(raceROT);
          timelines.get(0).play(); // play the animation
+         displayScore();
          /*
           * if (racePosX > 800)
           * racePosX = 1;

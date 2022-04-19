@@ -13,7 +13,7 @@ import javafx.scene.image.*;
 public class Ball extends Pane {
     private Point2D pos;
     private ImageView ballView;
-    private final int padding = 3;
+    private final double padding = 2;
     private int height;
     private int width;
 
