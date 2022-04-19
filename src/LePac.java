@@ -8,6 +8,9 @@ import javafx.scene.control.Alert.*;
 import javafx.scene.text.*;
 import javafx.scene.transform.*;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.*;
@@ -33,6 +36,7 @@ public class LePac extends Application {
    private Stage stage;
    private Scene scene;
    private BorderPane root;
+   private static String[] args;
 
    // animation attributes
    private List<Image> images = new ArrayList<>();
@@ -40,24 +44,25 @@ public class LePac extends Application {
    private ArrayList<Ghost> ghosts = new ArrayList<>();
    private int counterAnim = 0;
 
-   private static String[] args;
-
    // grid
    private List<List<Ball>> balls = new ArrayList<>();
    private int gridWidth = 5;
    private int gridHeight = 5;
-   private int counterBall = 0;
+   private int score = 0;
    private int endBall = 0;
+   
 
    // hud
    private TextField tfScore = new TextField("0");
-
+   private Label lblScore = new Label("Score: ");
+   private int k = 0;
 
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
    private static final String BG_PROP = "bgProps.png";
    private static final String GHOST_IMAGE = "ghost";
    private static final String BALL = "ball.png";
    private static final int GHOST_NUM = 5;
+   private int ghostSpeed = 1;
 
    private int iconWidth; // width (in pixels) of the icon
    private int iconHeight; // height (in pixels) or the icon
@@ -84,11 +89,19 @@ public class LePac extends Application {
    }
 
    public void cleanup() {
-
+      timer.stop();
+      balls.clear();
+      ghosts.clear();
+      timelines.clear();
+      images.clear();
+      score = 0;
+      endBall = 0;
+      k = 0;
+      counterAnim = 0;
    }
 
    public void restart(Stage stage) {
-      // cleanup();
+      cleanup();
       start(stage);
    }
 
@@ -110,10 +123,16 @@ public class LePac extends Application {
       }
    }
 
+   void alertLater(AlertType type, String header, String message) {
+      Alert a = new Alert(type, message);
+      a.setHeaderText(header);
+      a.showAndWait();
+   }
+
    // start the race
    public void initializeScene(Stage stage) {
       this.stage = stage;
-      stage.setTitle("Game2D Starter");
+      stage.setTitle("LePac James");
       stage.setOnCloseRequest(evt -> System.exit(0));
       root = new BorderPane();
 
@@ -130,6 +149,7 @@ public class LePac extends Application {
       racer = new PacmanRacer(this.scene);
       root.getChildren().add(racer);
 
+      
       // adding ghosts
       for (int i = 1; i < GHOST_NUM; i++) {
          try {
@@ -138,10 +158,19 @@ public class LePac extends Application {
             ghosts.get(i - 1).doOpen(bgProps, new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))));
             root.getChildren().add(ghosts.get(i - 1));
          } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
+
+      //change ghost speed every level
+      ghostSpeed++;
+      ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
+      if (ghostSpeed > 4) {
+         alertLater(AlertType.ERROR,"Game Over", "You lost");
+         System.exit(0);
+      }
+
+      //adding grid and checking (bad code this needs to change TODO);
       PixelReader bgReaderForBall = bgProps.getPixelReader();
       try {
          for (int i = 0; i < gridHeight; i++) {
@@ -171,8 +200,9 @@ public class LePac extends Application {
 
       createHUD();
       displayScore();
-      root.getChildren().addAll(tfScore);
+      
       root.setId("pane");
+      tfScore.setId("score");
 
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
       stage.setScene(scene);
@@ -185,12 +215,16 @@ public class LePac extends Application {
 
    void createHUD() {
       int padding = 40;
-      tfScore.resizeRelocate(scene.getWidth() - padding,0, 40, 25);
+      tfScore.resizeRelocate(scene.getWidth() - padding, 0, 40, 25);
       tfScore.setEditable(false);
       tfScore.setFocusTraversable(false);
+      lblScore.relocate(scene.getWidth() - (padding * 2), 0);
+      lblScore.toFront();
+      root.getChildren().addAll(lblScore, tfScore);
    }
+   
    void displayScore() {
-      Platform.runLater(() -> tfScore.setText(String.valueOf(counterBall))); 
+      Platform.runLater(() -> tfScore.setText(String.valueOf(score))); 
    }
 
    void animationTimerStart() {
@@ -387,9 +421,16 @@ public class LePac extends Application {
          for (int i = 0; i < ghosts.size(); i++) {
             if (x < (ghosts.get(i).getX() + ghosts.get(i).getW()) && xw > ghosts.get(i).getX()
                   && y < ghosts.get(i).getY() + ghosts.get(i).getH() && yh > ghosts.get(i).getY()) {
-                     System.out.println("You lost");
-                      //end game
-                     System.exit(0);
+                     if(k==0){
+                        String path = "lose.mp4";
+                        Media media = new Media(new File(path).toURI().toString());
+                        MediaPlayer player = new MediaPlayer(media);
+                        MediaView mediaView = new MediaView(player);
+                        root.getChildren().add(mediaView);
+                        player.play();
+                        player.setOnEndOfMedia(() -> restart(stage));
+                     }
+                     k++;
 
             }
          }
@@ -413,16 +454,27 @@ public class LePac extends Application {
                   Ball ball = iter.next();
                   if (!ball.isVisible()) {
                      iter.remove();
-                     counterBall++;
+                     score++;
                   }
                }
-               
+
             }
-            if (counterBall==endBall) {
-               Thread.sleep(1000);
-               System.out.println("You won");
-                //end game
-               System.exit(0);
+            if (score==endBall) {
+               if(k==0){
+                  String path = "win.mp4";
+                  Media media = new Media(new File(path).toURI().toString());  
+                  MediaPlayer player = new MediaPlayer(media);
+                  MediaView mediaView = new MediaView(player);
+                  root.getChildren().add(mediaView);
+                  player.play();
+                  player.setOnEndOfMedia(new Runnable() {
+                     @Override
+                     public void run() {
+                        System.exit(0);
+                     }
+                  });
+               }
+               k++;
             }
          } catch (Exception e) {
             e.printStackTrace();

@@ -29,8 +29,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Ghost extends Pane {
 
     // ghost location
-    private int xspeed = 3;
-    private int yspeed = 3;
+    private int xspeed;
+    private int yspeed;
     private int x;
     private int y;
     private int widthG;
@@ -72,6 +72,12 @@ public class Ghost extends Pane {
     public int getW() {
         return widthG;
     }
+
+    public void setSpeed(int xspeed, int yspeed) {
+        this.xspeed = xspeed;
+        this.yspeed = yspeed;
+    }
+
 
     /**
      * Opening picture of ghost and background

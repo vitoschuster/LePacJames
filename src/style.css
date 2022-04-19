@@ -4,5 +4,11 @@
     -fx-background-size: 1120 700;
     -fx-background-position: center center;
     -fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+    -fx-z-index: -1;
 }
 
+#score {
+    -fx-background-color: whitesmoke;
+    -fx-border-color: rgb(49, 46, 46);
+    -fx-border-radius: 3px;
+}
