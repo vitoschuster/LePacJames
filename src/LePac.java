@@ -31,12 +31,14 @@ import javafx.scene.control.Alert;
  * @version 2203
  */
 
+
 public class LePac extends Application {
    // Window attributes
    private Stage stage;
    private Scene scene;
    private BorderPane root;
    private static String[] args;
+   
 
    // animation attributes
    private List<Image> images = new ArrayList<>();
@@ -53,8 +55,8 @@ public class LePac extends Application {
    
 
    // hud
-   private TextField tfScore = new TextField("0");
-   private Label lblScore = new Label("Score: ");
+   private TextField tfScore = new TextField("Score: 0");
+   private TextField tfLives = new TextField("Lives: 4" );
    private int k = 0;
 
    private static final String ICON_IMAGE = "pacman_small"; // file with icon for a racer
@@ -149,7 +151,7 @@ public class LePac extends Application {
       racer = new PacmanRacer(this.scene);
       root.getChildren().add(racer);
 
-      
+
       // adding ghosts
       for (int i = 1; i < GHOST_NUM; i++) {
          try {
@@ -164,6 +166,7 @@ public class LePac extends Application {
 
       //change ghost speed every level
       ghostSpeed++;
+      tfLives.setText("Lives: " + (5 - ghostSpeed));
       ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
       if (ghostSpeed > 4) {
          alertLater(AlertType.ERROR,"Game Over", "You lost");
@@ -203,6 +206,7 @@ public class LePac extends Application {
       
       root.setId("pane");
       tfScore.setId("score");
+      tfLives.setId("lives");
 
       scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
       stage.setScene(scene);
@@ -214,17 +218,20 @@ public class LePac extends Application {
    }
 
    void createHUD() {
-      int padding = 40;
-      tfScore.resizeRelocate(scene.getWidth() - padding, 0, 40, 25);
+      int padding = 80;
+      tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
       tfScore.setEditable(false);
       tfScore.setFocusTraversable(false);
-      lblScore.relocate(scene.getWidth() - (padding * 2), 0);
-      lblScore.toFront();
-      root.getChildren().addAll(lblScore, tfScore);
+
+      tfLives.resizeRelocate(scene.getWidth() - padding - 100, 0, 100, 25);
+      tfLives.setEditable(false);
+      tfLives.setFocusTraversable(false);
+     
+      root.getChildren().addAll(tfLives, tfScore);
    }
    
    void displayScore() {
-      Platform.runLater(() -> tfScore.setText(String.valueOf(score))); 
+      Platform.runLater(() -> tfScore.setText("Score: " + score)); 
    }
 
    void animationTimerStart() {
@@ -457,22 +464,22 @@ public class LePac extends Application {
                      score++;
                   }
                }
-
             }
+
             if (score==endBall) {
                if(k==0){
-                  String path = "win.mp4";
-                  Media media = new Media(new File(path).toURI().toString());  
-                  MediaPlayer player = new MediaPlayer(media);
-                  MediaView mediaView = new MediaView(player);
-                  root.getChildren().add(mediaView);
-                  player.play();
-                  player.setOnEndOfMedia(new Runnable() {
-                     @Override
-                     public void run() {
-                        System.exit(0);
-                     }
-                  });
+                  // String path = "win.mp4";
+                  // Media media = new Media(new File(path).toURI().toString());  
+                  // MediaPlayer player = new MediaPlayer(media);
+                  // MediaView mediaView = new MediaView(player);
+                  // root.getChildren().add(mediaView);
+                  // player.play();
+                  // player.setOnEndOfMedia(new Runnable() {
+                  //    @Override
+                  //    public void run() {
+                  //       System.exit(0);
+                  //    }
+                  // });
                }
                k++;
             }

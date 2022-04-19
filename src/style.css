@@ -1,3 +1,4 @@
+/* maknuti iz css-a */
 #pane {
     -fx-background-image: url("basketball_court_props.png");
     -fx-background-repeat: stretch;
@@ -7,8 +8,8 @@
     -fx-z-index: -1;
 }
 
-#score {
-    -fx-background-color: whitesmoke;
-    -fx-border-color: rgb(49, 46, 46);
-    -fx-border-radius: 3px;
+#score, #lives {
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-border-radius: 0px;
+    -fx-background-radius: 0px;
 }
