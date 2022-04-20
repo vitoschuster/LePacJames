@@ -40,9 +40,9 @@ public class Pacman extends Runner {
     // private List<Timeline> timelines = new ArrayList<>();
     // private List<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the  // animation
     // private Group pacmanGroup;
-    private TimerTask timerTaskMover;
-    private Timer timerMover = new Timer();
-    private boolean goingForward = false;
+    // private TimerTask timerTaskMover;
+    // private Timer timerMover = new Timer();
+    // private boolean goingForward = false;
 
     private static final String IMG_PATH = "img/lepac.gif";
 
@@ -60,11 +60,15 @@ public class Pacman extends Runner {
     public void update() {
         
         // checkCollision();
-        System.out.println(this.getX());
-        System.out.println(speed);
-        this.setX(this.getX()+speed); 
-        this.setY(this.getY()+speed);
+        // System.out.println(this.getX());
+        // System.out.println(speed);
+        
+        this.setTranslateX(this.getTranslateX() + speed);
+        System.out.println(this.getTranslateX());
+
         this.setRotate(angle);
+
+
         // timelines.get(0).play(); // play the animation
         
         /*

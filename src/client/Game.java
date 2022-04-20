@@ -33,7 +33,7 @@ import java.util.concurrent.*;
  * @version 2203
  */
 
-public class Game extends Pane {
+public class Game extends StackPane {
    // Window attributes
    private Stage stage;
    private Scene scene;
@@ -170,18 +170,18 @@ public class Game extends Pane {
       timer = new AnimationTimer() {
          @Override
          public void handle(long now) {
-            for (Runner r : runners)
-               r.update();
+            for (Runner r : runners) r.update();
          }
       };
-      TimerTask task = new TimerTask() {
-         public void run() {
-            timer.start();
-         }
-      };
-      Timer startTimer = new Timer();
-      long delay = 1000L;
-      startTimer.schedule(task, delay);
+      timer.start();
+      // TimerTask task = new TimerTask() {
+      //    public void run() {
+      //       timer.start();
+      //    }
+      // };
+      // Timer startTimer = new Timer();
+      // long delay = 1000L;
+      // startTimer.schedule(task, delay);
    }
 
    // public void startGame(Stage stage) {
