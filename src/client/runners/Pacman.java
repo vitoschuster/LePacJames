@@ -30,27 +30,27 @@ import java.util.concurrent.*;
  * keep itself going (Runnable)
  */
 public class Pacman extends Runner {
-    private int angle = 0; // x rotation
     private char collionM = 'R';
-    private int xw = 0; //
-    private int yh = 0; //
-    private static final int SPEED = 4;
-    private static final int REFRESH_RATE = 1000 / 60;
+    // private int xw = 0; //
+    // private int yh = 0; //
+    // private static final int SPEED = 4;
+    // private static final int REFRESH_RATE = 1000 / 60;
 
     // private List<Image> images = new ArrayList<>();
     // private List<Timeline> timelines = new ArrayList<>();
     // private List<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the  // animation
-    private Group pacmanGroup;
+    // private Group pacmanGroup;
+    private Point point;
     private TimerTask timerTaskMover;
     private Timer timerMover = new Timer();
     private boolean goingForward = false;
 
-    private static final String IMG_PATH = "../../img/lepac.gif";
+    private static final String IMG_PATH = "img/lepac.gif";
 
     // load image and get pixel position
 
     public Pacman() {
-        super("");
+        super(IMG_PATH);
     }
 
    
@@ -60,10 +60,10 @@ public class Pacman extends Runner {
      */
     public void update() {
         
-        checkCollision();
-        pacmanGroup.setTranslateX(pos.getX());
-        pacmanGroup.setTranslateY(pos.getY());
-        pacmanGroup.setRotate(angle);
+        // checkCollision();
+        this.setTranslateX(pos.getX()); 
+        this.setTranslateY(pos.getY());
+        this.setRotate(angle);
         // timelines.get(0).play(); // play the animation
         
         /*
