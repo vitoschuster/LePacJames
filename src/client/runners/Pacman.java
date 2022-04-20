@@ -40,7 +40,6 @@ public class Pacman extends Runner {
     // private List<Timeline> timelines = new ArrayList<>();
     // private List<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the  // animation
     // private Group pacmanGroup;
-    private Point point;
     private TimerTask timerTaskMover;
     private Timer timerMover = new Timer();
     private boolean goingForward = false;
@@ -61,8 +60,10 @@ public class Pacman extends Runner {
     public void update() {
         
         // checkCollision();
-        this.setTranslateX(pos.getX()); 
-        this.setTranslateY(pos.getY());
+        System.out.println(this.getX());
+        System.out.println(speed);
+        this.setX(this.getX()+speed); 
+        this.setY(this.getY()+speed);
         this.setRotate(angle);
         // timelines.get(0).play(); // play the animation
         

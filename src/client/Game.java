@@ -54,7 +54,8 @@ public class Game extends Pane {
    private int k = 0;
 
    // private static final String PATH_IMG = "../img/";
-   // private static final String ICON_IMAGE = PATH_IMG + "pacman_small"; // file with icon for a racer
+   // private static final String ICON_IMAGE = PATH_IMG + "pacman_small"; // file
+   // with icon for a racer
    // private static final String BG_PROP = PATH_IMG + "bgProps.png";
    // private static final String GHOST_IMAGE = PATH_IMG + "ghost";
    // private static final String BALL = PATH_IMG + "ghostball.png";
@@ -63,16 +64,14 @@ public class Game extends Pane {
 
    private int iconWidth; // width (in pixels) of the icon
    private int iconHeight; // height (in pixels) or the icon
-   
+
    private Image bgProps = null;
    private AnimationTimer timer; // timer to control animation
 
-   private Pacman pacman; 
+   private Pacman pacman;
 
    public Game(Court court) {
       this.court = court;
-
-
       this.runners.add(addPlayerControls(new Pacman()));
       this.getChildren().add(court);
       this.start();
@@ -87,12 +86,12 @@ public class Game extends Pane {
       this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
          switch (event.getCode()) {
             case W:
-               pacman.speed = 3;
+               pacman.speed = -3;
                pacman.angle = 0;
                break;
 
             case A:
-               pacman.speed = 3;
+               pacman.speed = -3;
                pacman.angle = 270;
                break;
 
@@ -105,105 +104,113 @@ public class Game extends Pane {
                pacman.speed = 3;
                pacman.angle = 90;
                break;
-           
+
          }
       });
       return pacman;
    }
-   
 
-//     public void checkMovement() {
-//       // handle key events
-//       this.scene.setOnKeyPressed(evt -> {
-//           KeyCode code = evt.getCode();
-//           switch (code) {
-//               case UP:
-//               case W:
-//                   this.move(true, 'w');
-//                   break;
-//               case LEFT:
-//               case A:
-//                   this.move(true, 'a');
-//                   break;
+   // public void checkMovement() {
+   // // handle key events
+   // this.scene.setOnKeyPressed(evt -> {
+   // KeyCode code = evt.getCode();
+   // switch (code) {
+   // case UP:
+   // case W:
+   // this.move(true, 'w');
+   // break;
+   // case LEFT:
+   // case A:
+   // this.move(true, 'a');
+   // break;
 
-//               case DOWN:
-//               case S:
-//                   this.move(true, 's');
-//                   break;
+   // case DOWN:
+   // case S:
+   // this.move(true, 's');
+   // break;
 
-//               case RIGHT:
-//               case D:
-//                   this.move(true, 'd');
-//                   break;
-//               default:
-//                   break;
-//           }
-//       });
+   // case RIGHT:
+   // case D:
+   // this.move(true, 'd');
+   // break;
+   // default:
+   // break;
+   // }
+   // });
 
-//       this.scene.setOnKeyReleased(evt -> {
-//           KeyCode code = evt.getCode();
-//           switch (code) {
-//               case UP:
-//               case W:
-//                   this.move(false, 'w');
-//                   break;
-//               case LEFT:
-//               case A:
-//                   this.move(false, 'a');
-//                   break;
+   // this.scene.setOnKeyReleased(evt -> {
+   // KeyCode code = evt.getCode();
+   // switch (code) {
+   // case UP:
+   // case W:
+   // this.move(false, 'w');
+   // break;
+   // case LEFT:
+   // case A:
+   // this.move(false, 'a');
+   // break;
 
-//               case DOWN:
-//               case S:
-//                   this.move(false, 's');
-//                   break;
+   // case DOWN:
+   // case S:
+   // this.move(false, 's');
+   // break;
 
-//               case RIGHT:
-//               case D:
-//                   this.move(false, 'd');
-//                   break;
-//               default:
-//                   break;
-//           }
-//       });
-//   }
+   // case RIGHT:
+   // case D:
+   // this.move(false, 'd');
+   // break;
+   // default:
+   // break;
+   // }
+   // });
+   // }
 
    // start() method
    public void start() {
       timer = new AnimationTimer() {
          @Override
          public void handle(long now) {
-            for(Runner r : runners) r.update();            
+            for (Runner r : runners)
+               r.update();
          }
       };
+      TimerTask task = new TimerTask() {
+         public void run() {
+            timer.start();
+         }
+      };
+      Timer startTimer = new Timer();
+      long delay = 1000L;
+      startTimer.schedule(task, delay);
    }
 
    // public void startGame(Stage stage) {
-      
-   //    initializeScene(stage);
-   //    // // TODO - restart game call method
+
+   // initializeScene(stage);
+   // // // TODO - restart game call method
 
    // }
 
    // public void cleanup() {
-   //    // timer.stop();
-   //    // balls.clear();
-   //    // ghosts.clear();
-   //    // timelines.clear();
-   //    // images.clear();
-   //    // score = 0;
-   //    // endBall = 0;
-   //    // k = 0;
-   //    // counterAnim = 0;
+   // // timer.stop();
+   // // balls.clear();
+   // // ghosts.clear();
+   // // timelines.clear();
+   // // images.clear();
+   // // score = 0;
+   // // endBall = 0;
+   // // k = 0;
+   // // counterAnim = 0;
    // }
 
    // public void restart(Stage stage) {
-   //    // cleanup();
-   //    // start(stage);
+   // // cleanup();
+   // // start(stage);
    // }
 
    // /**
-   //  * Trying to open the images for animation
-   
+   // * Trying to open the images for animation
+
    // void doOpenImages() {
    // try {
    // // adding pictures to arraylist
@@ -243,33 +250,35 @@ public class Game extends Pane {
       // scene = new Scene(root, 1120, 700);
 
       // adding pacman icon
-     
+
       // root.getChildren().add(racer);
 
       // adding ghosts
       /*
-      for (int i = 1; i < GHOST_NUM; i++) {
-         try {
-            ghosts.add(new Ghost((GHOST_NUM - i) * 220 - 20, i * 100,
-                  new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))))));
-            ghosts.get(i - 1).doOpen(bgProps, new Image(new FileInputStream(new File(GHOST_IMAGE + i + ".png"))));
-            root.getChildren().add(ghosts.get(i - 1));
-         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-         }
-      }
-      */
+       * for (int i = 1; i < GHOST_NUM; i++) {
+       * try {
+       * ghosts.add(new Ghost((GHOST_NUM - i) * 220 - 20, i * 100,
+       * new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i +
+       * ".png"))))));
+       * ghosts.get(i - 1).doOpen(bgProps, new Image(new FileInputStream(new
+       * File(GHOST_IMAGE + i + ".png"))));
+       * root.getChildren().add(ghosts.get(i - 1));
+       * } catch (FileNotFoundException e) {
+       * e.printStackTrace();
+       * }
+       * }
+       */
 
       // change ghost speed every level
       ghostSpeed++;
       // tfLives.setText("Lives: " + (5 - ghostSpeed));
-      //ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
+      // ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
       if (ghostSpeed > 4) {
          alertLater(AlertType.ERROR, "Game Over", "You lost");
          System.exit(0);
       }
 
-      //createGrid();
+      // createGrid();
       createHUD();
       displayScore();
 
@@ -278,42 +287,43 @@ public class Game extends Pane {
       // tfScore.setId("score");
       // tfLives.setId("lives");
       // scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
-      
 
       animationTimerCreate();
       animationTimerStart();
 
    }
-/*
-   void createGrid() {
-      // adding grid and checking (bad code this needs to change TODO);
-      PixelReader bgReaderForBall = bgProps.getPixelReader();
-      try {
-         for (int i = 0; i < gridHeight; i++) {
-            balls.add(new ArrayList<>());
-            for (int j = 0; j < gridWidth; j++) {
-               int xBall = i * ThreadLocalRandom.current().nextInt(220, 261) + 50;
-               int yBall = j * ThreadLocalRandom.current().nextInt(120, 160) + 50;
-               if (!bgReaderForBall.getColor(xBall + 12, yBall + 12).equals(Color.RED)
-                     && xBall < bgProps.getWidth() - 30 && yBall < bgProps.getHeight() - 30) {
 
-                  balls.get(balls.size() - 1).add(new Ball(new Point2D(xBall, yBall),
-                        new ImageView(new Image(new FileInputStream(new File(BALL)))),
-                        new Image(new FileInputStream(new File(BALL)))));
-
-                  endBall++;
-                  root.getChildren().add(balls.get(balls.size() - 1).get(balls.get(i).size() - 1));
-                  System.out.println("s");
-               }
-            }
-         }
-         // displaying the score
-
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-*/
+   /*
+    * void createGrid() {
+    * // adding grid and checking (bad code this needs to change TODO);
+    * PixelReader bgReaderForBall = bgProps.getPixelReader();
+    * try {
+    * for (int i = 0; i < gridHeight; i++) {
+    * balls.add(new ArrayList<>());
+    * for (int j = 0; j < gridWidth; j++) {
+    * int xBall = i * ThreadLocalRandom.current().nextInt(220, 261) + 50;
+    * int yBall = j * ThreadLocalRandom.current().nextInt(120, 160) + 50;
+    * if (!bgReaderForBall.getColor(xBall + 12, yBall + 12).equals(Color.RED)
+    * && xBall < bgProps.getWidth() - 30 && yBall < bgProps.getHeight() - 30) {
+    * 
+    * balls.get(balls.size() - 1).add(new Ball(new Point2D(xBall, yBall),
+    * new ImageView(new Image(new FileInputStream(new File(BALL)))),
+    * new Image(new FileInputStream(new File(BALL)))));
+    * 
+    * endBall++;
+    * root.getChildren().add(balls.get(balls.size() - 1).get(balls.get(i).size() -
+    * 1));
+    * System.out.println("s");
+    * }
+    * }
+    * }
+    * // displaying the score
+    * 
+    * } catch (Exception e) {
+    * e.printStackTrace();
+    * }
+    * }
+    */
    void createHUD() {
       // int padding = 80;
       // tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
@@ -328,21 +338,24 @@ public class Game extends Pane {
    }
 
    void displayScore() {
-      //Platform.runLater(() -> tfScore.setText("Score: " + score));
+      // Platform.runLater(() -> tfScore.setText("Score: " + score));
    }
 
    void animationTimerStart() {
       // // Use an animation to update the screen
-      // timer = new AnimationTimer() {
-      //    public void handle(long now) {
-      //       racer.update();
-      //       /*
-      //       for (int i = 0; i < ghosts.size(); i++) {
-      //          ghosts.get(i).update();
-      //       }
-      //       */
-      //       // System.out.println("He");
-      //    }
+      /*
+       * timer = new AnimationTimer() {
+       * public void handle(long now) {
+       * 
+       * }
+       * };
+       */
+      // for (int i = 0; i < ghosts.size(); i++) {
+      // ghosts.get(i).update();
+      // }
+      // */
+      // // System.out.println("He");
+      // }
       // };
       // System.out.println("Starting race...");
 
@@ -351,9 +364,9 @@ public class Game extends Pane {
    void animationTimerCreate() {
       // // TimerTask to delay start of race for 2 seconds
       // TimerTask task = new TimerTask() {
-      //    public void run() {
-      //       timer.start();
-      //    }
+      // public void run() {
+      // timer.start();
+      // }
       // };
       // Timer startTimer = new Timer();
       // long delay = 1000L;

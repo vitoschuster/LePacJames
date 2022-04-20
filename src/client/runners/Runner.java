@@ -27,7 +27,7 @@ import java.util.concurrent.*;
 
 
 public abstract class Runner extends ImageView {
-    public Point2D pos;
+    public Point2D pos=new Point2D(0, 0);
     public Image image;
     public double speed = 0;
     public double angle = 0;
@@ -37,8 +37,7 @@ public abstract class Runner extends ImageView {
 
     protected Runner(String imagePath) {
         this.setImage(this.loadImage(imagePath));
-        // this.setScaleX(-1);
-        // this.pos.add(30, 30);
+        // this.setScaleX(-1)
         this.height=(int) this.getImage().getHeight();
         this.width=(int) this.getImage().getWidth();
     }
@@ -53,6 +52,8 @@ public abstract class Runner extends ImageView {
         }
         return image;
     }
-
+    public void timer(){
+        
+    }
     public abstract void update();
 }
