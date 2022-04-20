@@ -62,12 +62,16 @@ public class Pacman extends Runner {
         // checkCollision();
         // System.out.println(this.getX());
         // System.out.println(speed);
-        this.setX(this.getX() + speed);
+
+        // this.setX(this.getX() + speed);
+        
         this.setTranslateX(this.getTranslateX() + speed);
-        System.out.println(this.getTranslateX() + " " + getX());
+        // this.setTranslateY(this.getTranslateY() + speed);
+        this.setRotate(angle);
+        // System.out.println(this.getTranslateX() + " " + getX());
         
 
-        this.setRotate(angle);
+        // this.setRotate(angle);
 
 
         // timelines.get(0).play(); // play the animation

@@ -54,8 +54,6 @@ public class Court extends Pane {
         }
 
         this.getChildren().add(this.imageView);
-
-        this.getChildren().add(new Pacman());
     }
 
     
