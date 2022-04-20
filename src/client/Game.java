@@ -1,4 +1,5 @@
 package client;
+
 import client.runners.*;
 import javafx.application.*;
 import javafx.event.*;
@@ -32,29 +33,24 @@ import java.util.concurrent.*;
  * @version 2203
  */
 
-
 public class Game extends StackPane {
    // Window attributes
    private Stage stage;
    private Scene scene;
-   private BorderPane root;
+   private StackPane root;
    private Court court;
    private static String[] args;
-   
+
    // animation attributes
-   
+
    private int counterAnim = 0;
 
    // grid
-   
-   
-
 
    // hud
    private TextField tfScore = new TextField("Score: 0");
-   private TextField tfLives = new TextField("Lives: 4" );
+   private TextField tfLives = new TextField("Lives: 4");
    private int k = 0;
-   
 
    private static final String PATH_IMG = "../img/";
    private static final String ICON_IMAGE = PATH_IMG + "pacman_small"; // file with icon for a racer
@@ -80,8 +76,6 @@ public class Game extends StackPane {
     * event handling
     * 
     */
-
-
 
    // start() method
    public void start(Stage stage) {
@@ -111,24 +105,23 @@ public class Game extends StackPane {
       start(stage);
    }
 
-
    /**
     * Trying to open the images for animation
     */
    // void doOpenImages() {
-   //    try {
-   //       // adding pictures to arraylist
-   //       for (int i = 1; i < 7; i++) {
-   //          images.add(new Image(new FileInputStream(new File(ICON_IMAGE + i + ".png"))));
-   //       }
-        
-   //       // adding fake bg
-
-   //    } catch (Exception e) {
-   //       System.out.println("Exception " + e);
-   //    }
+   // try {
+   // // adding pictures to arraylist
+   // for (int i = 1; i < 7; i++) {
+   // images.add(new Image(new FileInputStream(new File(ICON_IMAGE + i +
+   // ".png"))));
    // }
 
+   // // adding fake bg
+
+   // } catch (Exception e) {
+   // System.out.println("Exception " + e);
+   // }
+   // }
 
    void alertLater(AlertType type, String header, String message) {
       Alert a = new Alert(type, message);
@@ -136,20 +129,20 @@ public class Game extends StackPane {
       a.showAndWait();
    }
 
-
    // start the race
    public void initializeScene(Stage stage) {
       this.stage = stage;
       stage.setTitle("LePac James");
       stage.setOnCloseRequest(evt -> System.exit(0));
-      root = new BorderPane();
+      root = new StackPane();
 
-      doOpenImages();
+      // doOpenImages();
 
       // Get image size from first element in arraylist
-      iconWidth = (int) images.get(0).getWidth();
-      iconHeight = (int) images.get(0).getHeight();
-
+      /*
+       * iconWidth = (int) images.get(0).getWidth();
+       * iconHeight = (int) images.get(0).getHeight();
+       */
       // display the
       scene = new Scene(root, 1120, 700);
 
@@ -158,6 +151,7 @@ public class Game extends StackPane {
       root.getChildren().add(racer);
 
       // adding ghosts
+      /*
       for (int i = 1; i < GHOST_NUM; i++) {
          try {
             ghosts.add(new Ghost((GHOST_NUM - i) * 220 - 20, i * 100,
@@ -168,25 +162,22 @@ public class Game extends StackPane {
             e.printStackTrace();
          }
       }
+      */
 
-      //change ghost speed every level
+      // change ghost speed every level
       ghostSpeed++;
       tfLives.setText("Lives: " + (5 - ghostSpeed));
-      ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
+      //ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
       if (ghostSpeed > 4) {
          alertLater(AlertType.ERROR, "Game Over", "You lost");
          System.exit(0);
       }
 
-      
-
-      
-
-      createGrid();
+      //createGrid();
       createHUD();
       displayScore();
 
-      //css
+      // css
       // root.setId("pane");
       // tfScore.setId("score");
       // tfLives.setId("lives");
@@ -198,9 +189,9 @@ public class Game extends StackPane {
       animationTimerStart();
 
    }
-
+/*
    void createGrid() {
-      //adding grid and checking (bad code this needs to change TODO);
+      // adding grid and checking (bad code this needs to change TODO);
       PixelReader bgReaderForBall = bgProps.getPixelReader();
       try {
          for (int i = 0; i < gridHeight; i++) {
@@ -221,14 +212,13 @@ public class Game extends StackPane {
                }
             }
          }
-         //displaying the score
+         // displaying the score
 
       } catch (Exception e) {
          e.printStackTrace();
       }
    }
-   
-
+*/
    void createHUD() {
       int padding = 80;
       tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
@@ -241,21 +231,21 @@ public class Game extends StackPane {
 
       root.getChildren().addAll(tfLives, tfScore);
    }
-   
-   
+
    void displayScore() {
-      Platform.runLater(() -> tfScore.setText("Score: " + score));
+      //Platform.runLater(() -> tfScore.setText("Score: " + score));
    }
-   
 
    void animationTimerStart() {
       // Use an animation to update the screen
       timer = new AnimationTimer() {
          public void handle(long now) {
             racer.update();
+            /*
             for (int i = 0; i < ghosts.size(); i++) {
                ghosts.get(i).update();
             }
+            */
             // System.out.println("He");
          }
       };
@@ -274,7 +264,5 @@ public class Game extends StackPane {
       long delay = 1000L;
       startTimer.schedule(task, delay);
    }
-
-  
 
 } // end class Races

@@ -61,5 +61,4 @@ public class Court extends StackPane {
         return true;
 
     }
-
 }
