@@ -88,22 +88,26 @@ public class Game extends StackPane {
       this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
          switch (event.getCode()) {
             case W:
-               pacman.speed = 3;
+               pacman.xspeed=0;
+               pacman.yspeed = -3;
                pacman.angle = 270;
                break;
 
             case A:
-               pacman.speed = 3;
+               pacman.yspeed = 0;
+               pacman.xspeed = -3;
                pacman.angle = 180;
                break;
 
             case S:
-               pacman.speed = 3;
+               pacman.yspeed = 3;
+               pacman.xspeed = 0;
                pacman.angle = 90;
                break;
 
             case D:
-               pacman.speed = 3;
+               pacman.xspeed=3;
+               pacman.yspeed =0;
                pacman.angle = 0;
                break;
          }

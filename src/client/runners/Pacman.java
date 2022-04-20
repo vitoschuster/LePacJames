@@ -64,9 +64,8 @@ public class Pacman extends Runner {
         // System.out.println(speed);
 
         // this.setX(this.getX() + speed);
-        
-        this.setTranslateX(this.getTranslateX() + speed);
-        // this.setTranslateY(this.getTranslateY() + speed);
+        this.setTranslateX(this.getTranslateX() + xspeed);
+        this.setTranslateY(this.getTranslateY() + yspeed);
         this.setRotate(angle);
         // System.out.println(this.getTranslateX() + " " + getX());
         
