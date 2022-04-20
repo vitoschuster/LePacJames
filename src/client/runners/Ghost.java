@@ -43,7 +43,7 @@ public class Ghost extends Runner {
     private int random = 0;
     private Court court;
     
-    public static final String IMG_PATH = "../../img/ghost1.png";
+    public static final String IMG_PATH = "img/ghost1.png";
 
 
     public Ghost(Court court)  {

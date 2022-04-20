@@ -33,7 +33,7 @@ import java.util.concurrent.*;
  * @version 2203
  */
 
-public class Game extends StackPane {
+public class Game extends Pane {
    // Window attributes
    private Stage stage;
    private Scene scene;
@@ -41,6 +41,7 @@ public class Game extends StackPane {
    private Court court;
    private static String[] args;
 
+   private List<Runner> runners = new ArrayList<>();
    // animation attributes
 
    private int counterAnim = 0;
@@ -52,7 +53,7 @@ public class Game extends StackPane {
    private TextField tfLives = new TextField("Lives: 4");
    private int k = 0;
 
-   private static final String PATH_IMG = "../img/";
+   // private static final String PATH_IMG = "../img/";
    // private static final String ICON_IMAGE = PATH_IMG + "pacman_small"; // file with icon for a racer
    // private static final String BG_PROP = PATH_IMG + "bgProps.png";
    // private static final String GHOST_IMAGE = PATH_IMG + "ghost";
@@ -62,21 +63,55 @@ public class Game extends StackPane {
 
    private int iconWidth; // width (in pixels) of the icon
    private int iconHeight; // height (in pixels) or the icon
-   private Pacman racer = null; // array of racers
+   
    private Image bgProps = null;
-
    private AnimationTimer timer; // timer to control animation
+
+   private Pacman pacman; 
 
    public Game(Court court) {
       this.court = court;
+
+
+      this.runners.add(addPlayerControls(new Pacman()));
       this.getChildren().add(court);
-      start(stage);
+      this.start();
    }
 
    /**
     * event handling
     * 
     */
+
+   public Pacman addPlayerControls(Pacman pacman) {
+      this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+         switch (event.getCode()) {
+            case W:
+               pacman.speed = 3;
+               pacman.angle = 0;
+               break;
+
+            case A:
+               pacman.speed = 3;
+               pacman.angle = 270;
+               break;
+
+            case S:
+               pacman.speed = 3;
+               pacman.angle = 180;
+               break;
+
+            case D:
+               pacman.speed = 3;
+               pacman.angle = 90;
+               break;
+           
+         }
+      });
+      return pacman;
+   }
+   
+
 //     public void checkMovement() {
 //       // handle key events
 //       this.scene.setOnKeyPressed(evt -> {
@@ -133,36 +168,42 @@ public class Game extends StackPane {
 //   }
 
    // start() method
-   public void start(Stage stage) {
-      startGame(stage);
+   public void start() {
+      timer = new AnimationTimer() {
+         @Override
+         public void handle(long now) {
+            for(Runner r : runners) r.update();            
+         }
+      };
    }
 
-   public void startGame(Stage stage) {
-      initializeScene(stage);
-      // TODO - restart game call method
+   // public void startGame(Stage stage) {
+      
+   //    initializeScene(stage);
+   //    // // TODO - restart game call method
 
-   }
+   // }
 
-   public void cleanup() {
-      // timer.stop();
-      // balls.clear();
-      // ghosts.clear();
-      // timelines.clear();
-      // images.clear();
-      // score = 0;
-      // endBall = 0;
-      // k = 0;
-      // counterAnim = 0;
-   }
+   // public void cleanup() {
+   //    // timer.stop();
+   //    // balls.clear();
+   //    // ghosts.clear();
+   //    // timelines.clear();
+   //    // images.clear();
+   //    // score = 0;
+   //    // endBall = 0;
+   //    // k = 0;
+   //    // counterAnim = 0;
+   // }
 
-   public void restart(Stage stage) {
-      cleanup();
-      start(stage);
-   }
+   // public void restart(Stage stage) {
+   //    // cleanup();
+   //    // start(stage);
+   // }
 
-   /**
-    * Trying to open the images for animation
-    */
+   // /**
+   //  * Trying to open the images for animation
+   
    // void doOpenImages() {
    // try {
    // // adding pictures to arraylist

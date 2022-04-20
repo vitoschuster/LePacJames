@@ -17,7 +17,7 @@ public class Ball extends Runner {
 
     private final double padding = 2;
 
-    private static final String IMG_PATH = "../../img/ball.png";
+    private static final String IMG_PATH = "img/ball.png";
 
     public Ball(Point2D pos) {
         super("");

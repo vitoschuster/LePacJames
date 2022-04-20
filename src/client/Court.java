@@ -24,18 +24,19 @@ import javafx.util.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class Court extends StackPane {
+public class Court extends Pane {
     //arrayliste
-    private Stage stage;
-    private Image image;
-    private ImageView imageView;
+    public Stage stage;
+    public Image img;
+    public ImageView imageView;
 
     private List<List<Ball>> balls = new ArrayList<>();
 
-    private int gridWidth = 5;
-    private int gridHeight = 5;
-    private int score = 0;
-    private int endBall = 0;
+
+    // private int gridWidth = 5;
+    // private int gridHeight = 5;
+    // private int score = 0;
+    // private int endBall = 0;
 
     private PixelReader reader;
     private static final String PATH_BG = "img/basketball_court_props.png";
@@ -45,15 +46,19 @@ public class Court extends StackPane {
     public Court(Stage stage) {
         this.stage = stage;
 
-        try {
-            this.image = new Image(new FileInputStream(PATH_BG));
-            this.imageView = new ImageView(image);
+        try { // loading images (real and fake bg)
+            this.img = new Image(new FileInputStream(PATH_BG_PROPS));
+            this.imageView = new ImageView(new Image(new FileInputStream(PATH_BG)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
         this.getChildren().add(this.imageView);
+
+        this.getChildren().add(new Pacman());
     }
+
+    
 
     public boolean willCollide(Point2D pos) {
         

@@ -30,14 +30,15 @@ public abstract class Runner extends ImageView {
     public Point2D pos;
     public Image image;
     public double speed = 0;
+    public double angle = 0;
     public double score = 0;
     public int height;
     public int width;
 
     protected Runner(String imagePath) {
         this.setImage(this.loadImage(imagePath));
-        this.setScaleX(-1);
-        this.pos.add(30, 30);
+        // this.setScaleX(-1);
+        // this.pos.add(30, 30);
         this.height=(int) this.getImage().getHeight();
         this.width=(int) this.getImage().getWidth();
     }
