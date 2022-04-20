@@ -28,13 +28,13 @@ import java.util.concurrent.*;
 
 public abstract class Runner extends ImageView {
     public Point2D pos;
+    public Image image;
     public double speed = 0;
     public double score = 0;
-    private int height;
-    private int width;
+    public int height;
+    public int width;
 
-
-    public Runner(String imagePath) {
+    protected Runner(String imagePath) {
         this.setImage(this.loadImage(imagePath));
         this.setScaleX(-1);
         this.pos.add(30, 30);
@@ -43,7 +43,7 @@ public abstract class Runner extends ImageView {
     }
     
     public Image loadImage(String path) {
-        Image image;
+       
         try {
             image = new Image(new FileInputStream(path));
         } catch (FileNotFoundException e) {
@@ -52,7 +52,6 @@ public abstract class Runner extends ImageView {
         }
         return image;
     }
-
 
     public abstract void update();
 }

@@ -53,10 +53,10 @@ public class Game extends StackPane {
    private int k = 0;
 
    private static final String PATH_IMG = "../img/";
-   private static final String ICON_IMAGE = PATH_IMG + "pacman_small"; // file with icon for a racer
-   private static final String BG_PROP = PATH_IMG + "bgProps.png";
-   private static final String GHOST_IMAGE = PATH_IMG + "ghost";
-   private static final String BALL = PATH_IMG + "ghostball.png";
+   // private static final String ICON_IMAGE = PATH_IMG + "pacman_small"; // file with icon for a racer
+   // private static final String BG_PROP = PATH_IMG + "bgProps.png";
+   // private static final String GHOST_IMAGE = PATH_IMG + "ghost";
+   // private static final String BALL = PATH_IMG + "ghostball.png";
    private static final int GHOST_NUM = 5;
    private int ghostSpeed = 1;
 
@@ -69,6 +69,7 @@ public class Game extends StackPane {
 
    public Game(Court court) {
       this.court = court;
+      this.getChildren().add(court);
       start(stage);
    }
 
@@ -76,6 +77,60 @@ public class Game extends StackPane {
     * event handling
     * 
     */
+//     public void checkMovement() {
+//       // handle key events
+//       this.scene.setOnKeyPressed(evt -> {
+//           KeyCode code = evt.getCode();
+//           switch (code) {
+//               case UP:
+//               case W:
+//                   this.move(true, 'w');
+//                   break;
+//               case LEFT:
+//               case A:
+//                   this.move(true, 'a');
+//                   break;
+
+//               case DOWN:
+//               case S:
+//                   this.move(true, 's');
+//                   break;
+
+//               case RIGHT:
+//               case D:
+//                   this.move(true, 'd');
+//                   break;
+//               default:
+//                   break;
+//           }
+//       });
+
+//       this.scene.setOnKeyReleased(evt -> {
+//           KeyCode code = evt.getCode();
+//           switch (code) {
+//               case UP:
+//               case W:
+//                   this.move(false, 'w');
+//                   break;
+//               case LEFT:
+//               case A:
+//                   this.move(false, 'a');
+//                   break;
+
+//               case DOWN:
+//               case S:
+//                   this.move(false, 's');
+//                   break;
+
+//               case RIGHT:
+//               case D:
+//                   this.move(false, 'd');
+//                   break;
+//               default:
+//                   break;
+//           }
+//       });
+//   }
 
    // start() method
    public void start(Stage stage) {
@@ -131,10 +186,10 @@ public class Game extends StackPane {
 
    // start the race
    public void initializeScene(Stage stage) {
-      this.stage = stage;
-      stage.setTitle("LePac James");
-      stage.setOnCloseRequest(evt -> System.exit(0));
-      root = new StackPane();
+      // this.stage = stage;
+      // // stage.setTitle("LePac James");
+      // stage.setOnCloseRequest(evt -> System.exit(0));
+      // root = new StackPane();
 
       // doOpenImages();
 
@@ -144,11 +199,11 @@ public class Game extends StackPane {
        * iconHeight = (int) images.get(0).getHeight();
        */
       // display the
-      scene = new Scene(root, 1120, 700);
+      // scene = new Scene(root, 1120, 700);
 
       // adding pacman icon
-      racer = new Pacman(this.scene);
-      root.getChildren().add(racer);
+     
+      // root.getChildren().add(racer);
 
       // adding ghosts
       /*
@@ -166,7 +221,7 @@ public class Game extends StackPane {
 
       // change ghost speed every level
       ghostSpeed++;
-      tfLives.setText("Lives: " + (5 - ghostSpeed));
+      // tfLives.setText("Lives: " + (5 - ghostSpeed));
       //ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
       if (ghostSpeed > 4) {
          alertLater(AlertType.ERROR, "Game Over", "You lost");
@@ -182,8 +237,7 @@ public class Game extends StackPane {
       // tfScore.setId("score");
       // tfLives.setId("lives");
       // scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
-      stage.setScene(scene);
-      stage.show();
+      
 
       animationTimerCreate();
       animationTimerStart();
@@ -220,16 +274,16 @@ public class Game extends StackPane {
    }
 */
    void createHUD() {
-      int padding = 80;
-      tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
-      tfScore.setEditable(false);
-      tfScore.setFocusTraversable(false);
+      // int padding = 80;
+      // tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
+      // tfScore.setEditable(false);
+      // tfScore.setFocusTraversable(false);
 
-      tfLives.resizeRelocate(scene.getWidth() - padding - 100, 0, 100, 25);
-      tfLives.setEditable(false);
-      tfLives.setFocusTraversable(false);
+      // tfLives.resizeRelocate(scene.getWidth() - padding - 100, 0, 100, 25);
+      // tfLives.setEditable(false);
+      // tfLives.setFocusTraversable(false);
 
-      root.getChildren().addAll(tfLives, tfScore);
+      // root.getChildren().addAll(tfLives, tfScore);
    }
 
    void displayScore() {
@@ -237,32 +291,32 @@ public class Game extends StackPane {
    }
 
    void animationTimerStart() {
-      // Use an animation to update the screen
-      timer = new AnimationTimer() {
-         public void handle(long now) {
-            racer.update();
-            /*
-            for (int i = 0; i < ghosts.size(); i++) {
-               ghosts.get(i).update();
-            }
-            */
-            // System.out.println("He");
-         }
-      };
-      System.out.println("Starting race...");
+      // // Use an animation to update the screen
+      // timer = new AnimationTimer() {
+      //    public void handle(long now) {
+      //       racer.update();
+      //       /*
+      //       for (int i = 0; i < ghosts.size(); i++) {
+      //          ghosts.get(i).update();
+      //       }
+      //       */
+      //       // System.out.println("He");
+      //    }
+      // };
+      // System.out.println("Starting race...");
 
    }
 
    void animationTimerCreate() {
-      // TimerTask to delay start of race for 2 seconds
-      TimerTask task = new TimerTask() {
-         public void run() {
-            timer.start();
-         }
-      };
-      Timer startTimer = new Timer();
-      long delay = 1000L;
-      startTimer.schedule(task, delay);
+      // // TimerTask to delay start of race for 2 seconds
+      // TimerTask task = new TimerTask() {
+      //    public void run() {
+      //       timer.start();
+      //    }
+      // };
+      // Timer startTimer = new Timer();
+      // long delay = 1000L;
+      // startTimer.schedule(task, delay);
    }
 
 } // end class Races

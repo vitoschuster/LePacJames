@@ -18,9 +18,8 @@ public class Client extends Application {
 
         
         Game game = new Game(new Court(stage));
-        Scene scene = new Scene(game);
-        stage.setScene(scene);
-        
+        stage.setScene(new Scene(game,1120, 700));
+        stage.show();
     }
 
     

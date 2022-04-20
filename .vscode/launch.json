@@ -9,6 +9,13 @@
             "name": "Launch Client",
             "request": "launch",
             "mainClass": "Client",
+            "projectName": "LePacJames_5f1ccfb5"
+        },
+        {
+            "type": "java",
+            "name": "Launch Client",
+            "request": "launch",
+            "mainClass": "Client",
             "projectName": "LePacJames-1_78e6dde2"
         },
         {

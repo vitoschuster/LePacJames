@@ -41,24 +41,18 @@ public class Ghost extends Runner {
     private PixelReader pixelReader = null;
     private Object lock = new Object();
     private int random = 0;
-    
-    
-
     private Court court;
+    
+    public static final String IMG_PATH = "../../img/ghost1.png";
+
+
     public Ghost(Court court)  {
         // saving data
-        super("");
-        moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); // generating random 1-4 num for start of movement
+        super(IMG_PATH);
+
+        // moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); // generating random 1-4 num for start of movement
     }
 
-
-    public int getH() {
-        return heightG;
-    }
-
-    public int getW() {
-        return widthG;
-    }
 
     public void setSpeed(int xspeed, int yspeed) {
         this.xspeed = xspeed;
@@ -66,20 +60,14 @@ public class Ghost extends Runner {
     }
 
 
-    /**
-     * Opening picture of ghost and background
-     * 
-     * @param background
-     * @param ghost
-     */
-    public void doOpen(Image background, Image ghost) {
-        System.out.println(background.getWidth() + " " + background.getHeight());
-        pixelReader = background.getPixelReader(); // getting pixel reader from background
-        widthB = (int) background.getWidth() - 30; // bg width
-        heightB = (int) background.getHeight() - 25; // bg height
-        widthG = (int) ghost.getWidth(); // ghost width
-        heightG = (int) ghost.getHeight(); // ghost height
-    }
+    // public void doOpen(Image background, Image ghost) {
+    //     System.out.println(background.getWidth() + " " + background.getHeight());
+    //     pixelReader = background.getPixelReader(); // getting pixel reader from background
+    //     widthB = (int) background.getWidth() - 30; // bg width
+    //     heightB = (int) background.getHeight() - 25; // bg height
+    //     widthG = (int) ghost.getWidth(); // ghost width
+    //     heightG = (int) ghost.getHeight(); // ghost height
+    // }
 
     /**
      * Calling this method in game loop

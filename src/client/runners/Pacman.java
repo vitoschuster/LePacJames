@@ -30,98 +30,41 @@ import java.util.concurrent.*;
  * keep itself going (Runnable)
  */
 public class Pacman extends Runner {
-    private Scene scene;
-    private int x = 50; // x position of the racer
-    private int y = 50; // x position of the racer
-    private int raceROT = 0; // x rotation
+    private int angle = 0; // x rotation
     private char collionM = 'R';
     private int xw = 0; //
     private int yh = 0; //
     private static final int SPEED = 4;
     private static final int REFRESH_RATE = 1000 / 60;
 
-    private List<Image> images = new ArrayList<>();
-    private List<Timeline> timelines = new ArrayList<>();
-    private List<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the  // animation
+    // private List<Image> images = new ArrayList<>();
+    // private List<Timeline> timelines = new ArrayList<>();
+    // private List<ImageView> imageViews = new ArrayList<>(); // arrayList of icon views - used to cycle the  // animation
     private Group pacmanGroup;
     private TimerTask timerTaskMover;
     private Timer timerMover = new Timer();
     private boolean goingForward = false;
 
+    private static final String IMG_PATH = "../../img/lepac.gif";
+
     // load image and get pixel position
 
-    public Pacman(Scene scene) {
+    public Pacman() {
         super("");
-        this.scene = scene;
-
-       
-        checkMovement();
     }
 
-    public void checkMovement() {
-        // handle key events
-        this.scene.setOnKeyPressed(evt -> {
-            KeyCode code = evt.getCode();
-            switch (code) {
-                case UP:
-                case W:
-                    this.move(true, 'w');
-                    break;
-                case LEFT:
-                case A:
-                    this.move(true, 'a');
-                    break;
-
-                case DOWN:
-                case S:
-                    this.move(true, 's');
-                    break;
-
-                case RIGHT:
-                case D:
-                    this.move(true, 'd');
-                    break;
-                default:
-                    break;
-            }
-        });
-
-        this.scene.setOnKeyReleased(evt -> {
-            KeyCode code = evt.getCode();
-            switch (code) {
-                case UP:
-                case W:
-                    this.move(false, 'w');
-                    break;
-                case LEFT:
-                case A:
-                    this.move(false, 'a');
-                    break;
-
-                case DOWN:
-                case S:
-                    this.move(false, 's');
-                    break;
-
-                case RIGHT:
-                case D:
-                    this.move(false, 'd');
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
+   
 
     /**
      * update() method keeps the thread (racer) alive and moving.
      */
     public void update() {
+        
         checkCollision();
-        pacmanGroup.setTranslateX(x);
-        pacmanGroup.setTranslateY(y);
-        pacmanGroup.setRotate(raceROT);
-        timelines.get(0).play(); // play the animation
+        pacmanGroup.setTranslateX(pos.getX());
+        pacmanGroup.setTranslateY(pos.getY());
+        pacmanGroup.setRotate(angle);
+        // timelines.get(0).play(); // play the animation
         
         /*
          * if (racePosX > 800)
@@ -197,40 +140,40 @@ public class Pacman extends Runner {
     
 
     public void move(boolean isMoving, char movement) {
-        if (isMoving && !goingForward) {
-            timerTaskMover = new TimerTask() {
-                @Override
-                public void run() {
-                    synchronized (timerMover) {
-                        if (movement == 'w') {
-                            y -= SPEED;
-                            raceROT = 270;
-                            pacmanGroup.setScaleY(1);
-                            collionM = 'w';
-                        } else if (movement == 'a') {
-                            x -= SPEED;
-                            raceROT = 180;
-                            collionM = 'a';
-                            pacmanGroup.setScaleY(-1);
-                        } else if (movement == 's') {
-                            y += SPEED;
-                            raceROT = 90;
-                            pacmanGroup.setScaleY(-1);
-                            collionM = 's';
-                        } else if (movement == 'd') {
-                            x += SPEED;
-                            raceROT = 0;
-                            pacmanGroup.setScaleY(1);
-                            collionM = 'd';
-                        }
-                    }
-                }
-            };
-            timerMover.scheduleAtFixedRate(timerTaskMover, 0, REFRESH_RATE);
-            goingForward = true;
-        } else if (!isMoving && goingForward) {
-            timerTaskMover.cancel();
-            goingForward = false;
-        }
+        // if (isMoving && !goingForward) {
+        //     timerTaskMover = new TimerTask() {
+        //         @Override
+        //         public void run() {
+        //             synchronized (timerMover) {
+        //                 if (movement == 'w') {
+        //                      -= SPEED;
+        //                     angle = 270;
+        //                     pacmanGroup.setScaleY(1);
+        //                     collionM = 'w';
+        //                 } else if (movement == 'a') {
+        //                     x -= SPEED;
+        //                     angle = 180;
+        //                     collionM = 'a';
+        //                     pacmanGroup.setScaleY(-1);
+        //                 } else if (movement == 's') {
+        //                     y += SPEED;
+        //                     angle = 90;
+        //                     pacmanGroup.setScaleY(-1);
+        //                     collionM = 's';
+        //                 } else if (movement == 'd') {
+        //                     x += SPEED;
+        //                     angle = 0;
+        //                     pacmanGroup.setScaleY(1);
+        //                     collionM = 'd';
+        //                 }
+        //             }
+        //         }
+        //     };
+        //     timerMover.scheduleAtFixedRate(timerTaskMover, 0, REFRESH_RATE);
+        //     goingForward = true;
+        // } else if (!isMoving && goingForward) {
+        //     timerTaskMover.cancel();
+        //     goingForward = false;
+        // }
     }
 } // end inner class Racer

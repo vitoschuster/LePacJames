@@ -12,27 +12,20 @@ import javafx.scene.paint.*;
 import javafx.scene.image.*;
 
 public class Ball extends Runner {
-    private Point2D pos;
     private double startPos;
     private double direction;
-    
-    private ImageView ballView;
+
     private final double padding = 2;
+
+    private static final String IMG_PATH = "../../img/ball.png";
 
     public Ball(Point2D pos) {
         super("");
         this.pos = pos;
-        this.ballView = ballView;
-        this.ballView.setTranslateX(this.pos.getX());
-        this.ballView.setTranslateY(this.pos.getY());
-    }
-    
-    public Point2D getPos() {
-        return this.pos;
+        this.setTranslateX(this.pos.getX());
+        this.setTranslateY(this.pos.getY());
     }
 
-
-    
     @Override
     public void update() {
         
