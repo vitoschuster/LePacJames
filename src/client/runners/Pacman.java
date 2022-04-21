@@ -30,7 +30,7 @@ import java.util.concurrent.*;
  * keep itself going (Runnable)
  */
 public class Pacman extends Runner {
-    private char collionM = 'R';
+    // public char collionM = 'R';
     // private int xw = 0; //
     // private int yh = 0; //
     // private static final int SPEED = 4;
@@ -64,6 +64,7 @@ public class Pacman extends Runner {
         // System.out.println(speed);
 
         // this.setX(this.getX() + speed);
+
         this.setTranslateX(this.getTranslateX() + xspeed);
         this.setTranslateY(this.getTranslateY() + yspeed);
         this.setRotate(angle);

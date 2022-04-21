@@ -72,9 +72,11 @@ public class Game extends StackPane {
 
    public Game(Court court) {
       this.court = court;
+      for (int i = 0; i < 2; i++)
+         this.runners.add(new Ghost(this.court));
+         
       this.runners.add(addPlayerControls(new Pacman()));
-      this.addRunners(runners);
-
+      this.displayRunners(runners);
       this.getChildren().add(court);
       this.start();
    }
@@ -85,39 +87,55 @@ public class Game extends StackPane {
     */
 
    public Pacman addPlayerControls(Pacman pacman) {
-      this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-         switch (event.getCode()) {
+      this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, evt -> {
+         switch (evt.getCode()) {
             case W:
-               pacman.xspeed=0;
+               pacman.xspeed = 0;
                pacman.yspeed = -3;
                pacman.angle = 270;
+               pacman.setScaleY(1);
                break;
 
             case A:
                pacman.yspeed = 0;
                pacman.xspeed = -3;
                pacman.angle = 180;
+               pacman.setScaleY(-1);
                break;
+
 
             case S:
                pacman.yspeed = 3;
                pacman.xspeed = 0;
                pacman.angle = 90;
+               pacman.setScaleY(-1);
                break;
 
             case D:
-               pacman.xspeed=3;
-               pacman.yspeed =0;
+               pacman.xspeed = 3;
+               pacman.yspeed = 0;
                pacman.angle = 0;
+               pacman.setScaleY(1);
                break;
          }
       });
       return pacman;
    }
 
-   public void addRunners(List<Runner> list) {
-     court.getChildren().addAll(list);
+   public void displayRunners(List<Runner> list) {
+      list.stream().filter(Pacman.class::isInstance).forEach(r -> {
+         r.setTranslateX(40);
+         r.setTranslateY(40);
+      });
+      list.stream().filter(Ghost.class::isInstance).forEach(g -> {
+         g.setTranslateX(ThreadLocalRandom.current().nextInt(40, (int)court.image.getWidth() - 40));
+         g.setTranslateY(ThreadLocalRandom.current().nextInt(40, (int)court.image.getHeight() - 40));
+      });
+      court.getChildren().addAll(list);
    }
+
+
+   
 
    // public void checkMovement() {
    // // handle key events
@@ -179,14 +197,17 @@ public class Game extends StackPane {
       timer = new AnimationTimer() {
          @Override
          public void handle(long now) {
-            for (Runner r : runners) r.update();
+            for (Runner r : runners) {
+               if (r instanceof Pacman && !court.isCollision(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle))
+                  r.update();
+            }
          }
       };
       timer.start();
       // TimerTask task = new TimerTask() {
-      //    public void run() {
-      //       timer.start();
-      //    }
+      // public void run() {
+      // timer.start();
+      // }
       // };
       // Timer startTimer = new Timer();
       // long delay = 1000L;
