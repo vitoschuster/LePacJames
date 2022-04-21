@@ -118,7 +118,8 @@ public class Game extends StackPane {
    }
 
    public void displayRunners(List<Runner> list) {
-      for (int i = 0; i < 4; i++) this.runners.add(new Ghost(this.court, i, randPos()));
+      for (int i = 0; i < 4; i++)
+         this.runners.add(new Ghost(this.court, i, randPos()));
       this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
       court.getChildren().addAll(list);
    }
@@ -127,7 +128,7 @@ public class Game extends StackPane {
       return new Point2D(ThreadLocalRandom.current().nextDouble(100, this.court.image.getWidth() - 200),
             ThreadLocalRandom.current().nextDouble(100, this.court.image.getHeight() - 200));
    }
-   
+
    // public void checkMovement() {
    // // handle key events
    // this.scene.setOnKeyPressed(evt -> {
@@ -189,10 +190,13 @@ public class Game extends StackPane {
          @Override
          public void handle(long now) {
             for (Runner r : runners) {
-               if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle) || r instanceof Ghost)
+               if (r instanceof Ghost) {
                   r.update();
-               
-            } 
+               } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle)) {
+                  r.update();
+               }
+
+            }
          }
       };
       timer.start();
@@ -205,7 +209,6 @@ public class Game extends StackPane {
       // long delay = 1000L;
       // startTimer.schedule(task, delay);
    }
-
    // public void startGame(Stage stage) {
 
    // initializeScene(stage);

@@ -31,6 +31,7 @@ public class Court extends Pane {
     public Image image;
     public ImageView imageView;
     private PixelReader reader;
+    
 
     private List<List<Ball>> balls = new ArrayList<>();
     // private int gridWidth = 5;
@@ -86,13 +87,59 @@ public class Court extends Pane {
                         || reader.getColor(x - pad, yh).equals(Color.RED))
                     return true;
                 break;
+            
         }
-        
+
+
         return false;
     }
     
-    public void handleCollision() {
-        //get new position
-        // double newX = 
+    public void handleCollision(Ghost g) {
+        switch(g.moveGhost){
+            case 1:
+            if (reader.getColor( - 3, yh).equals(Color.RED)
+                    || reader.getColor(xw, yh).equals(Color.RED)) {
+                angle = 3;
+                return true;
+            } else if (reader.getColor(x, y).equals(Color.RED)
+                    || reader.getColor(x, yh + 3).equals(Color.RED)) {
+                angle = 2;
+                return true;
+            }
+            break;
+        case 2:
+            if (reader.getColor(x, y).equals(Color.RED)
+                    || reader.getColor(x + 3,yh).equals(Color.RED)) {
+                angle = 1;
+                return true;
+            } else if (reader.getColor(x, yh +3).equals(Color.RED)
+                    || reader.getColor(xw, yh).equals(Color.RED)) {
+                angle = 4;
+                return true;
+            }
+            break;
+        case 3:
+            if (reader.getColor(xw, y).equals(Color.RED)
+                    || reader.getColor(x, y-3).equals(Color.RED)) {
+                angle = 1;
+                return true;
+            } else if (reader.getColor(x-3, y).equals(Color.RED)
+                    || reader.getColor(x, yh).equals(Color.RED)) {
+                angle = 4;
+                return true;
+            }
+            break;
+        case 4:
+            if (reader.getColor(x, y).equals(Color.RED)
+                    || reader.getColor(xw+3, y).equals(Color.RED)) {
+                angle = 3;
+                return true;
+            } else if (reader.getColor(xw, y-3).equals(Color.RED)
+                    || reader.getColor(xw, yh).equals(Color.RED)) {
+                angle = 2;
+                return true;
+            }
+            break;
     }
+}
 }

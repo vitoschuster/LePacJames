@@ -32,7 +32,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Ghost extends Runner {
     // ghost location
 
-    private int moveGhost;
+    public int moveGhost;
     private int random = 0;
 
     private Court court;
@@ -41,8 +41,6 @@ public class Ghost extends Runner {
     public Ghost(Court court, int ghostNum, Point2D pos) {
         // saving data
         super(IMG_PATH + (ghostNum % 4) + ".png", pos); //mod 4 
-
-        angle = -1; 
         moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); // generating random 1-4 num for start of movement
     }
 
@@ -82,6 +80,12 @@ public class Ghost extends Runner {
             default:
                 break;
         }
+            // border collision
+            
+            // check if x position in next frame is inside box
+
+            // box col=lision on all side
+            
         this.setTranslateX(this.getTranslateX() + xspeed);
         this.setTranslateY(this.getTranslateY() + yspeed);
 
