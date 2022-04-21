@@ -96,8 +96,9 @@ public class Game extends StackPane {
    }
 
    public Point2D randPos() {
-      return new Point2D(ThreadLocalRandom.current().nextDouble(100, this.court.image.getWidth() - 200),
-            ThreadLocalRandom.current().nextDouble(100, this.court.image.getHeight() - 200));
+      int x = ThreadLocalRandom.current().nextInt(50, (int)this.court.image.getWidth() - 150);
+      int y = ThreadLocalRandom.current().nextInt(50, (int)this.court.image.getHeight() - 150);
+      return (court.gridCollision(x, y, 32, 40)) ? randPos(): new Point2D(x,y);
    }
 
    // start() method

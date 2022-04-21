@@ -90,6 +90,17 @@ public class Court extends Pane {
         return false;
     }
 
+    public boolean gridCollision(int x, int y, int width, int height) {
+        reader = this.image.getPixelReader();
+        for (int i = x; i < x + width; i++) {
+            for (int j = y; j < y + height; j++) {
+                if(reader.getColor(i, j).equals(Color.RED))
+                    return true;
+            }
+        }
+        return false;
+    }
+
     public void handleCollision(Ghost g) {
         reader = this.image.getPixelReader();
         int x = (int) g.getTranslateX();
