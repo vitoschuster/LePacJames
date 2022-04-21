@@ -34,9 +34,10 @@ public abstract class Runner extends ImageView {
     public int height;
     public int width;
 
-    protected Runner(String imagePath) {
+    protected Runner(String imagePath, Point2D pos) {
         this.setImage(this.loadImage(imagePath));
-        // this.setScaleX(-1)
+        this.setTranslateX(pos.getX());
+        this.setTranslateY(pos.getY());
         this.height = (int) this.getImage().getHeight();
         this.width = (int) this.getImage().getWidth();
     }

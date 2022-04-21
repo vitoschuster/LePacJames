@@ -72,10 +72,6 @@ public class Game extends StackPane {
 
    public Game(Court court) {
       this.court = court;
-      for (int i = 0; i < 2; i++)
-         this.runners.add(new Ghost(this.court));
-         
-      this.runners.add(addPlayerControls(new Pacman()));
       this.displayRunners(runners);
       this.getChildren().add(court);
       this.start();
@@ -103,7 +99,6 @@ public class Game extends StackPane {
                pacman.setScaleY(-1);
                break;
 
-
             case S:
                pacman.yspeed = 3;
                pacman.xspeed = 0;
@@ -123,20 +118,16 @@ public class Game extends StackPane {
    }
 
    public void displayRunners(List<Runner> list) {
-      list.stream().filter(Pacman.class::isInstance).forEach(r -> {
-         r.setTranslateX(40);
-         r.setTranslateY(40);
-      });
-      list.stream().filter(Ghost.class::isInstance).forEach(g -> {
-         g.setTranslateX(ThreadLocalRandom.current().nextInt(40, (int)court.image.getWidth() - 40));
-         g.setTranslateY(ThreadLocalRandom.current().nextInt(40, (int)court.image.getHeight() - 40));
-      });
+      for (int i = 1; i <= 4; i++) this.runners.add(new Ghost(this.court, i, randPos()));
+      this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
       court.getChildren().addAll(list);
    }
 
-
+   public Point2D randPos() {
+      return new Point2D(ThreadLocalRandom.current().nextDouble(40, this.court.image.getWidth() - 40),
+            ThreadLocalRandom.current().nextDouble(30, this.court.image.getHeight() - 30));
+   }
    
-
    // public void checkMovement() {
    // // handle key events
    // this.scene.setOnKeyPressed(evt -> {
@@ -198,7 +189,8 @@ public class Game extends StackPane {
          @Override
          public void handle(long now) {
             for (Runner r : runners) {
-               if (r instanceof Pacman && !court.isCollision(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle))
+               if (r instanceof Pacman
+                     && !court.isCollision(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle))
                   r.update();
             }
          }
