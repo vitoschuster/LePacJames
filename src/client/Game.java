@@ -11,11 +11,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.*;
 import javafx.scene.transform.*;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+
 import javafx.stage.*;
 import javafx.geometry.*;
 import javafx.animation.*;
@@ -24,6 +20,7 @@ import java.security.*;
 import javafx.util.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * LePacJames - Main class for Pacman Game
@@ -35,40 +32,12 @@ import java.util.concurrent.*;
 
 public class Game extends StackPane {
    // Window attributes
-   private Stage stage;
-   private Scene scene;
-   private StackPane root;
+
    private Court court;
-   private static String[] args;
-
    private List<Runner> runners = new ArrayList<>();
-   // animation attributes
-
-   private int counterAnim = 0;
-
-   // grid
-
-   // hud
-   private TextField tfScore = new TextField("Score: 0");
-   private TextField tfLives = new TextField("Lives: 4");
-   private int k = 0;
-
-   // private static final String PATH_IMG = "../img/";
-   // private static final String ICON_IMAGE = PATH_IMG + "pacman_small"; // file
-   // with icon for a racer
-   // private static final String BG_PROP = PATH_IMG + "bgProps.png";
-   // private static final String GHOST_IMAGE = PATH_IMG + "ghost";
-   // private static final String BALL = PATH_IMG + "ghostball.png";
+   private AnimationTimer timer;
+   private Pacman p;
    private static final int GHOST_NUM = 5;
-   private int ghostSpeed = 1;
-
-   private int iconWidth; // width (in pixels) of the icon
-   private int iconHeight; // height (in pixels) or the icon
-
-   private Image bgProps = null;
-   private AnimationTimer timer; // timer to control animation
-
-   private Pacman pacman;
 
    public Game(Court court) {
       this.court = court;
@@ -118,9 +87,11 @@ public class Game extends StackPane {
    }
 
    public void displayRunners(List<Runner> list) {
+      this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
+      p = (Pacman)this.runners.get(0);
       for (int i = 0; i < 4; i++)
          this.runners.add(new Ghost(this.court, i, randPos()));
-      this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
+         
       court.getChildren().addAll(list);
    }
 
@@ -129,61 +100,6 @@ public class Game extends StackPane {
             ThreadLocalRandom.current().nextDouble(100, this.court.image.getHeight() - 200));
    }
 
-   // public void checkMovement() {
-   // // handle key events
-   // this.scene.setOnKeyPressed(evt -> {
-   // KeyCode code = evt.getCode();
-   // switch (code) {
-   // case UP:
-   // case W:
-   // this.move(true, 'w');
-   // break;
-   // case LEFT:
-   // case A:
-   // this.move(true, 'a');
-   // break;
-
-   // case DOWN:
-   // case S:
-   // this.move(true, 's');
-   // break;
-
-   // case RIGHT:
-   // case D:
-   // this.move(true, 'd');
-   // break;
-   // default:
-   // break;
-   // }
-   // });
-
-   // this.scene.setOnKeyReleased(evt -> {
-   // KeyCode code = evt.getCode();
-   // switch (code) {
-   // case UP:
-   // case W:
-   // this.move(false, 'w');
-   // break;
-   // case LEFT:
-   // case A:
-   // this.move(false, 'a');
-   // break;
-
-   // case DOWN:
-   // case S:
-   // this.move(false, 's');
-   // break;
-
-   // case RIGHT:
-   // case D:
-   // this.move(false, 'd');
-   // break;
-   // default:
-   // break;
-   // }
-   // });
-   // }
-
    // start() method
    public void start() {
       timer = new AnimationTimer() {
@@ -191,13 +107,18 @@ public class Game extends StackPane {
          public void handle(long now) {
             for (Runner r : runners) {
                if (r instanceof Ghost) {
+                  if (p.checkCollisionWithGhost((Ghost) r))
+                     System.out.println("PLEASE WORK");
                   court.handleCollision((Ghost) r);
                   r.update();
-               } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle)) {
+               } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle)) 
                   r.update();
-               }
 
             }
+
+            
+         
+            
          }
       };
       timer.start();
@@ -234,24 +155,6 @@ public class Game extends StackPane {
    // // start(stage);
    // }
 
-   // /**
-   // * Trying to open the images for animation
-
-   // void doOpenImages() {
-   // try {
-   // // adding pictures to arraylist
-   // for (int i = 1; i < 7; i++) {
-   // images.add(new Image(new FileInputStream(new File(ICON_IMAGE + i +
-   // ".png"))));
-   // }
-
-   // // adding fake bg
-
-   // } catch (Exception e) {
-   // System.out.println("Exception " + e);
-   // }
-   // }
-
    void alertLater(AlertType type, String header, String message) {
       Alert a = new Alert(type, message);
       a.setHeaderText(header);
@@ -260,33 +163,6 @@ public class Game extends StackPane {
 
    // start the race
    public void initializeScene(Stage stage) {
-      // this.stage = stage;
-      // // stage.setTitle("LePac James");
-      // stage.setOnCloseRequest(evt -> System.exit(0));
-      // root = new StackPane();
-
-      // doOpenImages();
-
-      // Get image size from first element in arraylist
-      /*
-       * iconWidth = (int) images.get(0).getWidth();
-       * iconHeight = (int) images.get(0).getHeight();
-       */
-      // display the
-      // scene = new Scene(root, 1120, 700);
-
-      // adding pacman icon
-
-      // root.getChildren().add(racer);
-
-      // change ghost speed every level
-      ghostSpeed++;
-      // tfLives.setText("Lives: " + (5 - ghostSpeed));
-      // ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));
-      if (ghostSpeed > 4) {
-         alertLater(AlertType.ERROR, "Game Over", "You lost");
-         System.exit(0);
-      }
 
       // createGrid();
       createHUD();

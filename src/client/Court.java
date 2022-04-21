@@ -96,7 +96,6 @@ public class Court extends Pane {
         int y = (int) g.getTranslateY();
         int xw = (int) g.getImage().getWidth();
         int xh = (int) g.getImage().getHeight();
-        System.out.println(g.moveGhost);
         switch (g.moveGhost) {
             case 1:
                 if (reader.getColor(x - 3, y + xh).equals(Color.RED)
