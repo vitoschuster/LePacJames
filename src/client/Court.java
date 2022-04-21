@@ -31,7 +31,6 @@ public class Court extends Pane {
     public Image image;
     public ImageView imageView;
     private PixelReader reader;
-    
 
     private List<List<Ball>> balls = new ArrayList<>();
     // private int gridWidth = 5;
@@ -51,10 +50,9 @@ public class Court extends Pane {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         this.getChildren().add(this.imageView);
     }
-
 
     public boolean isCollisionMap(double xpos, double ypos, double width, double height, double deg) {
         reader = this.image.getPixelReader();
@@ -65,8 +63,7 @@ public class Court extends Pane {
         int yh = (int) (height + y);
         int angle = (int) deg;
 
-       
-        switch (angle) { //pacman
+        switch (angle) { // pacman
             case 0:
                 if (reader.getColor(xw + pad, yh).equals(Color.RED)
                         || reader.getColor(xw + pad, y).equals(Color.RED))
@@ -87,59 +84,56 @@ public class Court extends Pane {
                         || reader.getColor(x - pad, yh).equals(Color.RED))
                     return true;
                 break;
-            
-        }
 
+        }
 
         return false;
     }
-    
+
     public void handleCollision(Ghost g) {
-        switch(g.moveGhost){
+        reader = this.image.getPixelReader();
+        int x = (int) g.getTranslateX();
+        int y = (int) g.getTranslateY();
+        int xw = (int) g.getImage().getWidth();
+        int xh = (int) g.getImage().getHeight();
+        System.out.println(g.moveGhost);
+        switch (g.moveGhost) {
             case 1:
-            if (reader.getColor( - 3, yh).equals(Color.RED)
-                    || reader.getColor(xw, yh).equals(Color.RED)) {
-                angle = 3;
-                return true;
-            } else if (reader.getColor(x, y).equals(Color.RED)
-                    || reader.getColor(x, yh + 3).equals(Color.RED)) {
-                angle = 2;
-                return true;
-            }
-            break;
-        case 2:
-            if (reader.getColor(x, y).equals(Color.RED)
-                    || reader.getColor(x + 3,yh).equals(Color.RED)) {
-                angle = 1;
-                return true;
-            } else if (reader.getColor(x, yh +3).equals(Color.RED)
-                    || reader.getColor(xw, yh).equals(Color.RED)) {
-                angle = 4;
-                return true;
-            }
-            break;
-        case 3:
-            if (reader.getColor(xw, y).equals(Color.RED)
-                    || reader.getColor(x, y-3).equals(Color.RED)) {
-                angle = 1;
-                return true;
-            } else if (reader.getColor(x-3, y).equals(Color.RED)
-                    || reader.getColor(x, yh).equals(Color.RED)) {
-                angle = 4;
-                return true;
-            }
-            break;
-        case 4:
-            if (reader.getColor(x, y).equals(Color.RED)
-                    || reader.getColor(xw+3, y).equals(Color.RED)) {
-                angle = 3;
-                return true;
-            } else if (reader.getColor(xw, y-3).equals(Color.RED)
-                    || reader.getColor(xw, yh).equals(Color.RED)) {
-                angle = 2;
-                return true;
-            }
-            break;
+                if (reader.getColor(x - 3, y + xh).equals(Color.RED)
+                        || reader.getColor((x + xw), (y + xh)).equals(Color.RED)) {
+                    g.moveGhost = 3;
+                } else if (reader.getColor(x, y).equals(Color.RED)
+                        || reader.getColor(x, (y + xh) + 3).equals(Color.RED)) {
+                    g.moveGhost = 2;
+                }
+                break;
+            case 2:
+                if (reader.getColor(x, y).equals(Color.RED)
+                        || reader.getColor(x + 3, (y + xh)).equals(Color.RED)) {
+                    g.moveGhost = 1;
+                } else if (reader.getColor(x, (y + xh) + 3).equals(Color.RED)
+                        || reader.getColor((x + xw), (y + xh)).equals(Color.RED)) {
+                    g.moveGhost = 4;
+                }
+                break;
+            case 3:
+                if (reader.getColor((x + xw), y).equals(Color.RED)
+                        || reader.getColor(x, y - 3).equals(Color.RED)) {
+                    g.moveGhost = 1;
+                } else if (reader.getColor(x - 3, y).equals(Color.RED)
+                        || reader.getColor(x, (y + xh)).equals(Color.RED)) {
+                    g.moveGhost = 4;
+                }
+                break;
+            case 4:
+                if (reader.getColor(x, y).equals(Color.RED)
+                        || reader.getColor((x + xw) + 3, y).equals(Color.RED)) {
+                    g.moveGhost = 3;
+                } else if (reader.getColor((x + xw), y - 3).equals(Color.RED)
+                        || reader.getColor((x + xw), (y + xh)).equals(Color.RED)) {
+                    g.moveGhost = 2;
+                }
+                break;
+        }
     }
-}
 }

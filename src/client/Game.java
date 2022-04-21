@@ -191,6 +191,7 @@ public class Game extends StackPane {
          public void handle(long now) {
             for (Runner r : runners) {
                if (r instanceof Ghost) {
+                  court.handleCollision((Ghost) r);
                   r.update();
                } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle)) {
                   r.update();
@@ -277,22 +278,6 @@ public class Game extends StackPane {
       // adding pacman icon
 
       // root.getChildren().add(racer);
-
-      // adding ghosts
-      /*
-       * for (int i = 1; i < GHOST_NUM; i++) {
-       * try {
-       * ghosts.add(new Ghost((GHOST_NUM - i) * 220 - 20, i * 100,
-       * new ImageView(new Image(new FileInputStream(new File(GHOST_IMAGE + i +
-       * ".png"))))));
-       * ghosts.get(i - 1).doOpen(bgProps, new Image(new FileInputStream(new
-       * File(GHOST_IMAGE + i + ".png"))));
-       * root.getChildren().add(ghosts.get(i - 1));
-       * } catch (FileNotFoundException e) {
-       * e.printStackTrace();
-       * }
-       * }
-       */
 
       // change ghost speed every level
       ghostSpeed++;

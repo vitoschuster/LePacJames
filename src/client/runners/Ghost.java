@@ -48,16 +48,6 @@ public class Ghost extends Runner {
         this.xspeed = xspeed;
         this.yspeed = yspeed;
     }
-
-    // public void doOpen(Image background, Image ghost) {
-    //     System.out.println(background.getWidth() + " " + background.getHeight());
-    //     pixelReader = background.getPixelReader(); // getting pixel reader from background
-    //     widthB = (int) background.getWidth() - 30; // bg width
-    //     heightB = (int) background.getHeight() - 25; // bg height
-    //     widthG = (int) ghost.getWidth(); // ghost width
-    //     heightG = (int) ghost.getHeight(); // ghost height
-    // }
-
     @Override
     public void update() {
         switch (moveGhost) {
