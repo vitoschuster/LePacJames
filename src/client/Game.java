@@ -35,13 +35,17 @@ public class Game extends StackPane {
 
    private Court court;
    private List<Runner> runners = new ArrayList<>();
+   private List<List<Ball>> balls = new ArrayList<>();
    private AnimationTimer timer;
    private Pacman p;
    private static final int GHOST_NUM = 5;
+   private static final int GRID_WIDTH = 8;
+   private static final int GRID_HEIGHT = 5;
 
    public Game(Court court) {
       this.court = court;
       this.displayRunners(runners);
+      this.displayEatables(balls);
       this.getChildren().add(court);
       this.start();
    }
@@ -88,17 +92,21 @@ public class Game extends StackPane {
 
    public void displayRunners(List<Runner> list) {
       this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
-      p = (Pacman)this.runners.get(0);
+      p = (Pacman) this.runners.get(0);
       for (int i = 0; i < 4; i++)
-         this.runners.add(new Ghost(this.court, i, randPos()));
-         
+         this.runners.add(new Ghost(this.court, i, this.court.randPos(32, 40)));
+
       court.getChildren().addAll(list);
    }
 
-   public Point2D randPos() {
-      int x = ThreadLocalRandom.current().nextInt(50, (int)this.court.image.getWidth() - 150);
-      int y = ThreadLocalRandom.current().nextInt(50, (int)this.court.image.getHeight() - 150);
-      return (court.gridCollision(x, y, 32, 40)) ? randPos(): new Point2D(x,y);
+   public void displayEatables(List<List<Ball>> balls) {
+      for (int i = 0; i < GRID_HEIGHT; i++) {
+         balls.add(new ArrayList<>());
+         for (int j = 0; j < GRID_HEIGHT; j++)
+            balls.get(i).add(new Ball(this.court.randPos(25, 25)));
+         court.getChildren().addAll(balls.get(i));
+      }
+
    }
 
    // start() method
@@ -112,14 +120,16 @@ public class Game extends StackPane {
                      System.out.println("PLEASE WORK");
                   court.handleCollision((Ghost) r);
                   r.update();
-               } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle)) 
+               } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle))
                   r.update();
 
             }
 
-            
-         
-            
+            balls.forEach(ballList -> ballList.forEach(ball -> {
+               if(p.checkCollisionWithBall(ball))
+                  ball.setVisible(false);
+            }));
+
          }
       };
       timer.start();

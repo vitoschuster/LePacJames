@@ -32,7 +32,6 @@ public class Court extends Pane {
     public ImageView imageView;
     private PixelReader reader;
 
-    private List<List<Ball>> balls = new ArrayList<>();
     // private int gridWidth = 5;
     // private int gridHeight = 5;
     // private int score = 0;
@@ -53,6 +52,7 @@ public class Court extends Pane {
 
         this.getChildren().add(this.imageView);
     }
+
 
     public boolean isCollisionMap(double xpos, double ypos, double width, double height, double deg) {
         reader = this.image.getPixelReader();
@@ -89,12 +89,19 @@ public class Court extends Pane {
 
         return false;
     }
+    
 
-    public boolean gridCollision(int x, int y, int width, int height) {
+    public Point2D randPos(double width, double height) {
+        int x = ThreadLocalRandom.current().nextInt(50, (int) this.image.getWidth() - 50);
+        int y = ThreadLocalRandom.current().nextInt(50, (int) this.image.getHeight() - 50);
+        return (this.isCollision(x, y, (int) width, (int) height)) ? randPos(width, height) : new Point2D(x, y);
+    }
+    
+    public boolean isCollision(int x, int y, int width, int height) {
         reader = this.image.getPixelReader();
         for (int i = x; i < x + width; i++) {
             for (int j = y; j < y + height; j++) {
-                if(reader.getColor(i, j).equals(Color.RED))
+                if (reader.getColor(i, j).equals(Color.RED))
                     return true;
             }
         }

@@ -12,22 +12,24 @@ import javafx.scene.paint.*;
 import javafx.scene.image.*;
 
 public class Ball extends Runner {
-    private double startPos;
-    private double direction;
-
-    private final double padding = 2;
+    // private double startPos;
+    // private double direction;
+    // private final double padding = 2;
 
     private static final String IMG_PATH = "img/ball.png";
 
     public Ball(Point2D pos) {
-        super("",new Point2D(1,1));
+        super(IMG_PATH, pos);
         this.pos = pos;
     }
 
     @Override
     public void update() {
-        
-        
+
+    }
+
+    public Object forEach(Object object) {
+        return null;
     }
 
 }

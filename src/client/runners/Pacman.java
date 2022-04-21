@@ -1,13 +1,16 @@
+/**
+ * Ghost - Class that represents a ghost following a pacman
+ * 
+ * @author V.Schuster
+ * @author L.Krpan
+ * @version 1604
+ */
 package client.runners;
-
 import javafx.geometry.*;
-
-
 
 public class Pacman extends Runner {
 
     private static final String IMG_PATH = "img/lepac.gif";
-
 
     public Pacman(Point2D pos) {
         super(IMG_PATH, pos);
@@ -26,8 +29,13 @@ public class Pacman extends Runner {
             && this.pos.getY() < g.pos.getY() + g.height && this.pos.getY() + this.height > g.pos.getY();
     }   
     
-    public boolean checkCollisionWithBall(Ball ball) {
-        return ball.getBoundsInParent().intersects(this.getBoundsInParent());
+    public boolean checkCollisionWithBall(Ball b) {
+        return this.pos.getX() < b.pos.getX() + b.width && this.pos.getX() + this.width > b.pos.getX()
+                && this.pos.getY() < b.pos.getY() + b.height && this.pos.getY() + this.height > b.pos.getY();
     }
 
-} // end inner class Racer
+
+  
+    
+
+} 

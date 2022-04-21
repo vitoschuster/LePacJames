@@ -9,21 +9,21 @@
 package client.runners;
 import client.*;
 import javafx.geometry.*;
+import java.util.concurrent.*;
 
 public class Ghost extends Runner {
     // ghost location
 
     public int moveGhost;
-    private int random = 0;
-
     private Court court;
     public static final String IMG_PATH = "img/ghost";
 
     public Ghost(Court court, int ghostNum, Point2D pos) {
-        // saving data
         super(IMG_PATH + (ghostNum % 4) + ".png", pos); //mod 4 
-        moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); // generating random 1-4 num for start of movement
+        moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); //  random 1-4 num for start of movement
+        this.court = court;
     }
+
 
     public void setSpeed(int xspeed, int yspeed) {
         this.xspeed = xspeed;

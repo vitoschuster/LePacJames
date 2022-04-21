@@ -1,5 +1,6 @@
 package client.runners;
 
+import client.*;
 import javafx.application.*;
 import javafx.event.*;
 import javafx.scene.*;
@@ -23,6 +24,8 @@ import java.security.*;
 import javafx.util.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+
+
 
 public abstract class Runner extends ImageView {
     public Point2D pos = new Point2D(0, 0);
@@ -53,13 +56,11 @@ public abstract class Runner extends ImageView {
         return image;
     }
 
-    public void timer() {
-
-    }
-
     /**
      * Method that is called in the animation timer 
      * Code that needs to be constantly updated goes here
      */
     public abstract void update();
+
+    
 }
