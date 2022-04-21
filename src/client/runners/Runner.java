@@ -57,5 +57,9 @@ public abstract class Runner extends ImageView {
 
     }
 
+    /**
+     * Method that is called in the animation timer 
+     * Code that needs to be constantly updated goes here
+     */
     public abstract void update();
 }

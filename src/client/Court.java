@@ -50,11 +50,12 @@ public class Court extends Pane {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
+        
         this.getChildren().add(this.imageView);
     }
 
-    public boolean isCollision(double xpos, double ypos, double width, double height, double deg) {
+
+    public boolean isCollisionMap(double xpos, double ypos, double width, double height, double deg) {
         reader = this.image.getPixelReader();
         final int pad = 3;
         int x = (int) xpos;
@@ -63,29 +64,35 @@ public class Court extends Pane {
         int yh = (int) (height + y);
         int angle = (int) deg;
 
-        // player collision
-        switch (angle) {
+       
+        switch (angle) { //pacman
             case 0:
                 if (reader.getColor(xw + pad, yh).equals(Color.RED)
                         || reader.getColor(xw + pad, y).equals(Color.RED))
                     return true;
                 break;
             case 90:
-                if (reader.getColor(x, yh+ pad).equals(Color.RED)
-                        || reader.getColor(xw, yh+ pad).equals(Color.RED))
+                if (reader.getColor(x, yh + pad).equals(Color.RED)
+                        || reader.getColor(xw, yh + pad).equals(Color.RED))
                     return true;
                 break;
             case 270:
-                if (reader.getColor(x, y- pad).equals(Color.RED)
-                        || reader.getColor(xw, y- pad).equals(Color.RED))
+                if (reader.getColor(x, y - pad).equals(Color.RED)
+                        || reader.getColor(xw, y - pad).equals(Color.RED))
                     return true;
                 break;
             case 180:
-                if (reader.getColor(x- pad, y).equals(Color.RED)
-                        || reader.getColor(x- pad, yh).equals(Color.RED))
+                if (reader.getColor(x - pad, y).equals(Color.RED)
+                        || reader.getColor(x - pad, yh).equals(Color.RED))
                     return true;
                 break;
         }
+        
         return false;
+    }
+    
+    public void handleCollision() {
+        //get new position
+        // double newX = 
     }
 }

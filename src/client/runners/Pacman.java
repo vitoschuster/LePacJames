@@ -54,17 +54,10 @@ public class Pacman extends Runner {
 
    
 
-    /**
-     * update() method keeps the thread (racer) alive and moving.
-     */
+
+    @Override
     public void update() {
         
-        // checkCollision();
-        // System.out.println(this.getX());
-        // System.out.println(speed);
-
-        // this.setX(this.getX() + speed);
-
         this.setTranslateX(this.getTranslateX() + xspeed);
         this.setTranslateY(this.getTranslateY() + yspeed);
         this.setRotate(angle);

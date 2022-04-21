@@ -31,34 +31,25 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Ghost extends Runner {
     // ghost location
-    private int xspeed;
-    private int yspeed;
-    private int widthG;
-    private int heightG;
-    private int widthB;
-    private int heightB;
+
     private int moveGhost;
-    private PixelReader pixelReader = null;
-    private Object lock = new Object();
     private int random = 0;
+
     private Court court;
-    
     public static final String IMG_PATH = "img/ghost";
 
-
-    public Ghost(Court court, int ghostNum, Point2D pos)  {
+    public Ghost(Court court, int ghostNum, Point2D pos) {
         // saving data
-        super(IMG_PATH + ghostNum + ".png", pos);
+        super(IMG_PATH + (ghostNum % 4) + ".png", pos); //mod 4 
 
-        // moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); // generating random 1-4 num for start of movement
+        angle = -1; 
+        moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); // generating random 1-4 num for start of movement
     }
-
 
     public void setSpeed(int xspeed, int yspeed) {
         this.xspeed = xspeed;
         this.yspeed = yspeed;
     }
-
 
     // public void doOpen(Image background, Image ghost) {
     //     System.out.println(background.getWidth() + " " + background.getHeight());
@@ -69,37 +60,31 @@ public class Ghost extends Runner {
     //     heightG = (int) ghost.getHeight(); // ghost height
     // }
 
-    /**
-     * Calling this method in game loop
-     * Starting the movement of each ghost based on random number chosen 1-4
-     */
+    @Override
     public void update() {
-        // Platform.runLater(() -> {
-        //     switch (moveGhost) {
-        //     //     case 1: // left down
-        //     //         x -= xspeed;
-        //     //         y += yspeed;
-        //     //         break;
-        //     //     case 2: // right down
-        //     //         x += xspeed;
-        //     //         y += yspeed;
-        //     //         break;
-        //     //     case 3: // left up
-        //     //         y -= yspeed;
-        //     //         x -= xspeed;
-        //     //         break;
-        //     //     case 4: // right up
-        //     //         x += xspeed;
-        //     //         y -= yspeed;
-        //     //         break;
-        //     //     default:
-        //     //         break;
-        //     // }
-        //     // this.setTranslateX(x);
-        //     // this.setTranslateY(y);
-        //     checkCollision(); // checking collision with borders and pacman
-        // });
+        switch (moveGhost) {
+            case 1: // left down
+                xspeed = -1;
+                yspeed = 1;
+                break;
+            case 2: // right down
+                xspeed = 1;
+                yspeed = 1;
+                break;
+            case 3: // left up
+                yspeed = -1;
+                xspeed = -1;
+                break;
+            case 4: // right up
+                xspeed = 1;
+                yspeed = -1;
+                break;
+            default:
+                break;
+        }
+        this.setTranslateX(this.getTranslateX() + xspeed);
+        this.setTranslateY(this.getTranslateY() + yspeed);
+
     }
 
-    
 }
