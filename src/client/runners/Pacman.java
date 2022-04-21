@@ -31,6 +31,8 @@ import java.util.concurrent.*;
  */
 public class Pacman extends Runner {
     private char collionM = 'R';
+    private boolean isMoving = false;
+
     // private int xw = 0; //
     // private int yh = 0; //
     // private static final int SPEED = 4;
@@ -52,8 +54,6 @@ public class Pacman extends Runner {
         super(IMG_PATH);
     }
 
-   
-
     /**
      * update() method keeps the thread (racer) alive and moving.
      */
@@ -64,9 +64,11 @@ public class Pacman extends Runner {
         // System.out.println(speed);
 
         // this.setX(this.getX() + speed);
-        this.setTranslateX(this.getTranslateX() + xspeed);
-        this.setTranslateY(this.getTranslateY() + yspeed);
-        this.setRotate(angle);
+        // System.out.println(velocity.toString());
+        this.setTranslateX(this.getTranslateX() + velocity.getX());
+        this.setTranslateY(this.getTranslateY() + velocity.getY());
+        System.out.println(velocity.angle(velocity.getX(),velocity.getY()));
+        // this.setRotate(0 + velocity.angle(velocity.getX(), velocity.getY()));
         // System.out.println(this.getTranslateX() + " " + getX());
         
 

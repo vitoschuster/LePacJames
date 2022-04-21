@@ -8,6 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.effect.Light.Point;
 import javafx.scene.text.*;
 import javafx.scene.transform.*;
 import javafx.scene.layout.*;
@@ -88,31 +89,31 @@ public class Game extends StackPane {
       this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
          switch (event.getCode()) {
             case W:
-               pacman.xspeed=0;
-               pacman.yspeed = -3;
-               pacman.angle = 270;
+               pacman.velocity = pacman.velocity.subtract(0, 1);
                break;
 
             case A:
-               pacman.yspeed = 0;
-               pacman.xspeed = -3;
-               pacman.angle = 180;
+               pacman.velocity = pacman.velocity.subtract(1, 0);
                break;
 
             case S:
-               pacman.yspeed = 3;
-               pacman.xspeed = 0;
-               pacman.angle = 90;
+               pacman.velocity = pacman.velocity.add(0, 1);
                break;
 
             case D:
-               pacman.xspeed=3;
-               pacman.yspeed =0;
-               pacman.angle = 0;
+               pacman.velocity = pacman.velocity.add(1, 0);
                break;
          }
+         pacman.velocity = pacman.velocity.normalize().multiply(pacman.speed);
       });
+
+      this.court.stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+         pacman.velocity = Point2D.ZERO;
+      });
+
       return pacman;
+      
+         
    }
 
    public void addRunners(List<Runner> list) {
@@ -278,7 +279,7 @@ public class Game extends StackPane {
        * }
        */
 
-      // change ghost speed every level
+      // change ghost speed every levelo
       ghostSpeed++;
       // tfLives.setText("Lives: " + (5 - ghostSpeed));
       // ghosts.forEach(ghost -> ghost.setSpeed(ghostSpeed, ghostSpeed));

@@ -25,10 +25,11 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public abstract class Runner extends ImageView {
-    public Point2D pos = new Point2D(0, 0);
+    public Point2D velocity = new Point2D(0, 0);
     public Image image;
     public double xspeed = 0;
-    public double yspeed=0;
+    public double yspeed = 0;
+    public double speed = 2;
     public double angle = 0;
     public double score = 0;
     public int height;

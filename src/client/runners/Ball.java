@@ -21,9 +21,9 @@ public class Ball extends Runner {
 
     public Ball(Point2D pos) {
         super("");
-        this.pos = pos;
-        this.setTranslateX(this.pos.getX());
-        this.setTranslateY(this.pos.getY());
+        this.velocity = pos;
+        this.setTranslateX(this.velocity.getX());
+        this.setTranslateY(this.velocity.getY());
     }
 
     @Override
