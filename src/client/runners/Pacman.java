@@ -47,9 +47,9 @@ public class Pacman extends Runner {
     private static final String IMG_PATH = "img/lepac.gif";
 
     // load image and get pixel position
-
-    public Pacman() {
-        super(IMG_PATH);
+    
+    public Pacman(Point2D pos) {
+        super(IMG_PATH, pos);
     }
 
    

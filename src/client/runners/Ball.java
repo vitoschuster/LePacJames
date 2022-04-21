@@ -20,10 +20,8 @@ public class Ball extends Runner {
     private static final String IMG_PATH = "img/ball.png";
 
     public Ball(Point2D pos) {
-        super("");
+        super("",new Point2D(1,1));
         this.pos = pos;
-        this.setTranslateX(this.pos.getX());
-        this.setTranslateY(this.pos.getY());
     }
 
     @Override

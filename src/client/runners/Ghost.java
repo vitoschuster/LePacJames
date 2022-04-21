@@ -43,12 +43,12 @@ public class Ghost extends Runner {
     private int random = 0;
     private Court court;
     
-    public static final String IMG_PATH = "img/ghost1.png";
+    public static final String IMG_PATH = "img/ghost";
 
 
-    public Ghost(Court court)  {
+    public Ghost(Court court, int ghostNum, Point2D pos)  {
         // saving data
-        super(IMG_PATH);
+        super(IMG_PATH + ghostNum + ".png", pos);
 
         // moveGhost = (int) Math.floor(Math.random() * (4 - 1 + 1) + 1); // generating random 1-4 num for start of movement
     }
