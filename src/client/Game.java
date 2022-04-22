@@ -21,6 +21,7 @@ import javafx.util.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import javafx.scene.media.*;
 
 /**
  * LePacJames - Main class for Pacman Game
@@ -38,9 +39,11 @@ public class Game extends StackPane {
    private List<List<Ball>> balls = new ArrayList<>();
    private AnimationTimer timer;
    private Pacman p;
+   private boolean ifCollision = false;
    private static final int GHOST_NUM = 5;
-   private static final int GRID_WIDTH = 8;
+   private static final int GRID_WIDTH = 5;
    private static final int GRID_HEIGHT = 5;
+   private int ballEat = 0;
 
    public Game(Court court) {
       this.court = court;
@@ -100,7 +103,7 @@ public class Game extends StackPane {
    }
 
    public void displayEatables(List<List<Ball>> balls) {
-      for (int i = 0; i < GRID_HEIGHT; i++) {
+      for (int i = 0; i < GRID_WIDTH; i++) {
          balls.add(new ArrayList<>());
          for (int j = 0; j < GRID_HEIGHT; j++)
             balls.get(i).add(new Ball(this.court.randPos(25, 25)));
@@ -116,8 +119,21 @@ public class Game extends StackPane {
          public void handle(long now) {
             for (Runner r : runners) {
                if (r instanceof Ghost) {
-                  if (p.checkCollisionWithGhost((Ghost) r))
-                     System.out.println("PLEASE WORK");
+                  if (!ifCollision) {
+                     if (p.checkCollisionWithGhost((Ghost) r)) {
+                        System.out.println("PLEASE WORK");
+                        ifCollision = true;
+                        String path = "video/lose.mp4";
+                        Media media = new Media(new File(path).toURI().toString());
+                        MediaPlayer player = new MediaPlayer(media);
+                        MediaView mediaView = new MediaView(player);
+                        court.getChildren().add(mediaView);
+                        player.play();
+                        player.setOnEndOfMedia(() -> System.exit(0));
+                     }
+
+                  }
+
                   court.handleCollision((Ghost) r);
                   r.update();
                } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle))
@@ -126,9 +142,33 @@ public class Game extends StackPane {
             }
 
             balls.forEach(ballList -> ballList.forEach(ball -> {
-               if(p.checkCollisionWithBall(ball))
+               if (p.checkCollisionWithBall(ball)) {
                   ball.setVisible(false);
+               }
             }));
+            for (List<Ball> ballList : balls) {
+               for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
+                  Ball ball = iter.next();
+                  if (!ball.isVisible()) {
+                     iter.remove();
+                     ballEat++;
+                     System.out.println(ballEat);
+                  }
+               }
+            }
+            if (!ifCollision) {
+               if (ballEat == (GRID_HEIGHT * GRID_WIDTH)) {
+                  System.out.println("All eaten");
+                  ifCollision = true;
+                  String path = "video/win.mp4";
+                  Media media = new Media(new File(path).toURI().toString());
+                  MediaPlayer player = new MediaPlayer(media);
+                  MediaView mediaView = new MediaView(player);
+                  court.getChildren().add(mediaView);
+                  player.play();
+                  player.setOnEndOfMedia(() -> System.exit(0));
+               }
+            }
 
          }
       };

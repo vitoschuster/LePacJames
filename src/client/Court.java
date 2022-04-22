@@ -31,7 +31,7 @@ public class Court extends Pane {
     public Image image;
     public ImageView imageView;
     private PixelReader reader;
-
+    private int random;
     // private int gridWidth = 5;
     // private int gridHeight = 5;
     // private int score = 0;
@@ -114,6 +114,40 @@ public class Court extends Pane {
         int y = (int) g.getTranslateY();
         int xw = (int) g.getImage().getWidth();
         int xh = (int) g.getImage().getHeight();
+        if (xw>image.getWidth() || x < 35) {
+            if(xw>image.getWidth()){
+                random=ThreadLocalRandom.current().nextInt(1,3);
+                if(random==1){
+                    g.moveGhost=1;
+                }else{
+                    g.moveGhost=3;
+                }
+            }else{
+                random=ThreadLocalRandom.current().nextInt(1,3);
+                if(random==1){
+                    g.moveGhost=2;
+                }else{
+                    g.moveGhost=4;
+                }
+            }
+        }
+        if (xh >image.getHeight()  || y < 30) {
+            if(xh>image.getHeight()){
+                random=ThreadLocalRandom.current().nextInt(1,3);
+                if(random==1){
+                    g.moveGhost=3;
+                }else{
+                    g.moveGhost=4;
+                }
+            }else{
+                random=ThreadLocalRandom.current().nextInt(1,3);
+                if(random==1){
+                    g.moveGhost=1;
+                }else{
+                    g.moveGhost=2;
+                }
+            }
+        }
         switch (g.moveGhost) {
             case 1:
                 if (reader.getColor(x - 3, y + xh).equals(Color.RED)
