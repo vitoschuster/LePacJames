@@ -15,6 +15,7 @@ public class Ghost extends Runner {
     // ghost location
 
     public int moveGhost;
+    public static final int GHOST_SPEED = 1;
     private Court court;
     public static final String IMG_PATH = "img/ghost";
 

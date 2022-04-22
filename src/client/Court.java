@@ -114,73 +114,41 @@ public class Court extends Pane {
         int y = (int) g.getTranslateY();
         int xw = (int) g.getImage().getWidth();
         int xh = (int) g.getImage().getHeight();
-        if (xw>image.getWidth() || x < 35) {
-            if(xw>image.getWidth()){
-                random=ThreadLocalRandom.current().nextInt(1,3);
-                if(random==1){
-                    g.moveGhost=1;
-                }else{
-                    g.moveGhost=3;
-                }
-            }else{
-                random=ThreadLocalRandom.current().nextInt(1,3);
-                if(random==1){
-                    g.moveGhost=2;
-                }else{
-                    g.moveGhost=4;
-                }
-            }
-        }
-        if (xh >image.getHeight()  || y < 30) {
-            if(xh>image.getHeight()){
-                random=ThreadLocalRandom.current().nextInt(1,3);
-                if(random==1){
-                    g.moveGhost=3;
-                }else{
-                    g.moveGhost=4;
-                }
-            }else{
-                random=ThreadLocalRandom.current().nextInt(1,3);
-                if(random==1){
-                    g.moveGhost=1;
-                }else{
-                    g.moveGhost=2;
-                }
-            }
-        }
+        int speed= Ghost.GHOST_SPEED;
+
         switch (g.moveGhost) {
             case 1:
-                if (reader.getColor(x - 3, y + xh).equals(Color.RED)
-                        || reader.getColor((x + xw), (y + xh)).equals(Color.RED)) {
-                    g.moveGhost = 3;
-                } else if (reader.getColor(x, y).equals(Color.RED)
-                        || reader.getColor(x, (y + xh) + 3).equals(Color.RED)) {
+                if (reader.getColor(x-speed, y + xh).equals(Color.RED)
+                        || reader.getColor(x, y).equals(Color.RED)) {
                     g.moveGhost = 2;
+                } else if (reader.getColor(x+xw,y+xh).equals(Color.RED)
+                        || reader.getColor(x, (y + xh)+speed ).equals(Color.RED)) {
+                    g.moveGhost = 3;
                 }
                 break;
             case 2:
-                if (reader.getColor(x, y).equals(Color.RED)
-                        || reader.getColor(x + 3, (y + xh)).equals(Color.RED)) {
+                if (reader.getColor(x+xw, y).equals(Color.RED)
+                        || reader.getColor(x+xw, (y + xh)).equals(Color.RED)) {
                     g.moveGhost = 1;
-                } else if (reader.getColor(x, (y + xh) + 3).equals(Color.RED)
-                        || reader.getColor((x + xw), (y + xh)).equals(Color.RED)) {
+                } else if (reader.getColor(x+speed, (y + xh)).equals(Color.RED)
+                        || reader.getColor(x+xw, (y + xh)+speed).equals(Color.RED)) {
                     g.moveGhost = 4;
                 }
                 break;
             case 3:
                 if (reader.getColor((x + xw), y).equals(Color.RED)
-                        || reader.getColor(x, y - 3).equals(Color.RED)) {
+                        || reader.getColor(x, y - speed).equals(Color.RED)) {
                     g.moveGhost = 1;
-                } else if (reader.getColor(x - 3, y).equals(Color.RED)
+                } else if (reader.getColor(x - speed, y).equals(Color.RED)
                         || reader.getColor(x, (y + xh)).equals(Color.RED)) {
                     g.moveGhost = 4;
                 }
                 break;
             case 4:
                 if (reader.getColor(x, y).equals(Color.RED)
-                        || reader.getColor((x + xw) + 3, y).equals(Color.RED)) {
+                        || reader.getColor((x + xw) + speed, y).equals(Color.RED)) {
                     g.moveGhost = 3;
-                } else if (reader.getColor((x + xw), y - 3).equals(Color.RED)
+                } else if (reader.getColor((x + xw), y - speed).equals(Color.RED)
                         || reader.getColor((x + xw), (y + xh)).equals(Color.RED)) {
                     g.moveGhost = 2;
                 }

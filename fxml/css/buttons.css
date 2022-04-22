@@ -1,0 +1,14 @@
+#btnSingle {
+    -fx-background-image: url("../../img/green_button01.png");
+}
+#btnMulti {
+    -fx-background-image: url("../../img/green_button02.png");
+}
+#btnSettings {
+    -fx-background-image: url("../../img/green_button03.png");
+}
+.buttons {
+    -fx-background-color:transparent;
+    -fx-border-color:transparent;
+    -fx-text-fill:transparent;
+}

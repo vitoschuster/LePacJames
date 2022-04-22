@@ -1,7 +1,10 @@
 import client.*;
 import javafx.application.*;
+import javafx.event.ActionEvent;
 import javafx.stage.*;
 import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.fxml.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -10,23 +13,26 @@ import javafx.scene.shape.*;
 
 
 public class Client extends Application {
+    
+    public Stage stage;
+    public Game game;
 
-    private Scene scene;
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.stage = stage;
+        Parent menuscreen = FXMLLoader.load(getClass().getResource("fxml/menuscreen.fxml"));
         stage.setTitle("LePac James Client");
-        //menus
-        //fxml
-
-        
-        Game game = new Game(new Court(stage));
-        stage.setScene(new Scene(game,1120, 700));
+        stage.setScene(new Scene(menuscreen, 1120, 700));
         stage.show();
     }
 
+    // public void switchToGame(ActionEvent event) throws Exception {
+    //     this.stage.setScene(new Scene(new Game(new Court(this.stage)), 1120, 700));
+    //     this.stage.show();
+    // }
     
 }
