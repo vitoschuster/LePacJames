@@ -17,14 +17,14 @@ public class ControllerMain {
 
     @FXML
     private TextField tfName, tfIpAddress;
-    
+
     private Stage stage;
     private Game game;
     private String name;
-    private Parent roo1t;
+    private Parent lobbyPane;
     private static final int W = 1120;
     private static final int H = 700;
-    
+
     public void switchToGame(ActionEvent event) throws Exception {
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         game = new Game(new Court(stage));
@@ -35,47 +35,39 @@ public class ControllerMain {
 
     @FXML
     public void connectToServer(ActionEvent event) throws Exception {
-        try {
-
-            Socket socket = new Socket(tfIpAddress.getText(), 1234);
+        try (Socket socket = new Socket(tfIpAddress.getText(), 1234)) {
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
             name = tfName.getText();
-            oos.writeObject(tfName.getText());
+
+            oos.writeUTF(tfName.getText());
             oos.flush();
+
             FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
-            roo1t = loaderLobby.load();
-    
+            lobbyPane = loaderLobby.load();
+
             ControllerLobby controllerLobby = loaderLobby.getController();
-    
             controllerLobby.displayName(name);
-    
+
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(roo1t, W, H));
+            stage.setScene(new Scene(lobbyPane, W, H));
             stage.show();
-            ClientListener cl=new ClientListener(socket,ois,oos,controllerLobby);
+
+            ClientListener cl = new ClientListener(socket, ois, oos, controllerLobby);
             cl.start();
-        } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        
     }
-    
-    
+
     public void switchToMultiplayer(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menumultiplayer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root, W, H));
         stage.show();
     }
-    
-
 
     public void switchToSettings(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menusettings.fxml"));
@@ -90,6 +82,5 @@ public class ControllerMain {
         stage.setScene(new Scene(root, W, H));
         stage.show();
     }
-    
 
 }

@@ -16,7 +16,7 @@ import java.util.*;
 
 public class ServerThread extends Thread  {
     private static final int SERVER_PORT = 1234;
-    private TextArea taList = new TextArea();
+    public static List<ObjectOutputStream> clients = new ArrayList<>();
 
     @Override
     public void run() {

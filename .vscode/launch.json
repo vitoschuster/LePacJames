@@ -9,22 +9,24 @@
             "name": "Launch Server",
             "request": "launch",
             "mainClass": "Server",
-            "projectName": "LePacJames-1_78e6dde2"
+            "projectName": "LePacJames_5f1ccfb5"
         },
         {
             "type": "java",
             "name": "Launch Client",
             "request": "launch",
             "mainClass": "Client",
-            "projectName": "LePacJames-1_78e6dde2"
+            "projectName": "LePacJames_5f1ccfb5"
         },
         {
             "type": "java",
-            "name": "Launch Current File",
+            "name": "Launch Server",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "Server",
+            "projectName": "LePacJames-1_78e6dde2"
         }
-    ],"compounds": [
+    ],
+    "compounds": [
         {
             "name": "Server/Client",
             "configurations": [

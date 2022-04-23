@@ -1,6 +1,7 @@
 package server;
 
 import java.io.*;
+import static server.ServerThread.clients;
 import javafx.application.*;
 import javafx.event.*;
 import javafx.scene.*;
@@ -18,7 +19,7 @@ public class ClientThread extends Thread {
     private Socket cSocket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-    public List<ObjectOutputStream> clients = new ArrayList<>();
+   
 
     public ClientThread(Socket cSocket) {
         this.cSocket = cSocket;
@@ -32,21 +33,25 @@ public class ClientThread extends Thread {
             this.ois = new ObjectInputStream(this.cSocket.getInputStream());
             this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
             System.out.println("Client connection");
+            //list of clients need to be on the server
             clients.add(this.oos);
             while (true) {
-                Object obj = ois.readObject();
-                String message = (String) obj;
+                String message = ois.readUTF();
                 System.out.println("User name: " + message);
-                for (int i = 0; i < clients.size(); i++) {
-                    if (clients.get(i) != this.oos) {
-                       clients.get(i).writeObject(message);
-                       clients.get(i).flush();
+
+                for (ObjectOutputStream stream : clients) {
+                    if (!stream.equals(this.oos)) {
+                        stream.writeUTF(message);
+                        stream.flush();
+                        System.out.println("name flushed");
                     }
-                 }
+                }
+                
             }
-        } catch (ClassNotFoundException | IOException e) {
+        } catch (EOFException e) {
+            System.out.println("Client disconnected");
             e.printStackTrace();
-        }
+        } catch (IOException e) {e.printStackTrace();}
       
     }
 }
