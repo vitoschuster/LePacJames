@@ -44,7 +44,18 @@ public class ControllerMain {
             name = tfName.getText();
             oos.writeObject(tfName.getText());
             oos.flush();
-
+            FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
+            roo1t = loaderLobby.load();
+    
+            ControllerLobby controllerLobby = loaderLobby.getController();
+    
+            controllerLobby.displayName(name);
+    
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(roo1t, W, H));
+            stage.show();
+            ClientListener cl=new ClientListener(socket,ois,oos,controllerLobby);
+            cl.start();
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -53,17 +64,7 @@ public class ControllerMain {
             e.printStackTrace();
         }
 
-        FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
-        roo1t = loaderLobby.load();
-
-        ControllerLobby controllerLobby = loaderLobby.getController();
-
-        controllerLobby.displayName(name);
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(roo1t, W, H));
-        stage.show();
-
+        
     }
     
     

@@ -37,7 +37,12 @@ public class ClientThread extends Thread {
                 Object obj = ois.readObject();
                 String message = (String) obj;
                 System.out.println("User name: " + message);
-                this.oos.writeObject(message);
+                for (int i = 0; i < clients.size(); i++) {
+                    if (clients.get(i) != this.oos) {
+                       clients.get(i).writeObject(message);
+                       clients.get(i).flush();
+                    }
+                 }
             }
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
