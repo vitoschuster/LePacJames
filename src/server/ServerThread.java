@@ -15,21 +15,22 @@ import java.net.*;
 import java.util.*;
 
 public class ServerThread extends Thread {
-    private static final int SERVER_PORT=1234;
+    private static final int SERVER_PORT = 1234;
     private TextArea taList = new TextArea();
+
     @Override
-    public void run(){
-        try{
+    public void run() {
+        try(ServerSocket sSocket = new ServerSocket(SERVER_PORT)) {
             System.out.println("Opening SOCKET PORT");
-            ServerSocket sSocket=new ServerSocket(SERVER_PORT);
-            while(true){
+           
+            while (true) {
                 System.out.println("Waiting client to connect");
-                Socket cSocket=sSocket.accept();
-                ClientThread ct=new ClientThread(cSocket);
+                Socket cSocket = sSocket.accept();
+                ClientThread ct = new ClientThread(cSocket);
                 ct.start();
             }
-        }catch(IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
-        }
+        } 
     }
 }
