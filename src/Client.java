@@ -16,6 +16,7 @@ public class Client extends Application {
     
     public Stage stage;
     public Game game;
+    
 
     public static void main(String[] args) {
         launch(args);
