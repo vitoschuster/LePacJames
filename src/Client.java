@@ -30,7 +30,4 @@ public class Client extends Application {
         stage.setScene(new Scene(menuscreen, 1120, 700));
         stage.show();
     }
-
-    
-    
 }

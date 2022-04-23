@@ -4,6 +4,14 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
+        {
+            "type": "java",
+            "name": "Launch Server",
+            "request": "launch",
+            "mainClass": "Server",
+            "projectName": "LePacJames-1_78e6dde2"
+        },
         {
             "type": "java",
             "name": "Launch Client",
@@ -37,6 +45,14 @@
             "request": "launch",
             "mainClass": "Game2DSTARTER",
             "projectName": "LePacJames_5f1ccfb5"
+        }
+    ],"compounds": [
+        {
+            "name": "Server/Client",
+            "configurations": [
+                "Launch Client",
+                "Launch Server",
+            ]
         }
     ]
 }

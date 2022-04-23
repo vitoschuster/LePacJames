@@ -23,7 +23,7 @@
       </ImageView>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Button id="btnPlay" layoutX="566.0" layoutY="439.0" mnemonicParsing="false" prefWidth="147.0" styleClass="buttons" stylesheets="@css/buttons.css">
+            <Button id="btnPlay" layoutX="566.0" layoutY="439.0" mnemonicParsing="false" prefWidth="147.0" styleClass="buttons" stylesheets="@css/buttons.css" onAction="#connectToServer">
                <padding>
                   <Insets left="94.0" right="94.0" top="30.0" />
                </padding>
