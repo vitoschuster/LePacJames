@@ -25,7 +25,7 @@
                   <Insets left="90.0" right="90.0" top="30.0" />
                </padding>
             </Button>
-            <TextField id="tfReady" editable="false" layoutX="416.0" layoutY="245.0" prefHeight="210.0" prefWidth="289.0" stylesheets="@css/buttons.css" fx:id = "tfWaiting" />
+            <TextField id="tfReady" editable="false" layoutX="416.0" layoutY="245.0" prefHeight="210.0" prefWidth="289.0" stylesheets="@css/buttons.css" text="ertty" />
             <Button id="btnGoBack" layoutX="465.0" layoutY="545.0" mnemonicParsing="false" onAction="#switchToMultiplayer" prefHeight="49.0" prefWidth="71.0" styleClass="buttons" stylesheets="@css/buttons.css" text="Button">
                <padding>
                   <Insets left="90.0" right="90.0" top="30.0" />
