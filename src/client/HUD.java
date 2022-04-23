@@ -19,6 +19,7 @@ public class HUD extends Pane {
     private TextField tfLives = new TextField("Lives: 3");
     private Scene scene;
     private int score = 0;
+    public int lives=2;
 
     public HUD(Scene scene) {
         this.scene = scene;
@@ -38,9 +39,12 @@ public class HUD extends Pane {
         System.out.println(tfScore.getTranslateX() + " " + tfScore.getTranslateY());
     }
     
-    public void update(int score) {
+    public void update(int score,int lives) {
         this.score = score;
-        Platform.runLater(() -> tfScore.setText("Score: " + this.score));
+        Platform.runLater(() ->{
+            tfScore.setText("Score: " + this.score);
+            tfLives.setText("Lives: "+this.lives);
+        });
+        
     }
 }
-

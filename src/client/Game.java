@@ -21,7 +21,11 @@ import javafx.util.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+
+import com.sun.security.ntlm.Client;
+
 import javafx.scene.media.*;
+import javafx.application.Application;
 
 /**
  * LePacJames - Main class for Pacman Game
@@ -44,6 +48,7 @@ public class Game extends StackPane {
    private static final int GHOST_NUM = 4;
    private static final int GRID_WIDTH = 5;
    private static final int GRID_HEIGHT = 5;
+
 
    public Game(Court court) {
       this.court = court;
@@ -123,7 +128,10 @@ public class Game extends StackPane {
                   if (!ifCollision) {
                      if (p.checkCollisionWithGhost((Ghost) r)) {
                         ifCollision = true;
-                        restart();
+                        p.lives--;
+                        hud.update(p.score, p.lives);
+                        restart(court.stage);
+                        
                         // System.out.println("PLEASE WORK");
 
                         // String path = "video/lose.mp4";
@@ -149,7 +157,8 @@ public class Game extends StackPane {
 
                   if (!ball.isVisible()) {
                      iter.remove();
-                     hud.update(p.score++);
+                     p.score++;
+                     hud.update(p.score,p.lives);
                      System.out.println(p.score);
                   }
                }
@@ -182,20 +191,26 @@ public class Game extends StackPane {
    }
    
    public void cleanup() { 
+      
       Platform.runLater(() ->{
+         if(hud.lives-1==0){
+            System.exit(0);
+         }
          timer.stop();
          balls.clear();
          runners.clear();
+         court.getChildren().clear();
          p.score = 0;
-         p.lives--;
       });
    }
+   public void restart(Stage stage) {
 
-   public void restart() {
       cleanup();
-      this.start();
-      this.displayRunners(runners);
-      this.displayEatables(balls);
+      Game g=new Game(new Court(stage));
+      stage.setScene(new Scene(g, 1120, 700));
+      stage.show();
+      g.hud.lives=p.lives--;
+      g.hud.update(0, g.hud.lives);
    }
    
 
