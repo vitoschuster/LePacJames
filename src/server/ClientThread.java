@@ -16,10 +16,10 @@ import java.util.*;
 
 public class ClientThread extends Thread {
     private Socket cSocket;
-    private ObjectOutputStream oos = null;
-    private ObjectInputStream ois = null;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private TextArea taList = new TextArea();
-    private List<ObjectOutputStream> nameOfWriters = new ArrayList<>();
+    
 
     public ClientThread(Socket cSocket) {
         this.cSocket = cSocket;
@@ -27,15 +27,15 @@ public class ClientThread extends Thread {
 
     @Override
     public void run() {
-        
+
         try {
-            this.ois=new ObjectInputStream(this.cSocket.getInputStream());
-            this.oos=new ObjectOutputStream(this.cSocket.getOutputStream());
-            nameOfWriters.add(this.oos);
-            while(true){
-                Object obj=ois.readObject();
-                String message=(String) obj;
-                System.out.println("User name: "+message);
+            this.ois = new ObjectInputStream(this.cSocket.getInputStream());
+            this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
+            clients.add(this.oos);
+            while (true) {
+                Object obj = ois.readObject();
+                String message = (String) obj;
+                System.out.println("User name: " + message);
             }
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();

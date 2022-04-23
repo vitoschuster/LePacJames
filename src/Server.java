@@ -13,13 +13,14 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Server extends Application{
+public class Server extends Application {
     private Stage stage;
     private Scene scene;
     private VBox root = null;
     public TextArea taList = new TextArea();
     private Button btnClear = new Button("Clear");
- 
+    private List<ObjectOutputStream> clients = new ArrayList<>();
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -27,13 +28,13 @@ public class Server extends Application{
     @Override
     public void start(Stage stage) throws Exception {
         root = new VBox();
-        root.getChildren().addAll(btnClear,taList);
+        root.getChildren().addAll(btnClear, taList);
         root.setAlignment(Pos.CENTER);
-        taList.setPrefHeight(400);
-        scene = new Scene(root, 450, 400);
+        taList.setPrefHeight(200);
+        scene = new Scene(root, 250, 200);
         stage.setScene(scene);
         stage.show();
-        ServerThread st=new ServerThread();
+        ServerThread st = new ServerThread();
         st.start();
     }
 }
