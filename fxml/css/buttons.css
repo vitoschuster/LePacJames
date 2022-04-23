@@ -16,12 +16,17 @@
 #btnReady{
     -fx-background-image: url("../../img/green_button06.png");
 }
-#tfReady {
+#taReady {
     -fx-background-color:transparent;
     -fx-border-color:transparent;
     -fx-text-fill:whitesmoke;
     -fx-font-size: 14pt;
 }
+
+#taReady .content {
+    -fx-background-color:#424242;
+}
+
 
 .buttons {
     -fx-background-color:transparent;
@@ -29,10 +34,12 @@
     -fx-text-fill:transparent;
 }
 
+
 #tfName {
-	 -fx-background-color:transparent;
-	 -fx-border-color: whitesmoke;
-	 -fx-border-width: 0 0 2px 0;
-    	 -fx-text-fill: whitesmoke;
-	-fx-font-size: 18pt;
+    -fx-background-color:transparent;
+    -fx-background-color:transparent;
+    -fx-border-color: whitesmoke;
+    -fx-border-width: 0 0 2px 0;
+        -fx-text-fill: whitesmoke;
+   -fx-font-size: 18pt;
 }

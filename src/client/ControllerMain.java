@@ -1,7 +1,6 @@
 package client;
 
-import javax.swing.Action;
-
+import static client.Constants.*;
 import client.*;
 import javafx.application.*;
 import javafx.event.ActionEvent;
@@ -14,12 +13,15 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class Controller {
+public class ControllerMain {
 
     @FXML
-    private TextField tfName, tfIpAddress, tfWaiting;
+    private TextField tfName, tfIpAddress;
+    
     private Stage stage;
     private Game game;
+    private String name;
+    private Parent roo1t;
     private static final int W = 1120;
     private static final int H = 700;
     
@@ -31,34 +33,40 @@ public class Controller {
         stage.show();
     }
 
-
+    @FXML
     public void connectToServer(ActionEvent event) throws Exception {
         try {
 
             Socket socket = new Socket(tfIpAddress.getText(), 1234);
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-   
+
+            name = tfName.getText();
             oos.writeObject(tfName.getText());
             oos.flush();
-           
-            
-         } catch (UnknownHostException e) {
+
+        } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-         
-        Parent root = FXMLLoader.load(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
+
+        FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
+        roo1t = loaderLobby.load();
+
+        ControllerLobby controllerLobby = loaderLobby.getController();
+
+        controllerLobby.displayName(name);
+
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root, W, H));
+        stage.setScene(new Scene(roo1t, W, H));
         stage.show();
-        tfWaiting.appendText("Player");
 
     }
-
+    
+    
     public void switchToMultiplayer(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menumultiplayer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -66,6 +74,7 @@ public class Controller {
         stage.show();
     }
     
+
 
     public void switchToSettings(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menusettings.fxml"));
