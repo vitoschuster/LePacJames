@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1120.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1120.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
    <children>
       <ImageView fitHeight="700.0" fitWidth="1120.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER">
          <image>
@@ -24,7 +24,7 @@
                   <Insets top="15.0" />
                </VBox.margin>
             </Button>
-            <Button id="btnMulti" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToGame" styleClass="buttons" stylesheets="@css/buttons.css">
+            <Button id="btnMulti" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToMultiplayer" styleClass="buttons" stylesheets="@css/buttons.css">
                <padding>
                   <Insets left="94.0" right="94.0" top="30.0" />
                </padding>

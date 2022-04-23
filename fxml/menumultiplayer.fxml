@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1120.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
+   <children>
+      <ImageView pickOnBounds="true" preserveRatio="true">
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+         <image>
+            <Image url="@../img/menubg_empty.png" />
+         </image>
+      </ImageView>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Button id="btnPlay" layoutX="566.0" layoutY="439.0" mnemonicParsing="false" prefWidth="147.0" styleClass="buttons" stylesheets="@css/buttons.css">
+               <padding>
+                  <Insets left="94.0" right="94.0" top="30.0" />
+               </padding>
+            </Button>
+            <TextField id="tfName" layoutX="466.0" layoutY="275.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" stylesheets="@css/buttons.css" />
+            <Label layoutX="369.0" layoutY="285.0" text="Name:" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI" size="25.0" />
+               </font>
+            </Label>
+            <Button id="btnGoBack" layoutX="352.0" layoutY="439.0" mnemonicParsing="false" onAction="#switchToMain" prefWidth="147.0" styleClass="buttons" stylesheets="@css/buttons.css">
+               <padding>
+                  <Insets left="94.0" right="94.0" top="30.0" />
+               </padding>
+            </Button>
+            <Label layoutX="339.0" layoutY="360.0" text="Server IP:" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI" size="25.0" />
+               </font>
+            </Label>
+            <TextField id="tfName" layoutX="466.0" layoutY="350.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" stylesheets="@css/buttons.css" text="localhost" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

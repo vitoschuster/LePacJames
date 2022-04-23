@@ -7,8 +7,22 @@
 #btnSettings {
     -fx-background-image: url("../../img/green_button03.png");
 }
+#btnPlay{
+    -fx-background-image: url("../../img/green_button04.png");
+}
+#btnGoBack{
+    -fx-background-image: url("../../img/green_button05.png");
+}
 .buttons {
     -fx-background-color:transparent;
     -fx-border-color:transparent;
     -fx-text-fill:transparent;
+}
+
+#tfName {
+	 -fx-background-color:transparent;
+	 -fx-border-color: whitesmoke;
+	 -fx-border-width: 0 0 2px 0;
+    	 -fx-text-fill: whitesmoke;
+	-fx-font-size: 18pt;
 }

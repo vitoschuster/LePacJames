@@ -33,7 +33,8 @@ public abstract class Runner extends ImageView {
     public double xspeed = 0;
     public double yspeed=0;
     public double angle = 0;
-    public double score = 0;
+    public int score = 0;
+    public int lives = 3;
     public int height;
     public int width;
 

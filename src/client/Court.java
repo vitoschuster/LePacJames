@@ -89,7 +89,6 @@ public class Court extends Pane {
 
         return false;
     }
-    
 
     public Point2D randPos(double width, double height) {
         int x = ThreadLocalRandom.current().nextInt(50, (int) this.image.getWidth() - 50);

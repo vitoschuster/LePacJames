@@ -37,19 +37,20 @@ public class Game extends StackPane {
    private Court court;
    private List<Runner> runners = new ArrayList<>();
    private List<List<Ball>> balls = new ArrayList<>();
+   private HUD hud;
    private AnimationTimer timer;
    private Pacman p;
    private boolean ifCollision = false;
-   private static final int GHOST_NUM = 5;
+   private static final int GHOST_NUM = 4;
    private static final int GRID_WIDTH = 5;
    private static final int GRID_HEIGHT = 5;
-   private int ballEat = 0;
 
    public Game(Court court) {
       this.court = court;
       this.displayRunners(runners);
       this.displayEatables(balls);
-      this.getChildren().add(court);
+      this.hud = new HUD(court.stage.getScene());
+      this.getChildren().addAll(this.court, this.hud);
       this.start();
    }
 
@@ -96,7 +97,7 @@ public class Game extends StackPane {
    public void displayRunners(List<Runner> list) {
       this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
       p = (Pacman) this.runners.get(0);
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < GHOST_NUM; i++)
          this.runners.add(new Ghost(this.court, i, this.court.randPos(32, 40)));
 
       court.getChildren().addAll(list);
@@ -121,43 +122,40 @@ public class Game extends StackPane {
                if (r instanceof Ghost) {
                   if (!ifCollision) {
                      if (p.checkCollisionWithGhost((Ghost) r)) {
-                        System.out.println("PLEASE WORK");
                         ifCollision = true;
-                        String path = "video/lose.mp4";
-                        Media media = new Media(new File(path).toURI().toString());
-                        MediaPlayer player = new MediaPlayer(media);
-                        MediaView mediaView = new MediaView(player);
-                        court.getChildren().add(mediaView);
-                        player.play();
-                        player.setOnEndOfMedia(() -> System.exit(0));
+                        restart();
+                        // System.out.println("PLEASE WORK");
+
+                        // String path = "video/lose.mp4";
+                        // Media media = new Media(new File(path).toURI().toString());
+                        // MediaPlayer player = new MediaPlayer(media);
+                        // MediaView mediaView = new MediaView(player);
+                        // court.getChildren().add(mediaView);
+                        // player.play();
+                        // player.setOnEndOfMedia(() -> System.exit(0));
                      }
-
                   }
-
                   court.handleCollision((Ghost) r);
                   r.update();
                } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle))
                   r.update();
 
             }
-
-            balls.forEach(ballList -> ballList.forEach(ball -> {
-               if (p.checkCollisionWithBall(ball)) {
-                  ball.setVisible(false);
-               }
-            }));
             for (List<Ball> ballList : balls) {
                for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
                   Ball ball = iter.next();
+                  if (p.checkCollisionWithBall(ball))
+                     ball.setVisible(false);
+
                   if (!ball.isVisible()) {
                      iter.remove();
-                     ballEat++;
-                     System.out.println(ballEat);
+                     hud.update(p.score++);
+                     System.out.println(p.score);
                   }
                }
             }
             if (!ifCollision) {
-               if (ballEat == (GRID_HEIGHT * GRID_WIDTH)) {
+               if (p.score == (GRID_HEIGHT * GRID_WIDTH)) {
                   System.out.println("All eaten");
                   ifCollision = true;
                   String path = "video/win.mp4";
@@ -182,6 +180,31 @@ public class Game extends StackPane {
       // long delay = 1000L;
       // startTimer.schedule(task, delay);
    }
+   
+   public void cleanup() { 
+      Platform.runLater(() ->{
+         timer.stop();
+         balls.clear();
+         runners.clear();
+         p.score = 0;
+         p.lives--;
+      });
+   }
+
+   public void restart() {
+      cleanup();
+      this.start();
+      this.displayRunners(runners);
+      this.displayEatables(balls);
+   }
+   
+
+
+   void alertLater(AlertType type, String header, String message) {
+      Alert a = new Alert(type, message);
+      a.setHeaderText(header);
+      a.showAndWait();
+   }
    // public void startGame(Stage stage) {
 
    // initializeScene(stage);
@@ -189,46 +212,8 @@ public class Game extends StackPane {
 
    // }
 
-   // public void cleanup() {
-   // // timer.stop();
-   // // balls.clear();
-   // // ghosts.clear();
-   // // timelines.clear();
-   // // images.clear();
-   // // score = 0;
-   // // endBall = 0;
-   // // k = 0;
-   // // counterAnim = 0;
-   // }
-
-   // public void restart(Stage stage) {
-   // // cleanup();
-   // // start(stage);
-   // }
-
-   void alertLater(AlertType type, String header, String message) {
-      Alert a = new Alert(type, message);
-      a.setHeaderText(header);
-      a.showAndWait();
-   }
-
-   // start the race
-   public void initializeScene(Stage stage) {
-
-      // createGrid();
-      createHUD();
-      displayScore();
-
-      // css
-      // root.setId("pane");
-      // tfScore.setId("score");
-      // tfLives.setId("lives");
-      // scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
-
-      animationTimerCreate();
-      animationTimerStart();
-
-   }
+  
+   
 
    /*
     * void createGrid() {
@@ -261,53 +246,7 @@ public class Game extends StackPane {
     * }
     * }
     */
-   void createHUD() {
-      // int padding = 80;
-      // tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
-      // tfScore.setEditable(false);
-      // tfScore.setFocusTraversable(false);
+  
 
-      // tfLives.resizeRelocate(scene.getWidth() - padding - 100, 0, 100, 25);
-      // tfLives.setEditable(false);
-      // tfLives.setFocusTraversable(false);
-
-      // root.getChildren().addAll(tfLives, tfScore);
-   }
-
-   void displayScore() {
-      // Platform.runLater(() -> tfScore.setText("Score: " + score));
-   }
-
-   void animationTimerStart() {
-      // // Use an animation to update the screen
-      /*
-       * timer = new AnimationTimer() {
-       * public void handle(long now) {
-       * 
-       * }
-       * };
-       */
-      // for (int i = 0; i < ghosts.size(); i++) {
-      // ghosts.get(i).update();
-      // }
-      // */
-      // // System.out.println("He");
-      // }
-      // };
-      // System.out.println("Starting race...");
-
-   }
-
-   void animationTimerCreate() {
-      // // TimerTask to delay start of race for 2 seconds
-      // TimerTask task = new TimerTask() {
-      // public void run() {
-      // timer.start();
-      // }
-      // };
-      // Timer startTimer = new Timer();
-      // long delay = 1000L;
-      // startTimer.schedule(task, delay);
-   }
 
 } // end class Races

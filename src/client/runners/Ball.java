@@ -28,8 +28,4 @@ public class Ball extends Runner {
 
     }
 
-    public Object forEach(Object object) {
-        return null;
-    }
-
 }

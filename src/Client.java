@@ -30,9 +30,6 @@ public class Client extends Application {
         stage.show();
     }
 
-    // public void switchToGame(ActionEvent event) throws Exception {
-    //     this.stage.setScene(new Scene(new Game(new Court(this.stage)), 1120, 700));
-    //     this.stage.show();
-    // }
+    
     
 }
