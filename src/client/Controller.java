@@ -16,6 +16,8 @@ import java.util.*;
 
 public class Controller {
 
+    @FXML
+    private TextField tfName, tfIpAddress, tfWaiting;
     private Stage stage;
     private Game game;
     private static final int W = 1120;
@@ -28,25 +30,35 @@ public class Controller {
         stage.setScene(new Scene(game, W, H));
         stage.show();
     }
-    public void connectToServer(ActionEvent event)throws Exception{
+
+
+    public void connectToServer(ActionEvent event) throws Exception {
         try {
-            Socket socket = new Socket("", 1234);
+
+            Socket socket = new Socket(tfIpAddress.getText(), 1234);
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
    
-            oos.writeObject("luka");
+            oos.writeObject(tfName.getText());
             oos.flush();
            
-   
             
          } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-         } catch (IOException e) {
+        } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-         }
+        }
+         
+        Parent root = FXMLLoader.load(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root, W, H));
+        stage.show();
+        tfWaiting.appendText("Player");
+
     }
+
     public void switchToMultiplayer(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menumultiplayer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -54,6 +66,7 @@ public class Controller {
         stage.show();
     }
     
+
     public void switchToSettings(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menusettings.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

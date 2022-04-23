@@ -28,7 +28,7 @@
                   <Insets left="94.0" right="94.0" top="30.0" />
                </padding>
             </Button>
-            <TextField id="tfName" layoutX="466.0" layoutY="275.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" stylesheets="@css/buttons.css" />
+            <TextField id="tfName" layoutX="466.0" layoutY="275.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" stylesheets="@css/buttons.css" fx:id="tfName" />
             <Label layoutX="369.0" layoutY="285.0" text="Name:" textFill="WHITE">
                <font>
                   <Font name="Segoe UI" size="25.0" />
@@ -44,7 +44,7 @@
                   <Font name="Segoe UI" size="25.0" />
                </font>
             </Label>
-            <TextField id="tfName" layoutX="466.0" layoutY="350.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" stylesheets="@css/buttons.css" text="localhost" />
+            <TextField id="tfName" layoutX="466.0" layoutY="350.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" stylesheets="@css/buttons.css" text="localhost" fx:id="tfIpAddress"/>
          </children>
       </AnchorPane>
    </children>

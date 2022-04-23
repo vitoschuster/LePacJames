@@ -19,7 +19,6 @@ public class Server extends Application {
     private VBox root = null;
     public TextArea taList = new TextArea();
     private Button btnClear = new Button("Clear");
-    private List<ObjectOutputStream> clients = new ArrayList<>();
 
     public static void main(String[] args) {
         launch(args);

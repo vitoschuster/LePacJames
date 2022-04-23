@@ -19,7 +19,7 @@ public class ClientThread extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private TextArea taList = new TextArea();
-    
+    public List<ObjectOutputStream> clients = new ArrayList<>();
 
     public ClientThread(Socket cSocket) {
         this.cSocket = cSocket;
@@ -40,6 +40,6 @@ public class ClientThread extends Thread {
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Client disconnected...");
+      
     }
 }

@@ -13,6 +13,16 @@
 #btnGoBack{
     -fx-background-image: url("../../img/green_button05.png");
 }
+#btnReady{
+    -fx-background-image: url("../../img/green_button06.png");
+}
+#tfReady {
+    -fx-background-color:transparent;
+    -fx-border-color:transparent;
+    -fx-text-fill:whitesmoke;
+    -fx-font-size: 14pt;
+}
+
 .buttons {
     -fx-background-color:transparent;
     -fx-border-color:transparent;

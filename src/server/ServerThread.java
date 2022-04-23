@@ -14,7 +14,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ServerThread extends Thread {
+public class ServerThread extends Thread  {
     private static final int SERVER_PORT = 1234;
     private TextArea taList = new TextArea();
 
@@ -22,7 +22,6 @@ public class ServerThread extends Thread {
     public void run() {
         try(ServerSocket sSocket = new ServerSocket(SERVER_PORT)) {
             System.out.println("Opening SOCKET PORT");
-           
             while (true) {
                 System.out.println("Waiting client to connect");
                 Socket cSocket = sSocket.accept();
