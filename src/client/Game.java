@@ -42,11 +42,22 @@ public class Game extends StackPane {
    private HUD hud;
    private AnimationTimer timer;
    private Pacman p;
+   private boolean isCoop = false;
    private boolean ifCollision = false;
    private static final int GHOST_NUM = 4;
    private static final int GRID_WIDTH = 5;
    private static final int GRID_HEIGHT = 5;
 
+   /* multiplayer constructor */
+   public Game(Court court, boolean isCoop, int numPlayers) {
+      this.court = court;
+      this.displayPlayers(numPlayers);
+      this.hud = new HUD(court.stage.getScene());
+      this.getChildren().addAll(this.court);
+      this.start();
+   }
+
+   /* singleplayer constructor */
    public Game(Court court) {
       this.court = court;
       this.displayRunners(runners);
@@ -96,9 +107,15 @@ public class Game extends StackPane {
       return pacman;
    }
 
-   public void displayPacman() {
-      this.runners.add(new Pacman(new Point2D(40, 40)));
-      court.getChildren().add(runners.get(runners.size() - 1));
+   public void displayPlayers(int numPlayers) {
+      for (int i = 0; i < numPlayers; i++) {
+         if (i == 0) {
+            this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
+            p = (Pacman) this.runners.get(0);
+         }
+         this.runners.add(new Pacman(new Point2D(40, 40 * i)));
+      }
+      this.court.getChildren().addAll(runners);
    }
 
    public void displayRunners(List<Runner> list) {

@@ -25,7 +25,6 @@
             "configurations": [
                 "Launch Client",
                 "Launch Client",
-                "Launch Client",
                 "Launch Server",
             ]
         }

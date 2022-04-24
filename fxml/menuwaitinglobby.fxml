@@ -20,7 +20,7 @@
       </ImageView>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <Button id="btnReady" layoutX="465.0" layoutY="480.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="71.0" styleClass="buttons" stylesheets="@css/buttons.css" text="Button">
+            <Button id="btnReady" layoutX="465.0" layoutY="480.0" mnemonicParsing="false" prefHeight="49.0" onAction = "#play" prefWidth="71.0" styleClass="buttons" stylesheets="@css/buttons.css" text="Button" fx:id = "btnReady">
                <padding>
                   <Insets left="90.0" right="90.0" top="30.0" />
                </padding>

@@ -14,16 +14,26 @@ import java.util.*;
 import static client.Constants.*;
 
 public class ControllerLobby {
-    
+
     @FXML
-    TextArea taReady;
+    Button btnReady;
+    TextArea taReady; 
     Stage stage;
+    int numPlayers = -1;
+    int readyCounter = -1;
+     
 
     public void displayName(String name) {
-        taReady.appendText(name+"\n");
+        taReady.appendText(name + "\n");
+        numPlayers++;
     }
-    public String getName(){
-        return taReady.getText();
+
+    // public boolean isReady() {
+    //TODO - buttons pressed (ready);     
+    // }
+
+    public int getNumPlayers() {
+        return numPlayers;
     }
 
     public void switchToMultiplayer(ActionEvent event) throws Exception {
@@ -33,6 +43,14 @@ public class ControllerLobby {
         stage.show();
     }
 
+    public void play(ActionEvent event) throws Exception {
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        readyCounter++;
+        btnReady.setDisable(true);
+
+        /** when other button is clicked */
+    }
     
 
-}   
+
+}

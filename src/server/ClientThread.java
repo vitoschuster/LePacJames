@@ -1,6 +1,7 @@
 package server;
 import static server.Network.*;
 import java.io.*;
+import java.io.ObjectInputStream.GetField;
 import java.net.*;
 import java.util.*;
 
@@ -28,10 +29,13 @@ public class ClientThread extends Thread {
                     String[] split = message.split(":");
                     clients.put(this.oos, split[1]);
                     switch (split[0]) {
-                        case "CONNECT": {
+                        case "CONNECT": 
                             doLobby();
                             break;
-                        }
+                        case "BTNCLICK":
+                            
+                            break;
+                        
                     }
                 }
 
@@ -45,6 +49,8 @@ public class ClientThread extends Thread {
             e.printStackTrace();
         }
     }
+
+  
     
     private void doLobby() {
         try { //updating players in lobby - sending names
