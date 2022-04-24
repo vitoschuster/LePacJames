@@ -38,13 +38,12 @@ public class ClientThread extends Thread {
             while (true) {
                 String message = ois.readUTF();
                 System.out.println("User name: " + message);
-
                 for (ObjectOutputStream stream : clients) {
-                    System.out.println(message);
                     if (!stream.equals(this.oos)) {
                         stream.writeUTF(message);
                         stream.flush();
-                        System.out.println("name flushed");
+                        System.out.println("Clients connected");
+                     
                     }
                 }
                 

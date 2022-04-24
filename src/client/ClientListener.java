@@ -22,6 +22,7 @@ public class ClientListener extends Thread {
     private Socket socket;
     private boolean exitLoop = false;
     private ControllerLobby cLobby;
+    private String name;
 
     public ClientListener(String ipAddress, ControllerLobby c) {
         this.address = ipAddress;
@@ -32,20 +33,17 @@ public class ClientListener extends Thread {
     public void run() {
         try {
             socket = new Socket(address, 1234);
-            ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
-            while (!exitLoop) {
-                String name = cLobby.getName();
-                oos.writeUTF(name);
-                oos.flush();
-                String name2 = ois.readUTF();
-                Platform.runLater(() -> {
-                    cLobby.displayName(name2);
-                });
-                exitLoop = true;
-                oos.writeUTF(name);
-                oos.flush();
-            }
+            ois = new ObjectInputStream(socket.getInputStream());
+        while (!exitLoop) {
+            name=cLobby.getName();
+            oos.writeUTF(name);
+            oos.flush();
+            String name2 = ois.readUTF();
+            cLobby.displayName(name2);
+            exitLoop = true;
+            System.out.println(name + " " + name2);
+        }
         } catch (Exception e) {
             e.printStackTrace();
         }

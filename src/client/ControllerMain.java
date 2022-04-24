@@ -49,8 +49,8 @@ public class ControllerMain {
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(lobbyPane, W, H));
             stage.show();
-            System.out.println(stage.isFocused());
-            doServer();
+            ClientListener cl=new ClientListener(address, controllerLobby);
+            cl.start();
             
 
     }
@@ -64,7 +64,6 @@ public class ControllerMain {
             oos.flush();
             String name2 = ois.readUTF();
             controllerLobby.displayName(name2);
-
             exitLoop = true;
             oos.writeUTF(name);
             oos.flush();
