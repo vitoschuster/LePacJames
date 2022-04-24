@@ -40,6 +40,7 @@ public class ClientThread extends Thread {
                 System.out.println("User name: " + message);
 
                 for (ObjectOutputStream stream : clients) {
+                    System.out.println(message);
                     if (!stream.equals(this.oos)) {
                         stream.writeUTF(message);
                         stream.flush();
@@ -48,10 +49,10 @@ public class ClientThread extends Thread {
                 }
                 
             }
+            
         } catch (EOFException e) {
             System.out.println("Client disconnected");
             e.printStackTrace();
         } catch (IOException e) {e.printStackTrace();}
-      
     }
 }

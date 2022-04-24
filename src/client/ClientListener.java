@@ -15,29 +15,41 @@ import java.net.*;
 import java.util.*;
 import client.ControllerLobby;
 
-public class ClientListener extends Thread{
-    private ObjectInputStream oos;
-    private ObjectOutputStream ois;
+public class ClientListener extends Thread {
+    private String address;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
     private Socket socket;
-    private ControllerLobby controller;
+    private boolean exitLoop = false;
+    private ControllerLobby cLobby;
 
-    public ClientListener(Socket socket, ObjectInputStream oos, ObjectOutputStream ois, ControllerLobby c) {
-        this.socket = socket;
-        this.oos = oos;
-        this.ois = ois;
-        this.controller = c;
+    public ClientListener(String ipAddress, ControllerLobby c) {
+        this.address = ipAddress;
+        this.cLobby = c;
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
-                String name = oos.readUTF();
-                Platform.runLater(() -> controller.displayName(name));
+            socket = new Socket(address, 1234);
+            ois = new ObjectInputStream(socket.getInputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            while (!exitLoop) {
+                String name = cLobby.getName();
+                oos.writeUTF(name);
+                oos.flush();
+                String name2 = ois.readUTF();
+                Platform.runLater(() -> {
+                    cLobby.displayName(name2);
+                });
+                exitLoop = true;
+                oos.writeUTF(name);
+                oos.flush();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
 }

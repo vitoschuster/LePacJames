@@ -21,9 +21,12 @@ public class ControllerMain {
     private Stage stage;
     private Game game;
     private String name;
+    private String address;
     private Parent lobbyPane;
+    private ControllerLobby controllerLobby;
     private static final int W = 1120;
     private static final int H = 700;
+    private boolean exitLoop = false;
 
     public void switchToGame(ActionEvent event) throws Exception {
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -35,33 +38,42 @@ public class ControllerMain {
 
     @FXML
     public void connectToServer(ActionEvent event) throws Exception {
-        try (Socket socket = new Socket(tfIpAddress.getText(), 1234)) {
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            address=tfIpAddress.getText();
             name = tfName.getText();
-
-            oos.writeUTF(tfName.getText());
-            oos.flush();
-
             FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
             lobbyPane = loaderLobby.load();
 
-            ControllerLobby controllerLobby = loaderLobby.getController();
+            controllerLobby = loaderLobby.getController();
             controllerLobby.displayName(name);
 
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(lobbyPane, W, H));
             stage.show();
-
-            ClientListener cl = new ClientListener(socket, ois, oos, controllerLobby);
-            cl.start();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            System.out.println(stage.isFocused());
+            doServer();
+            
 
     }
+    public void doServer(){
+        try{
+        Socket socket = new Socket(address, 1234);
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        while (!exitLoop) {
+            oos.writeUTF(name);
+            oos.flush();
+            String name2 = ois.readUTF();
+            controllerLobby.displayName(name2);
 
+            exitLoop = true;
+            oos.writeUTF(name);
+            oos.flush();
+            System.out.println(name + " " + name2);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    } 
+    }
     public void switchToMultiplayer(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menumultiplayer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

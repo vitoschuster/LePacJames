@@ -22,7 +22,9 @@ public class ControllerLobby {
     public void displayName(String name) {
         taReady.appendText(name+"\n");
     }
-
+    public String getName(){
+        return taReady.getText();
+    }
     public void switchToMultiplayer(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menumultiplayer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
