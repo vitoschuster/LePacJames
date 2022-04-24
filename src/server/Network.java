@@ -1,4 +1,6 @@
 package server;
+
+
 import java.util.ArrayList;
 import java.io.*;
 import javafx.application.*;
@@ -13,7 +15,9 @@ import javafx.geometry.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-public abstract class Network extends Thread{
-    public ArrayList<ClientThread> threads=new ArrayList<>();
-    public static final List<ObjectOutputStream> clientsA = Collections.synchronizedList(new ArrayList<ObjectOutputStream>());
+
+public abstract class Network {
+    public static final Map<ObjectOutputStream, String> clients = Collections.synchronizedMap(new HashMap<>());
 }
+    
+

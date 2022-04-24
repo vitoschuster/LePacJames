@@ -1,61 +1,43 @@
 package server;
-
-import java.io.*;
-import javafx.application.*;
-import javafx.event.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.*;
-import javafx.scene.layout.*;
-import javafx.stage.*;
-import javafx.geometry.*;
+import static server.Network.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ClientThread extends Network implements Runnable{
+public class ClientThread extends Thread {
     private Socket cSocket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-    private int k = 0;
-    private Vector <ObjectOutputStream> clientsC=new Vector<>();
+
     public ClientThread(Socket cSocket) {
         this.cSocket = cSocket;
     }
 
-    @Override
-    public void run() {
-
+    @Override public void run() {
         try {
-                this.ois = new ObjectInputStream(this.cSocket.getInputStream());
-                this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
-                System.out.println("Client connection");
-                synchronized(clientsA){
-                    clientsA.add(this.oos);
-                }
-                System.out.println(clientsA.size());
-                // list of clients need to be on the server
-                while (true) {
-                    String message = ois.readUTF();
-                    String[] split = message.split(":");
-                    //System.out.println(clientsA.size());
-                    switch (split[0]) {
-                        case "NAME": {
-                            //System.out.println("User name: " + split[1]);
-                            oos.writeInt(clientsA.size());
-                            oos.flush();
-                            for(ObjectOutputStream oos: clientsA){
-                                oos.writeUTF(split[1]);
-                                oos.flush();
+            this.ois = new ObjectInputStream(this.cSocket.getInputStream());
+            this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
+            System.out.println("Client connection");
+            System.out.println(clients.size());
+            while (true) {
+                String message = ois.readUTF();
+                String[] split = message.split(":");
+                clients.put(this.oos, split[1]);
+                switch (split[0]) {
+                    case "NAME": {
+                        for (Map.Entry<ObjectOutputStream, String> entry : clients.entrySet()) {
+                            if (!entry.getKey().equals(this.oos)) {
+                                this.oos.writeUTF(entry.getValue());
+                                this.oos.flush();
+                            } else {
+                                entry.getKey().writeUTF(entry.getValue());
+                                entry.getKey().flush();
                             }
-                            break;
                         }
-    
+                        break;
                     }
-    
                 }
-            
-
+            }
         } catch (EOFException e) {
             System.out.println("Client disconnected");
             e.printStackTrace();
@@ -64,3 +46,4 @@ public class ClientThread extends Network implements Runnable{
         }
     }
 }
+

@@ -38,38 +38,19 @@ public class ControllerMain {
 
     @FXML
     public void connectToServer(ActionEvent event) throws Exception {
-            address=tfIpAddress.getText();
-            name = tfName.getText();
-            FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
-            lobbyPane = loaderLobby.load();
-            controllerLobby = loaderLobby.getController();
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(lobbyPane, W, H));
-            stage.show();
-            ClientListener cl=new ClientListener(address,name, controllerLobby);
-            cl.start();
-            
+        address = tfIpAddress.getText();
+        name = tfName.getText();
+        FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
+        lobbyPane = loaderLobby.load();
+        controllerLobby = loaderLobby.getController();
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(lobbyPane, W, H));
+        stage.show();
+        ClientListener cl = new ClientListener(address, name, controllerLobby);
+        cl.start();
+    }
 
-    }
-    public void doServer(){
-        try{
-        Socket socket = new Socket(address, 1234);
-        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-        while (!exitLoop) {
-            oos.writeUTF(name);
-            oos.flush();
-            String name2 = ois.readUTF();
-            controllerLobby.displayName(name2);
-            exitLoop = true;
-            oos.writeUTF(name);
-            oos.flush();
-            System.out.println(name + " " + name2);
-        }
-    } catch (IOException e) {
-        e.printStackTrace();
-    } 
-    }
+  
     public void switchToMultiplayer(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menumultiplayer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

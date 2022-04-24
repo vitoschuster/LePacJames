@@ -1,5 +1,7 @@
 package client;
 
+import static server.Network.*;
+import static client.Constants.*;
 import client.*;
 import java.io.*;
 import javafx.application.*;
@@ -20,42 +22,41 @@ public class ClientListener extends Thread {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private Socket socket;
-    private boolean exitLoop = false;
     private ControllerLobby cLobby;
-    private String name;
-    private List<String> names = new ArrayList<>();
-    private boolean first = true;
-    private boolean second = true;
+    private TreeSet<String> clientNames = new TreeSet<>();
+
+    private int k  = 0;
 
     public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
         this.cLobby = c;
-        this.name = name;
+        this.clientNames.add(name);
     }
 
     @Override
     public void run() {
         try {
-            socket = new Socket(address, 1234);
+            socket = new Socket(address, PORT.toInt());
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
-            while (true) {
-                oos.writeUTF("NAME:" + name);
-                oos.flush();
-                int length = ois.readInt();
-                System.out.println("LENGTH " + length);
-                for (int i = 0; i < length; i++) {
-                    String name2 = ois.readUTF();
-                    Platform.runLater(() -> {
-                        cLobby.displayName(name2);
-                    });
+          
+            String myName = this.clientNames.iterator().next();
+            cLobby.displayName(myName);
 
-                }
+            while (k < 1) {
+                oos.writeUTF("NAME:" + myName);
+                oos.flush();
+                String anotherName = ois.readUTF();
+                if (!anotherName.equals(myName)) {
+                    cLobby.displayName(anotherName);
+                    k++;
+                } 
             }
+           
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 }

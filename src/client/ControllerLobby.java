@@ -25,10 +25,14 @@ public class ControllerLobby {
     public String getName(){
         return taReady.getText();
     }
+
     public void switchToMultiplayer(ActionEvent event) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/menumultiplayer.fxml"));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root, W.toInt(), H.toInt()));
         stage.show();
     }
-}
+
+    
+
+}   
