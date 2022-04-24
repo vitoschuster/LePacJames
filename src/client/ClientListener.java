@@ -22,15 +22,16 @@ public class ClientListener extends Thread {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private Socket socket;
-    private ControllerLobby cLobby;
+    private ControllerLobby lobby;
     private TreeSet<String> clientNames = new TreeSet<>();
     private int id = 0;
-
-    private int k  = 0;
+    private int k  = 0; 
+    private boolean isReady = false;
 
     public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
-        this.cLobby = c;
+        this.lobby = c;
+        this.readyCounter = this.lobby.readyCounter;
         this.clientNames.add(name);
     }
 
@@ -42,20 +43,29 @@ public class ClientListener extends Thread {
             ois = new ObjectInputStream(socket.getInputStream());
           
             String myName = this.clientNames.iterator().next();
-            cLobby.displayName(myName);
+            lobby.displayName(myName);
 
             while (k < 1) { //lobby loop
                 oos.writeObject("CONNECT:" + myName);
                 oos.flush();
                 String anotherName = ois.readUTF();
                 if (!anotherName.equals(myName)) {
-                    cLobby.displayName(anotherName);
+                    lobby.displayName(anotherName);
                     k++;
                 }
             }
+
             
-            while (true) { //game loop
+            
+            oos.writeObject("BTNCLICK:" + );
+            oos.flush();
+            
+            String readyMessage =(String) ois.readObject();
+
+            while (!lobby.btnReady.isDisabled()) { //game loop
+               
                 
+               
             }
 
 
