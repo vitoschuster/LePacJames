@@ -42,14 +42,11 @@ public class ControllerMain {
             name = tfName.getText();
             FXMLLoader loaderLobby = new FXMLLoader(getClass().getResource("../fxml/menuwaitinglobby.fxml"));
             lobbyPane = loaderLobby.load();
-
             controllerLobby = loaderLobby.getController();
-            controllerLobby.displayName(name);
-
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(lobbyPane, W, H));
             stage.show();
-            ClientListener cl=new ClientListener(address, controllerLobby);
+            ClientListener cl=new ClientListener(address,name, controllerLobby);
             cl.start();
             
 

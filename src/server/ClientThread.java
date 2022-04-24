@@ -1,7 +1,6 @@
 package server;
 
 import java.io.*;
-import static server.ServerThread.clients;
 import javafx.application.*;
 import javafx.event.*;
 import javafx.scene.*;
@@ -10,48 +9,58 @@ import javafx.scene.control.Alert.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.geometry.*;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ClientThread extends Thread {
+public class ClientThread extends Network implements Runnable{
     private Socket cSocket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
-   
-
+    private int k = 0;
+    private Vector <ObjectOutputStream> clientsC=new Vector<>();
     public ClientThread(Socket cSocket) {
         this.cSocket = cSocket;
     }
 
-
     @Override
     public void run() {
-        
+
         try {
-            this.ois = new ObjectInputStream(this.cSocket.getInputStream());
-            this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
-            System.out.println("Client connection");
-            //list of clients need to be on the server
-            clients.add(this.oos);
-            while (true) {
-                String message = ois.readUTF();
-                System.out.println("User name: " + message);
-                for (ObjectOutputStream stream : clients) {
-                    if (!stream.equals(this.oos)) {
-                        stream.writeUTF(message);
-                        stream.flush();
-                        System.out.println("Clients connected");
-                     
-                    }
+                this.ois = new ObjectInputStream(this.cSocket.getInputStream());
+                this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
+                System.out.println("Client connection");
+                synchronized(clientsA){
+                    clientsA.add(this.oos);
                 }
-                
-            }
+                System.out.println(clientsA.size());
+                // list of clients need to be on the server
+                while (true) {
+                    String message = ois.readUTF();
+                    String[] split = message.split(":");
+                    //System.out.println(clientsA.size());
+                    switch (split[0]) {
+                        case "NAME": {
+                            //System.out.println("User name: " + split[1]);
+                            oos.writeInt(clientsA.size());
+                            oos.flush();
+                            for(ObjectOutputStream oos: clientsA){
+                                oos.writeUTF(split[1]);
+                                oos.flush();
+                            }
+                            break;
+                        }
+    
+                    }
+    
+                }
             
+
         } catch (EOFException e) {
             System.out.println("Client disconnected");
             e.printStackTrace();
-        } catch (IOException e) {e.printStackTrace();}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

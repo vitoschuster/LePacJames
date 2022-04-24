@@ -23,10 +23,14 @@ public class ClientListener extends Thread {
     private boolean exitLoop = false;
     private ControllerLobby cLobby;
     private String name;
+    private List<String> names = new ArrayList<>();
+    private boolean first = true;
+    private boolean second = true;
 
-    public ClientListener(String ipAddress, ControllerLobby c) {
+    public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
         this.cLobby = c;
+        this.name = name;
     }
 
     @Override
@@ -35,15 +39,19 @@ public class ClientListener extends Thread {
             socket = new Socket(address, 1234);
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
-        while (!exitLoop) {
-            name=cLobby.getName();
-            oos.writeUTF(name);
-            oos.flush();
-            String name2 = ois.readUTF();
-            cLobby.displayName(name2);
-            exitLoop = true;
-            System.out.println(name + " " + name2);
-        }
+            while (true) {
+                oos.writeUTF("NAME:" + name);
+                oos.flush();
+                int length = ois.readInt();
+                System.out.println("LENGTH " + length);
+                for (int i = 0; i < length; i++) {
+                    String name2 = ois.readUTF();
+                    Platform.runLater(() -> {
+                        cLobby.displayName(name2);
+                    });
+
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
