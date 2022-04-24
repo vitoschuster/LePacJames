@@ -24,6 +24,7 @@ public class ClientListener extends Thread {
     private Socket socket;
     private ControllerLobby cLobby;
     private TreeSet<String> clientNames = new TreeSet<>();
+    private int id = 0;
 
     private int k  = 0;
 
@@ -43,16 +44,20 @@ public class ClientListener extends Thread {
             String myName = this.clientNames.iterator().next();
             cLobby.displayName(myName);
 
-            while (k < 1) {
-                oos.writeUTF("NAME:" + myName);
+            while (k < 1) { //lobby loop
+                oos.writeObject("CONNECT:" + myName);
                 oos.flush();
                 String anotherName = ois.readUTF();
                 if (!anotherName.equals(myName)) {
                     cLobby.displayName(anotherName);
                     k++;
-                } 
+                }
             }
-           
+            
+            while (true) { //game loop
+                
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();

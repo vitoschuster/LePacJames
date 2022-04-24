@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-
 import javafx.scene.media.*;
 import javafx.application.Application;
 
@@ -47,7 +46,6 @@ public class Game extends StackPane {
    private static final int GHOST_NUM = 4;
    private static final int GRID_WIDTH = 5;
    private static final int GRID_HEIGHT = 5;
-
 
    public Game(Court court) {
       this.court = court;
@@ -98,6 +96,11 @@ public class Game extends StackPane {
       return pacman;
    }
 
+   public void displayPacman() {
+      this.runners.add(new Pacman(new Point2D(40, 40)));
+      court.getChildren().add(runners.get(runners.size() - 1));
+   }
+
    public void displayRunners(List<Runner> list) {
       this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
       p = (Pacman) this.runners.get(0);
@@ -130,7 +133,7 @@ public class Game extends StackPane {
                         p.lives--;
                         hud.update(p.score, p.lives);
                         restart(court.stage);
-                        
+
                         // System.out.println("PLEASE WORK");
 
                         // String path = "video/lose.mp4";
@@ -157,7 +160,7 @@ public class Game extends StackPane {
                   if (!ball.isVisible()) {
                      iter.remove();
                      p.score++;
-                     hud.update(p.score,p.lives);
+                     hud.update(p.score, p.lives);
                      System.out.println(p.score);
                   }
                }
@@ -188,11 +191,11 @@ public class Game extends StackPane {
       // long delay = 1000L;
       // startTimer.schedule(task, delay);
    }
-   
-   public void cleanup() { 
-      
-      Platform.runLater(() ->{
-         if(hud.lives-1==0){
+
+   public void cleanup() {
+
+      Platform.runLater(() -> {
+         if (hud.lives - 1 == 0) {
             System.exit(0);
          }
          timer.stop();
@@ -202,17 +205,15 @@ public class Game extends StackPane {
          p.score = 0;
       });
    }
-   public void restart(Stage stage) {
 
+   public void restart(Stage stage) {
       cleanup();
-      Game g=new Game(new Court(stage));
+      Game g = new Game(new Court(stage));
       stage.setScene(new Scene(g, 1120, 700));
       stage.show();
-      g.hud.lives=p.lives--;
+      g.hud.lives = p.lives--;
       g.hud.update(0, g.hud.lives);
    }
-   
-
 
    void alertLater(AlertType type, String header, String message) {
       Alert a = new Alert(type, message);
@@ -225,9 +226,6 @@ public class Game extends StackPane {
    // // // TODO - restart game call method
 
    // }
-
-  
-   
 
    /*
     * void createGrid() {
@@ -260,7 +258,5 @@ public class Game extends StackPane {
     * }
     * }
     */
-  
-
 
 } // end class Races

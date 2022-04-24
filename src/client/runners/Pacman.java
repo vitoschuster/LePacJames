@@ -6,9 +6,10 @@
  * @version 1604
  */
 package client.runners;
+import java.io.*;
 import javafx.geometry.*;
 
-public class Pacman extends Runner {
+public class Pacman extends Runner implements Serializable {
 
     private static final String IMG_PATH = "img/lepac.gif";
 
