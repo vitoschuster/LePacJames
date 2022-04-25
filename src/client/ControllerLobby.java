@@ -17,6 +17,8 @@ public class ControllerLobby {
 
     @FXML
     Button btnReady;
+
+    @FXML
     TextArea taReady; 
     Stage stage;
     int numPlayers = -1;

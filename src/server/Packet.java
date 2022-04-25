@@ -5,7 +5,7 @@ import client.runners.*;
 
 public class Packet implements Serializable {
     private static final long serialVersionUID = 1L;
-    private int id;
+    private Integer id;
     private Pacman pacman;
 
     public Packet(int id, Pacman pacman) {
@@ -13,7 +13,7 @@ public class Packet implements Serializable {
         this.pacman = pacman;
     }
 
-    public int id() {
+    public Integer id() {
         return id;
     }
 

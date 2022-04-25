@@ -1,17 +1,22 @@
 package server;
-import static server.Network.*;
+import static server.ServerThread.*;
 import java.io.*;
 import java.io.ObjectInputStream.GetField;
 import java.net.*;
 import java.util.*;
 
+import javafx.application.Platform;
+
+
 public class ClientThread extends Thread {
     private Socket cSocket;
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
+    public ObjectOutputStream oos;
+    public ObjectInputStream ois;
+    private Integer id;
 
-    public ClientThread(Socket cSocket) {
+    public ClientThread(Socket cSocket, Integer id) {
         this.cSocket = cSocket;
+        this.id = id;
     }
 
     @Override
@@ -27,13 +32,13 @@ public class ClientThread extends Thread {
                 if (obj instanceof String) {
                     String message = (String) obj;
                     String[] split = message.split(":");
-                    clients.put(this.oos, split[1]);
+                    
                     switch (split[0]) {
                         case "CONNECT": 
-                            doLobby();
+                            doLobby(split[1]);
                             break;
                         case "BTNCLICK":
-                            
+
                             break;
                         
                     }
@@ -50,22 +55,27 @@ public class ClientThread extends Thread {
         }
     }
 
-  
-    
-    private void doLobby() {
+    private synchronized void doLobby(String playerName) {
         try { //updating players in lobby - sending names
-            for (Map.Entry<ObjectOutputStream, String> entry : clients.entrySet()) {
-                if (!entry.getKey().equals(this.oos)) {
-                    this.oos.writeUTF(entry.getValue());
+            for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
+                System.out.println(entry.getKey() + " " + this.id);
+                if (entry.getKey().equals(this.id)) {
+                    System.out.println("id equals");
+                    this.oos.writeUTF(playerName);
                     this.oos.flush();
                 } else {
-                    entry.getKey().writeUTF(entry.getValue());
-                    entry.getKey().flush();
+                    System.out.println("send to others");
+                    entry.getValue().oos.writeUTF(playerName);
+                    entry.getValue().oos.flush();
                 }
+             
+                   
+             
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
 }
 

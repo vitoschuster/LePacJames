@@ -1,6 +1,5 @@
 package client;
 
-import static server.Network.*;
 import static client.Constants.*;
 import client.*;
 import java.io.*;
@@ -25,13 +24,13 @@ public class ClientListener extends Thread {
     private ControllerLobby lobby;
     private TreeSet<String> clientNames = new TreeSet<>();
     private int id = 0;
-    private int k  = 0; 
+    private int k = 0;
     private boolean isReady = false;
 
     public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
         this.lobby = c;
-        this.readyCounter = this.lobby.readyCounter;
+        // this.readyCounter = this.lobby.readyCounter;
         this.clientNames.add(name);
     }
 
@@ -41,33 +40,44 @@ public class ClientListener extends Thread {
             socket = new Socket(address, PORT.toInt());
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
-          
+
             String myName = this.clientNames.iterator().next();
             lobby.displayName(myName);
 
-            while (k < 1) { //lobby loop
-                oos.writeObject("CONNECT:" + myName);
-                oos.flush();
-                String anotherName = ois.readUTF();
-                if (!anotherName.equals(myName)) {
-                    lobby.displayName(anotherName);
-                    k++;
+            Platform.runLater(() -> {
+                while (k < 1) { // lobby loop
+
+                    try {
+                        oos.writeObject("CONNECT:" + myName);
+
+                        oos.flush();
+
+                        String anotherName = ois.readUTF();
+                        System.out.println(anotherName + " " + myName);
+                        if (!anotherName.equals(myName)) {
+                            lobby.displayName(anotherName);
+                            k++;
+                        }
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
-            }
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
 
-            
-            
-            oos.writeObject("BTNCLICK:" + );
-            oos.flush();
-            
-            String readyMessage =(String) ois.readObject();
+            // oos.writeObject("BTNCLICK:" + );
+            // oos.flush();
 
-            while (!lobby.btnReady.isDisabled()) { //game loop
-               
-                
-               
-            }
+            // String readyMessage =(String) ois.readObject();
 
+            // while (!lobby.btnReady.isDisabled()) { //game loop
+
+            // }
 
         } catch (Exception e) {
             e.printStackTrace();
