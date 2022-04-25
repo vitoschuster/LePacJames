@@ -43,6 +43,8 @@ public class ClientListener extends Thread {
 
             String myName = this.clientNames.iterator().next();
             lobby.displayName(myName);
+            this.lobby.btnReady.setDisable(true);
+
             try {
                 while (k < 1) { // lobby loop
                     oos.writeObject("CONNECT:" + myName);
@@ -53,6 +55,7 @@ public class ClientListener extends Thread {
                     if (!anotherName.equals(myName)) {
                         lobby.displayName(anotherName);
                         k++;
+                        this.lobby.btnReady.setDisable(false);
                     }
                     Thread.sleep(FPS.toInt()); // 30 fps
                 }
@@ -61,6 +64,7 @@ public class ClientListener extends Thread {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+
 
             while (!this.lobby.btnReady.isDisabled())
                 Thread.sleep(FPS.toInt());
@@ -75,7 +79,11 @@ public class ClientListener extends Thread {
             }
             // ois.reset();
             String readyConf = ois.readUTF();
-            System.out.println(readyConf);
+             System.out.println(readyConf);
+            System.out.println(ois.readUTF());
+            System.out.println(ois.readUTF());
+           
+            
             // oos.writeObject("BTNCLICK:" + );
             // oos.flush();
 
