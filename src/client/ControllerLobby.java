@@ -19,7 +19,8 @@ public class ControllerLobby {
     Button btnReady;
 
     @FXML
-    TextArea taReady; 
+    TextArea taReady;
+    
     Stage stage;
     int numPlayers = -1;
     int readyCounter = -1;
@@ -47,9 +48,7 @@ public class ControllerLobby {
 
     public void play(ActionEvent event) throws Exception {
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        readyCounter++;
         btnReady.setDisable(true);
-
         /** when other button is clicked */
     }
     

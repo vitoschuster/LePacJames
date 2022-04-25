@@ -1,7 +1,7 @@
 package client;
 
 public enum Constants {
-    W(1120), H(700), PORT(1234);
+    W(1120), H(700), PORT(1234), FPS(33);
     
     private int numVal;
 
