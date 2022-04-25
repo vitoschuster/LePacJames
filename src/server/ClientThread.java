@@ -6,7 +6,6 @@ import java.io.ObjectInputStream.GetField;
 import java.net.*;
 import java.util.*;
 
-
 public class ClientThread extends Thread {
     private Socket cSocket;
     public ObjectOutputStream oos;
@@ -25,13 +24,13 @@ public class ClientThread extends Thread {
             this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
             System.out.println("Client connection");
             System.out.println(clients.size());
+            this.oos.writeInt(id);
+            this.oos.flush();
             while (true) {
                 Object obj = ois.readObject();
-                oos.reset();
                 if (obj instanceof String) {
                     String message = (String) obj;
                     String[] split = message.split(":");
-
                     switch (split[0]) {
                         case "CONNECT":
                             doLobby(split[1]);
@@ -39,7 +38,18 @@ public class ClientThread extends Thread {
                         case "READY":
                             doReady(split[1]);
                             break;
+                    }
+                } else if (obj instanceof Packet) {
+                    Packet packet = (Packet) obj;
+                    System.out.println("Client " + packet.getId() + packet.getPacman().getTranslateX() + " " + packet.getPacman().xspeed);
+                    for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
+                        if (!entry.getKey().equals(packet.getId())) {
+                                entry.getValue().oos.writeObject(packet);
+                                // System.out.println("Client " + packet.getId() + " "+ entry.getKey() + " " + packet.getPacman().getTranslateX() + " " + packet.getPacman().xspeed);
+                                entry.getValue().oos.flush();
 
+                            }
+                        
                     }
                 }
 
@@ -57,7 +67,6 @@ public class ClientThread extends Thread {
     private synchronized void doReady(String readyConf) {
         try {
             if (!this.id.equals(0) && this.id.equals(clients.size() - 1)) {
-                System.out.println("clientid: " + this.id);
                 for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
                     entry.getValue().oos.reset();
                     entry.getValue().oos.writeUTF("everyone is ready");
@@ -74,11 +83,9 @@ public class ClientThread extends Thread {
             for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
                 System.out.println(entry.getKey() + " " + this.id);
                 if (entry.getKey().equals(this.id)) {
-                    System.out.println("id equals");
                     this.oos.writeUTF(playerName);
                     this.oos.flush();
                 } else {
-                    System.out.println("send to others");
                     entry.getValue().oos.writeUTF(playerName);
                     entry.getValue().oos.flush();
                 }

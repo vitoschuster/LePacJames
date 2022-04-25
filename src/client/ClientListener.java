@@ -2,6 +2,7 @@ package client;
 
 import static client.Constants.*;
 import client.*;
+import client.runners.*;
 import java.io.*;
 import javafx.application.*;
 import javafx.event.*;
@@ -10,90 +11,172 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
+import server.Packet;
 import javafx.geometry.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import client.ControllerLobby;
 
 public class ClientListener extends Thread {
     private String address;
+    private Socket socket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private Socket socket;
+    private Game game;
     private ControllerLobby lobby;
-    private TreeSet<String> clientNames = new TreeSet<>();
-    private int id = 0;
+    private String myName;
+    private Integer id = -1;
     private int k = 0;
     private boolean isReady = false;
 
     public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
         this.lobby = c;
-        // this.readyCounter = this.lobby.readyCounter;
-        this.clientNames.add(name);
+        this.myName = name;
     }
 
     @Override
     public void run() {
         try {
-            socket = new Socket(address, PORT.toInt());
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
+            doConnect();
 
-            String myName = this.clientNames.iterator().next();
-            lobby.displayName(myName);
-            this.lobby.btnReady.setDisable(true);
+            doLobby();
 
-            try {
-                while (k < 1) { // lobby loop
-                    oos.writeObject("CONNECT:" + myName);
-                    oos.flush();
+            isReady();
 
-                    String anotherName = ois.readUTF();
-                    System.out.println(anotherName + " " + myName);
-                    if (!anotherName.equals(myName)) {
-                        lobby.displayName(anotherName);
-                        k++;
-                        this.lobby.btnReady.setDisable(false);
-                    }
-                    Thread.sleep(FPS.toInt()); // 30 fps
-                }
+            startGame();
 
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            while (true) {
+                sendPacman();
+                receivePacman();
+                Thread.sleep(500);
             }
-
-
-            while (!this.lobby.btnReady.isDisabled())
-                Thread.sleep(FPS.toInt());
-
-            try {
-                oos.reset();
-                oos.writeObject("READY:" + "iamReady");
-                oos.flush();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            // ois.reset();
-            
-            String readyConf = ois.readUTF();
-            while(!readyConf.equals("everyone is ready"))
-                readyConf = ois.readUTF();
-           
-         
-            
-            Platform.runLater( () -> {
-                lobby.stage.setScene(new Scene(new Game(new Court(lobby.stage), true, 1), W.toInt(), H.toInt()));
-            lobby.stage.show();
-            });
-        
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Try to connect the client to the server with inputted ipaddress on port 1234
+     * saving unique client id after connection
+     */
+    private void doConnect() {
+        try {
+            socket = new Socket(address, PORT.toInt());
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+            this.id = this.ois.readInt();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Waiting for players to connect to the lobby
+     * Listening for new players and displaying in lobby
+     */
+    private void doLobby() {
+        try {
+            lobby.displayName(myName);
+            lobby.btnReady.setDisable(true);
+            while (k < 1) { // lobby loop
+                oos.writeObject("CONNECT:" + myName);
+                oos.flush();
+                String anotherName = ois.readUTF();
+                // System.out.println(anotherName + " " + myName);
+                if (!anotherName.equals(myName)) {
+                    lobby.displayName(anotherName);
+                    k++;
+                    this.lobby.btnReady.setDisable(false);
+                }
+                Thread.sleep(FPS.toInt()); // 30 fps
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Return true when button is pressed
+     */
+    private void isReady() {
+        while (!this.lobby.btnReady.isDisabled()) {
+            try {
+                Thread.sleep(FPS.toInt());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            oos.flush();
+            oos.reset();
+            oos.writeObject("READY:" + "iamReady");
+
+            String readyConf = ois.readUTF();
+            while (!readyConf.equals("everyone is ready"))
+                readyConf = ois.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Starts the game
+     */
+    private void startGame() {
+        Platform.runLater(() -> {
+            game = new Game(new Court(lobby.stage), true, 2);
+            lobby.stage.setScene(new Scene(game, W.toInt(), H.toInt()));
+            lobby.stage.show();
+        });
+    }
+
+    /**
+     * Send Packet
+     */
+
+    private void sendPacman() {
+        // System.out.println("print game");
+        if (game == null || game.p == null) // mutka mvp
+            return;
+
+       
+        Packet packet = new Packet(this.id, game.p);
+        System.out.println(packet.getPacman().getTranslateX());
+        try {
+            oos.reset();
+            // System.out.println("Pakcet sent");
+            this.oos.writeObject(packet);
+            this.oos.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get packet
+     */
+
+    private void receivePacman() {
+        if (game == null)
+            return;
+
+        Object obj;
+        try {
+            obj = this.ois.readObject();
+            
+            if (obj instanceof Packet) {
+                Packet packet = (Packet) obj;
+                // System.out.println("fake pacman" + packet.getPacman().getTranslateX());
+                // game.runners.set(1, packet.getPacman());
+                // System.out.println("Pakcet received");
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 
 }

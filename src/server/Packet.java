@@ -13,11 +13,11 @@ public class Packet implements Serializable {
         this.pacman = pacman;
     }
 
-    public Integer id() {
+    public Integer getId() {
         return id;
     }
 
-    public Pacman pacman() {
+    public Pacman getPacman() {
         return pacman;
     }
 

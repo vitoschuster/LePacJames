@@ -37,11 +37,11 @@ public class Game extends StackPane {
    // Window attributes
 
    private Court court;
-   private List<Runner> runners = new ArrayList<>();
+   public List<Runner> runners = new ArrayList<>();
    private List<List<Ball>> balls = new ArrayList<>();
    private HUD hud;
    private AnimationTimer timer;
-   private Pacman p;
+   public Pacman p;
    private boolean isCoop = false;
    private boolean ifCollision = false;
    private static final int GHOST_NUM = 4;
@@ -112,8 +112,9 @@ public class Game extends StackPane {
          if (i == 0) {
             this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
             p = (Pacman) this.runners.get(0);
+         } else {
+            this.runners.add(new Pacman(new Point2D(40, 40)));
          }
-         this.runners.add(new Pacman(new Point2D(40, 80)));
       }
       this.court.getChildren().addAll(runners);
    }
@@ -144,23 +145,11 @@ public class Game extends StackPane {
          public void handle(long now) {
             for (Runner r : runners) {
                if (r instanceof Ghost) {
-                  if (!ifCollision) {
-                     if (p.checkCollisionWithGhost((Ghost) r)) {
-                        ifCollision = true;
-                        p.lives--;
-                        hud.update(p.score, p.lives);
-                        restart(court.stage);
-
-                        // System.out.println("PLEASE WORK");
-
-                        // String path = "video/lose.mp4";
-                        // Media media = new Media(new File(path).toURI().toString());
-                        // MediaPlayer player = new MediaPlayer(media);
-                        // MediaView mediaView = new MediaView(player);
-                        // court.getChildren().add(mediaView);
-                        // player.play();
-                        // player.setOnEndOfMedia(() -> System.exit(0));
-                     }
+                  if (!ifCollision && p.checkCollisionWithGhost((Ghost) r)) {
+                     ifCollision = true;
+                     p.lives--;
+                     hud.update(p.score, p.lives);
+                     restart(court.stage);
                   }
                   court.handleCollision((Ghost) r);
                   r.update();
@@ -168,33 +157,33 @@ public class Game extends StackPane {
                   r.update();
 
             }
-            for (List<Ball> ballList : balls) {
-               for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
-                  Ball ball = iter.next();
-                  if (p.checkCollisionWithBall(ball))
-                     ball.setVisible(false);
+            // for (List<Ball> ballList : balls) {
+            //    for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
+            //       Ball ball = iter.next();
+            //       if (p.checkCollisionWithBall(ball))
+            //          ball.setVisible(false);
 
-                  if (!ball.isVisible()) {
-                     iter.remove();
-                     p.score++;
-                     hud.update(p.score, p.lives);
-                     System.out.println(p.score);
-                  }
-               }
-            }
-            if (!ifCollision) {
-               if (p.score == (GRID_HEIGHT * GRID_WIDTH)) {
-                  System.out.println("All eaten");
-                  ifCollision = true;
-                  String path = "video/win.mp4";
-                  Media media = new Media(new File(path).toURI().toString());
-                  MediaPlayer player = new MediaPlayer(media);
-                  MediaView mediaView = new MediaView(player);
-                  court.getChildren().add(mediaView);
-                  player.play();
-                  player.setOnEndOfMedia(() -> System.exit(0));
-               }
-            }
+            //       if (!ball.isVisible()) {
+            //          iter.remove();
+            //          p.score++;
+            //          hud.update(p.score, p.lives);
+            //          System.out.println(p.score);
+            //       }
+            //    }
+            // }
+            // if (!ifCollision) {
+            //    if (p.score == (GRID_HEIGHT * GRID_WIDTH)) {
+            //       System.out.println("All eaten");
+            //       ifCollision = true;
+            //       String path = "video/win.mp4";
+            //       Media media = new Media(new File(path).toURI().toString());
+            //       MediaPlayer player = new MediaPlayer(media);
+            //       MediaView mediaView = new MediaView(player);
+            //       court.getChildren().add(mediaView);
+            //       player.play();
+            //       player.setOnEndOfMedia(() -> System.exit(0));
+            //    }
+            // }
 
          }
       };

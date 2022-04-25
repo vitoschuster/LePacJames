@@ -25,15 +25,10 @@ public class ControllerLobby {
     int numPlayers = -1;
     int readyCounter = -1;
      
-
     public void displayName(String name) {
         taReady.appendText(name + "\n");
         numPlayers++;
     }
-
-    // public boolean isReady() {
-    //TODO - buttons pressed (ready);     
-    // }
 
     public int getNumPlayers() {
         return numPlayers;
@@ -52,6 +47,5 @@ public class ControllerLobby {
         /** when other button is clicked */
     }
     
-
 
 }
