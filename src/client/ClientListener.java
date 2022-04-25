@@ -78,20 +78,18 @@ public class ClientListener extends Thread {
                 e.printStackTrace();
             }
             // ois.reset();
-            String readyConf = ois.readUTF();
-             System.out.println(readyConf);
-            System.out.println(ois.readUTF());
-            System.out.println(ois.readUTF());
-           
             
-            // oos.writeObject("BTNCLICK:" + );
-            // oos.flush();
-
-            // String readyMessage =(String) ois.readObject();
-
-            // while (!lobby.btnReady.isDisabled()) { //game loop
-
-            // }
+            String readyConf = ois.readUTF();
+            while(!readyConf.equals("everyone is ready"))
+                readyConf = ois.readUTF();
+           
+         
+            
+            Platform.runLater( () -> {
+                lobby.stage.setScene(new Scene(new Game(new Court(lobby.stage), true, 1), W.toInt(), H.toInt()));
+            lobby.stage.show();
+            });
+        
 
         } catch (Exception e) {
             e.printStackTrace();

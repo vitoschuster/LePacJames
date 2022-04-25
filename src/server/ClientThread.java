@@ -6,7 +6,6 @@ import java.io.ObjectInputStream.GetField;
 import java.net.*;
 import java.util.*;
 
-import javafx.application.Platform;
 
 public class ClientThread extends Thread {
     private Socket cSocket;

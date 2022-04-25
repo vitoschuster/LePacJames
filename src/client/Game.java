@@ -113,7 +113,7 @@ public class Game extends StackPane {
             this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
             p = (Pacman) this.runners.get(0);
          }
-         this.runners.add(new Pacman(new Point2D(40, 40 * i)));
+         this.runners.add(new Pacman(new Point2D(40, 80)));
       }
       this.court.getChildren().addAll(runners);
    }
