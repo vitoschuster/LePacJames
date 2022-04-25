@@ -43,33 +43,39 @@ public class ClientListener extends Thread {
 
             String myName = this.clientNames.iterator().next();
             lobby.displayName(myName);
-
-            Platform.runLater(() -> {
+            try {
                 while (k < 1) { // lobby loop
+                    oos.writeObject("CONNECT:" + myName);
+                    oos.flush();
 
-                    try {
-                        oos.writeObject("CONNECT:" + myName);
-
-                        oos.flush();
-
-                        String anotherName = ois.readUTF();
-                        System.out.println(anotherName + " " + myName);
-                        if (!anotherName.equals(myName)) {
-                            lobby.displayName(anotherName);
-                            k++;
-                        }
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    String anotherName = ois.readUTF();
+                    System.out.println(anotherName + " " + myName);
+                    if (!anotherName.equals(myName)) {
+                        lobby.displayName(anotherName);
+                        k++;
                     }
+                    Thread.sleep(FPS.toInt()); // 30 fps
                 }
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
 
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            while (!this.lobby.btnReady.isDisabled())
+                Thread.sleep(FPS.toInt());
+
+            try {
+                oos.reset();
+                oos.writeObject("READY:" + "iamReady");
+                oos.flush();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            // ois.reset();
+            String readyConf = ois.readUTF();
+            System.out.println(readyConf);
             // oos.writeObject("BTNCLICK:" + );
             // oos.flush();
 
