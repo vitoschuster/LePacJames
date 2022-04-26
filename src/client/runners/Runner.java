@@ -27,7 +27,9 @@ import java.util.concurrent.*;
 
 
 
-public abstract class Runner extends ImageView {
+public abstract class Runner extends ImageView implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     public Point2D pos = new Point2D(0, 0);
     public Image image;
     public double xspeed = 0;

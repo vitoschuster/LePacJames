@@ -49,7 +49,7 @@ public class ClientListener extends Thread {
             while (true) {
                 sendPacman();
                 receivePacman();
-                Thread.sleep(500);
+                Thread.sleep(25);
             }
 
         } catch (Exception e) {
@@ -109,9 +109,9 @@ public class ClientListener extends Thread {
             }
         }
         try {
-            oos.flush();
-            oos.reset();
             oos.writeObject("READY:" + "iamReady");
+            oos.flush();
+            // oos.reset();
 
             String readyConf = ois.readUTF();
             while (!readyConf.equals("everyone is ready"))
@@ -140,13 +140,8 @@ public class ClientListener extends Thread {
         // System.out.println("print game");
         if (game == null || game.p == null) // mutka mvp
             return;
-
-       
-        Packet packet = new Packet(this.id, game.p);
-        System.out.println(packet.getPacman().getTranslateX());
+        Packet packet = new Packet(this.id, game.p.getTranslateX(), game.p.getTranslateY(), game.p.getRotate());
         try {
-            oos.reset();
-            // System.out.println("Pakcet sent");
             this.oos.writeObject(packet);
             this.oos.flush();
         } catch (Exception e) {
@@ -165,9 +160,14 @@ public class ClientListener extends Thread {
         Object obj;
         try {
             obj = this.ois.readObject();
-            
+
             if (obj instanceof Packet) {
                 Packet packet = (Packet) obj;
+                Platform.runLater(() -> {
+                    game.runners.get(1).setTranslateX(packet.getX());
+                    game.runners.get(1).setTranslateY(packet.getY());
+                    game.runners.get(1).setRotate(packet.getAngle());
+                });
                 // System.out.println("fake pacman" + packet.getPacman().getTranslateX());
                 // game.runners.set(1, packet.getPacman());
                 // System.out.println("Pakcet received");

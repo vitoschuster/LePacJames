@@ -41,12 +41,13 @@ public class ClientThread extends Thread {
                     }
                 } else if (obj instanceof Packet) {
                     Packet packet = (Packet) obj;
-                    System.out.println("Client " + packet.getId() + packet.getPacman().getTranslateX() + " " + packet.getPacman().xspeed);
                     for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
                         if (!entry.getKey().equals(packet.getId())) {
+                            synchronized (oos) {
                                 entry.getValue().oos.writeObject(packet);
                                 // System.out.println("Client " + packet.getId() + " "+ entry.getKey() + " " + packet.getPacman().getTranslateX() + " " + packet.getPacman().xspeed);
                                 entry.getValue().oos.flush();
+                                }
 
                             }
                         
@@ -68,7 +69,7 @@ public class ClientThread extends Thread {
         try {
             if (!this.id.equals(0) && this.id.equals(clients.size() - 1)) {
                 for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
-                    entry.getValue().oos.reset();
+                    // entry.getValue().oos.reset();
                     entry.getValue().oos.writeUTF("everyone is ready");
                     entry.getValue().oos.flush();
                 }
