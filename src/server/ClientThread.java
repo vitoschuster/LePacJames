@@ -45,15 +45,11 @@ public class ClientThread extends Thread {
                         if (!entry.getKey().equals(packet.getId())) {
                             synchronized (oos) {
                                 entry.getValue().oos.writeObject(packet);
-                                // System.out.println("Client " + packet.getId() + " "+ entry.getKey() + " " + packet.getPacman().getTranslateX() + " " + packet.getPacman().xspeed);
                                 entry.getValue().oos.flush();
-                                }
-
                             }
-                        
+                        }
                     }
                 }
-
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

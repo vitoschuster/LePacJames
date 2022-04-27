@@ -28,4 +28,10 @@ public class Ball extends Runner {
 
     }
 
+    @Override
+    public boolean isMoving(double lastX, double lastY) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

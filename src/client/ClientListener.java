@@ -28,6 +28,10 @@ public class ClientListener extends Thread {
     private Integer id = -1;
     private int k = 0;
     private boolean isReady = false;
+    private boolean isFirst = true;
+    private List<Double> objectX = new ArrayList<>();
+    private List<Double> objectY = new ArrayList<>();
+    private boolean isBall = false;
 
     public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
@@ -49,6 +53,12 @@ public class ClientListener extends Thread {
             while (true) {
                 sendPacman();
                 receivePacman();
+                sendGhost();
+                receiveGhost();
+                if (!isBall) {
+                    sendBalls();
+                    receiveBalls();
+                }
                 Thread.sleep(25);
             }
 
@@ -111,7 +121,6 @@ public class ClientListener extends Thread {
         try {
             oos.writeObject("READY:" + "iamReady");
             oos.flush();
-            // oos.reset();
 
             String readyConf = ois.readUTF();
             while (!readyConf.equals("everyone is ready"))
@@ -126,7 +135,7 @@ public class ClientListener extends Thread {
      */
     private void startGame() {
         Platform.runLater(() -> {
-            game = new Game(new Court(lobby.stage), true, 2);
+            game = new Game(new Court(lobby.stage), this.id, true, 2);
             lobby.stage.setScene(new Scene(game, W.toInt(), H.toInt()));
             lobby.stage.show();
         });
@@ -137,10 +146,11 @@ public class ClientListener extends Thread {
      */
 
     private void sendPacman() {
-        // System.out.println("print game");
-        if (game == null || game.p == null) // mutka mvp
-            return;
-        Packet packet = new Packet(this.id, game.p.getTranslateX(), game.p.getTranslateY(), game.p.getRotate());
+        if (game == null || game.p == null)
+            return; // mutka mvp
+
+        Packet packet = new Packet(this.id, game.p.getTranslateX(), game.p.getTranslateY(), game.p.angle,
+                game.p.getScaleY());
         try {
             this.oos.writeObject(packet);
             this.oos.flush();
@@ -154,23 +164,115 @@ public class ClientListener extends Thread {
      */
 
     private void receivePacman() {
-        if (game == null)
-            return;
+        if (game == null) return;
 
-        Object obj;
         try {
-            obj = this.ois.readObject();
-
+            Object obj = this.ois.readObject();
             if (obj instanceof Packet) {
                 Packet packet = (Packet) obj;
                 Platform.runLater(() -> {
                     game.runners.get(1).setTranslateX(packet.getX());
                     game.runners.get(1).setTranslateY(packet.getY());
-                    game.runners.get(1).setRotate(packet.getAngle());
+                    game.runners.get(1).angle = packet.getAngle();
+                    game.runners.get(1).setScaleY(packet.getScaleY());
                 });
                 // System.out.println("fake pacman" + packet.getPacman().getTranslateX());
                 // game.runners.set(1, packet.getPacman());
                 // System.out.println("Pakcet received");
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    private void sendGhost() {
+
+        if (game == null || id > 0)
+            return;
+
+        game.runners.stream().filter(Ghost.class::isInstance).forEach(g -> {
+            objectX.add(g.getTranslateX());
+            objectY.add(g.getTranslateY());
+        });
+
+        Packet packet = new Packet(id, objectX, objectY);
+        try {
+            this.oos.reset();
+            this.oos.writeObject(packet);
+            this.oos.flush();
+            objectX.removeAll(objectX);
+            objectY.removeAll(objectY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void receiveGhost() {
+        if (game == null || id < 1)
+            return;
+
+        try {
+
+            Object obj = this.ois.readObject();
+            if (obj instanceof Packet) {
+                Packet packet = (Packet) obj;
+                Platform.runLater(() -> {
+                    for (int i = 0; i < game.ghosts.size(); i++) {
+                        game.ghosts.get(i).setTranslateX(packet.getObjectX().get(i));
+                        game.ghosts.get(i).setTranslateY(packet.getObjectY().get(i));
+                    }
+                });
+            }
+        } catch (ClassNotFoundException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    private void sendBalls() {
+        if (game == null || id > 0)
+            return;
+
+        game.balls.forEach(ballList -> ballList.forEach(ball -> {
+            objectX.add(ball.getTranslateX());
+            objectY.add(ball.getTranslateY());
+        }));
+
+        Packet packet = new Packet(id, objectX, objectY);
+        try {
+            this.oos.reset();
+            this.oos.writeObject(packet);
+            this.oos.flush();
+            objectX.removeAll(objectX);
+            objectY.removeAll(objectY);
+            isBall = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void receiveBalls() {
+        if (game == null || id < 1)
+            return;
+
+        try {
+            Object obj = this.ois.readObject();
+            isBall = true;
+            if (obj instanceof Packet) {
+                Packet packet = (Packet) obj;
+                Platform.runLater(() -> {
+                    int i = 0;
+                    for (List<Ball> x : game.balls) {
+                        for (int k = 0; k < x.size(); k++, i++) {
+                            x.get(k).setTranslateX(packet.getObjectX().get(i));
+                            x.get(k).setTranslateY(packet.getObjectY().get(i));
+                        }
+                    }
+                });
             }
         } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block

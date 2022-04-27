@@ -38,25 +38,34 @@ public class Game extends StackPane {
 
    private Court court;
    public List<Runner> runners = new ArrayList<>();
-   private List<List<Ball>> balls = new ArrayList<>();
+   public List<List<Ball>> balls = new ArrayList<>();
+   public List<Ghost> ghosts = new ArrayList<>();
    private HUD hud;
    private AnimationTimer timer;
    public Pacman p;
+   public Pacman p2;
+   public boolean isMoving = false;
    private boolean isCoop = false;
    private boolean ifCollision = false;
+   private int id;
+
    private static final int GHOST_NUM = 4;
    private static final int GRID_WIDTH = 5;
    private static final int GRID_HEIGHT = 5;
 
    /* multiplayer constructor */
-   public Game(Court court, boolean isCoop, int numPlayers) {
+   public Game(Court court, Integer id, boolean isCoop, int numPlayers) {
+      this.isCoop = isCoop;
       this.court = court;
+      this.id = id;
       this.displayPlayers(numPlayers);
+      this.displayGhost();
+      this.displayEatables(balls);
       this.hud = new HUD(court.stage.getScene());
-      this.getChildren().addAll(this.court);
+      this.getChildren().addAll(this.court, this.hud);
       this.start();
    }
-
+   
    /* singleplayer constructor */
    public Game(Court court) {
       this.court = court;
@@ -71,7 +80,6 @@ public class Game extends StackPane {
     * event handling
     * 
     */
-
    public Pacman addPlayerControls(Pacman pacman) {
       this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, evt -> {
          switch (evt.getCode()) {
@@ -107,18 +115,7 @@ public class Game extends StackPane {
       return pacman;
    }
 
-   public void displayPlayers(int numPlayers) {
-      for (int i = 0; i < numPlayers; i++) {
-         if (i == 0) {
-            this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
-            p = (Pacman) this.runners.get(0);
-         } else {
-            this.runners.add(new Pacman(new Point2D(40, 40)));
-         }
-      }
-      this.court.getChildren().addAll(runners);
-   }
-
+   /* singleplayer */
    public void displayRunners(List<Runner> list) {
       this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
       p = (Pacman) this.runners.get(0);
@@ -126,6 +123,27 @@ public class Game extends StackPane {
          this.runners.add(new Ghost(this.court, i, this.court.randPos(32, 40)));
 
       court.getChildren().addAll(list);
+   }
+
+   public void displayGhost() {
+      for (int i = 0; i < GHOST_NUM; i++) {
+         this.ghosts.add(new Ghost(this.court, i, this.court.randPos(32, 40)));
+         this.runners.add(ghosts.get(i));
+      }
+      this.court.getChildren().addAll(ghosts);
+   }
+
+   public void displayPlayers(int numPlayers) {
+      for (int i = 0; i < numPlayers; i++) {
+         if (i == 0) {
+            this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
+            p = (Pacman) this.runners.get(0);
+         } else {
+            this.runners.add(new Pacman(new Point2D(40, 40)));
+            p2 = (Pacman) this.runners.get(1);
+         }
+      }
+      this.court.getChildren().addAll(runners);
    }
 
    public void displayEatables(List<List<Ball>> balls) {
@@ -145,47 +163,31 @@ public class Game extends StackPane {
          public void handle(long now) {
             for (Runner r : runners) {
                if (r instanceof Ghost) {
-                  if (!ifCollision && p.checkCollisionWithGhost((Ghost) r)) {
+                  if (isCoop) {
+                     if (!ifCollision
+                           && (p.checkCollisionWithGhost((Ghost) r) || p2.checkCollisionWithGhost((Ghost) r))) {
+                        ifCollision = true;
+                        System.out.println("CollionM");
+                        // restart(court.stage);
+                     }
+                  } else if (!ifCollision && (p.checkCollisionWithGhost((Ghost) r))) {
                      ifCollision = true;
-                     p.lives--;
-                     hud.update(p.score, p.lives);
                      restart(court.stage);
                   }
-                  court.handleCollision((Ghost) r);
-                  r.update();
+
+                  if (id == 0 || !isCoop) {
+                     court.handleCollision((Ghost) r);
+                     r.update();
+                  }
                } else if (!court.isCollisionMap(r.getTranslateX(), r.getTranslateY(), r.height, r.width, r.angle))
                   r.update();
 
             }
-            // for (List<Ball> ballList : balls) {
-            //    for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
-            //       Ball ball = iter.next();
-            //       if (p.checkCollisionWithBall(ball))
-            //          ball.setVisible(false);
-
-            //       if (!ball.isVisible()) {
-            //          iter.remove();
-            //          p.score++;
-            //          hud.update(p.score, p.lives);
-            //          System.out.println(p.score);
-            //       }
-            //    }
-            // }
-            // if (!ifCollision) {
-            //    if (p.score == (GRID_HEIGHT * GRID_WIDTH)) {
-            //       System.out.println("All eaten");
-            //       ifCollision = true;
-            //       String path = "video/win.mp4";
-            //       Media media = new Media(new File(path).toURI().toString());
-            //       MediaPlayer player = new MediaPlayer(media);
-            //       MediaView mediaView = new MediaView(player);
-            //       court.getChildren().add(mediaView);
-            //       player.play();
-            //       player.setOnEndOfMedia(() -> System.exit(0));
-            //    }
-            // }
+            ballCollision();
+            gameWin();
 
          }
+
       };
       timer.start();
       // TimerTask task = new TimerTask() {
@@ -198,27 +200,68 @@ public class Game extends StackPane {
       // startTimer.schedule(task, delay);
    }
 
-   public void cleanup() {
+   public void ballCollision() {
+      for (List<Ball> ballList : balls) {
+         for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
+            Ball ball = iter.next();
+            if (isCoop) {
+               if (p.checkCollisionWithBall(ball) || p2.checkCollisionWithBall(ball))
+                  ball.setVisible(false);
+            } else if (p.checkCollisionWithBall(ball)) {
+               ball.setVisible(false);
+            }
 
+            if (!ball.isVisible()) {
+               iter.remove();
+               p.score++;
+               hud.update(p.score, p.lives);
+               // System.out.println(p.score);
+            }
+         }
+      }
+   }
+
+   public void gameWin() {
+      if (!ifCollision && p.score == (GRID_HEIGHT * GRID_WIDTH)) {
+         System.out.println("All eaten");
+         ifCollision = true;
+         String path = "video/win.mp4";
+         Media media = new Media(new File(path).toURI().toString());
+         MediaPlayer player = new MediaPlayer(media);
+         MediaView mediaView = new MediaView(player);
+         court.getChildren().add(mediaView);
+         player.play();
+         player.setOnEndOfMedia(() -> System.exit(0));
+         }
+   }
+
+   
+
+   public void cleanup() {
       Platform.runLater(() -> {
          if (hud.lives - 1 == 0) {
             System.exit(0);
+         } else {
+            timer.stop();
+            balls.clear();
+            runners.clear();
+            court.getChildren().clear();
+            p.score = 0;
          }
-         timer.stop();
-         balls.clear();
-         runners.clear();
-         court.getChildren().clear();
-         p.score = 0;
       });
    }
 
    public void restart(Stage stage) {
       cleanup();
-      Game g = new Game(new Court(stage));
-      stage.setScene(new Scene(g, 1120, 700));
-      stage.show();
-      g.hud.lives = p.lives--;
-      g.hud.update(0, g.hud.lives);
+      if (!isCoop) {
+         Game g = new Game(new Court(stage));
+         stage.setScene(new Scene(g, 1120, 700));
+         stage.show();
+         p.lives = g.hud.lives - 1;
+         g.hud.lives = p.lives;
+         System.out.println(g.hud.lives + " " + p.lives);
+         g.hud.update(0, g.hud.lives);
+      }
    }
 
    void alertLater(AlertType type, String header, String message) {

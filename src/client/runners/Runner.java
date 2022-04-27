@@ -67,5 +67,6 @@ public abstract class Runner extends ImageView implements Serializable {
      */
     public abstract void update();
 
+    public abstract boolean isMoving(double lastX, double lastY);
     
 }
