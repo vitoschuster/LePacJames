@@ -1,19 +1,11 @@
 package client;
 
 import static client.Constants.*;
-import client.*;
 import client.runners.*;
 import java.io.*;
 import javafx.application.*;
-import javafx.event.*;
 import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.*;
-import javafx.scene.layout.*;
-import javafx.stage.*;
 import server.Packet;
-import javafx.geometry.*;
-import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -27,11 +19,10 @@ public class ClientListener extends Thread {
     private String myName;
     private Integer id = -1;
     private int k = 0;
-    private boolean isReady = false;
-    private boolean isFirst = true;
     private List<Double> objectX = new ArrayList<>();
     private List<Double> objectY = new ArrayList<>();
     private boolean isBall = false;
+    private boolean isSend = false;
 
     public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
@@ -59,6 +50,7 @@ public class ClientListener extends Thread {
                     sendBalls();
                     receiveBalls();
                 }
+                //sendChat();
                 Thread.sleep(25);
             }
 
@@ -164,7 +156,8 @@ public class ClientListener extends Thread {
      */
 
     private void receivePacman() {
-        if (game == null) return;
+        if (game == null)
+            return;
 
         try {
             Object obj = this.ois.readObject();
@@ -179,7 +172,7 @@ public class ClientListener extends Thread {
                 // System.out.println("fake pacman" + packet.getPacman().getTranslateX());
                 // game.runners.set(1, packet.getPacman());
                 // System.out.println("Pakcet received");
-            }
+            } 
         } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -225,7 +218,7 @@ public class ClientListener extends Thread {
                         game.ghosts.get(i).setTranslateY(packet.getObjectY().get(i));
                     }
                 });
-            }
+            } 
         } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -273,7 +266,7 @@ public class ClientListener extends Thread {
                         }
                     }
                 });
-            }
+            } 
         } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -281,4 +274,12 @@ public class ClientListener extends Thread {
 
     }
 
+    private void sendChat() {
+        if (game == null || game.hud == null)
+            return;
+        
+    }
+
+    private void receiveChat() {
+    }
 }

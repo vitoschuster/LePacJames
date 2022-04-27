@@ -6,22 +6,20 @@
  * @version 1604
  */
 package client.runners;
-
-import java.io.*;
-
-import javafx.application.Platform;
 import javafx.geometry.*;
 
-public class Pacman extends Runner implements Serializable {
+public class Pacman extends Runner {
 
-    private static final String IMG_PATH = "img/lepac.gif";
+    private static final String IMG_PATH = "img/lepac";
     private static final long serialVersionUID = 1L;
     private double lastX;
     private double lastY;
+    public static int imgCount = 0;
 
 
     public Pacman(Point2D pos) {
-        super(IMG_PATH, pos);
+        super(IMG_PATH + imgCount + ".gif", pos);
+        imgCount = (imgCount + 1) %2;
     }
 
     @Override

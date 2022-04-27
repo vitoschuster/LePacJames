@@ -2,7 +2,6 @@ package server;
 
 import static server.ServerThread.*;
 import java.io.*;
-import java.io.ObjectInputStream.GetField;
 import java.net.*;
 import java.util.*;
 
@@ -22,8 +21,7 @@ public class ClientThread extends Thread {
         try {
             this.ois = new ObjectInputStream(this.cSocket.getInputStream());
             this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
-            System.out.println("Client connection");
-            System.out.println(clients.size());
+            System.out.println("Client " + id + " connected");
             this.oos.writeInt(id);
             this.oos.flush();
             while (true) {
@@ -37,6 +35,10 @@ public class ClientThread extends Thread {
                             break;
                         case "READY":
                             doReady(split[1]);
+                            break;
+                        case "CHAT":
+                            System.out.println("in");
+                            doChat(split[1]);
                             break;
                     }
                 } else if (obj instanceof Packet) {
@@ -66,6 +68,7 @@ public class ClientThread extends Thread {
             if (!this.id.equals(0) && this.id.equals(clients.size() - 1)) {
                 for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
                     // entry.getValue().oos.reset();
+                    System.out.println("Client " + id + " ready");
                     entry.getValue().oos.writeUTF("everyone is ready");
                     entry.getValue().oos.flush();
                 }
@@ -78,7 +81,6 @@ public class ClientThread extends Thread {
     private synchronized void doLobby(String playerName) {
         try { // updating players in lobby - sending names
             for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
-                System.out.println(entry.getKey() + " " + this.id);
                 if (entry.getKey().equals(this.id)) {
                     this.oos.writeUTF(playerName);
                     this.oos.flush();
@@ -93,4 +95,20 @@ public class ClientThread extends Thread {
         }
     }
 
+    private synchronized void doChat(String playerName) {
+        try { // updating players in lobby - sending names
+            for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
+                if (entry.getKey().equals(this.id)) {
+                    this.oos.writeUTF(playerName);
+                    this.oos.flush();
+                } else {
+                    entry.getValue().oos.writeUTF(playerName);
+                    entry.getValue().oos.flush();
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
