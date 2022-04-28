@@ -1,3 +1,12 @@
+
+/**
+ * Client.java - a class that starts the application and loading to the main menu GUI
+ * 
+ * @author V.Schuster
+ * @author L.Krpan
+ * @version 1604
+ */
+
 import client.*;
 import static client.Constants.*;
 import javafx.application.*;
@@ -5,12 +14,10 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.fxml.*;
 
-
 public class Client extends Application {
-    
+
     public Stage stage;
     public Game game;
-    
 
     public static void main(String[] args) {
         launch(args);

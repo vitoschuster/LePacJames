@@ -1,3 +1,10 @@
+/**
+ * ClientListener - Class used for sending and receiving data in multiplayer
+ * 
+ * @author V.Schuster
+ * @author L.Krpan
+ * @version 1604
+ */
 package client;
 
 import static client.Constants.*;
@@ -22,14 +29,23 @@ public class ClientListener extends Thread {
     private List<Double> objectX = new ArrayList<>();
     private List<Double> objectY = new ArrayList<>();
     private boolean isBall = false;
-    private boolean isSend = false;
 
+    /**
+     * ClientListener constructor.
+     * 
+     * @param ipAddress ip address of server
+     * @param name      name of user
+     * @param lobby     ControllerLobby object
+     */
     public ClientListener(String ipAddress, String name, ControllerLobby c) {
         this.address = ipAddress;
         this.lobby = c;
         this.myName = name;
     }
 
+    /**
+     * Run method which runs when thread started.
+     */
     @Override
     public void run() {
         try {
@@ -50,11 +66,11 @@ public class ClientListener extends Thread {
                     sendBalls();
                     receiveBalls();
                 }
-                //sendChat();
+                // sendChat();
                 Thread.sleep(25);
             }
 
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -134,7 +150,7 @@ public class ClientListener extends Thread {
     }
 
     /**
-     * Send Packet
+     * Send Pacman to server
      */
 
     private void sendPacman() {
@@ -146,15 +162,22 @@ public class ClientListener extends Thread {
         try {
             this.oos.writeObject(packet);
             this.oos.flush();
+        } catch (SocketException se) {
+            try {
+                socket.close();
+                System.out.println("Server Disconnected");
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Get packet
+     * Receive other pacman from server
      */
-
     private void receivePacman() {
         if (game == null)
             return;
@@ -172,7 +195,16 @@ public class ClientListener extends Thread {
                 // System.out.println("fake pacman" + packet.getPacman().getTranslateX());
                 // game.runners.set(1, packet.getPacman());
                 // System.out.println("Pakcet received");
-            } 
+            }
+        } catch (SocketException se) {
+            try {
+                socket.close();
+                System.out.println("Server Disconnected");
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }
         } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -180,6 +212,9 @@ public class ClientListener extends Thread {
 
     }
 
+    /**
+     * Send ghosts from main cliet to server
+     */
     private void sendGhost() {
 
         if (game == null || id > 0)
@@ -197,12 +232,23 @@ public class ClientListener extends Thread {
             this.oos.flush();
             objectX.removeAll(objectX);
             objectY.removeAll(objectY);
+        } catch (SocketException se) {
+            try {
+                socket.close();
+                System.out.println("Server Disconnected");
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * Second client receives ghost packet from server
+     */
     private void receiveGhost() {
         if (game == null || id < 1)
             return;
@@ -218,7 +264,15 @@ public class ClientListener extends Thread {
                         game.ghosts.get(i).setTranslateY(packet.getObjectY().get(i));
                     }
                 });
-            } 
+            }
+        } catch (SocketException se) {
+            try {
+                socket.close();
+                System.out.println("Server Disconnected");
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -226,6 +280,9 @@ public class ClientListener extends Thread {
 
     }
 
+    /**
+     * Main client sends balls to server
+     */
     private void sendBalls() {
         if (game == null || id > 0)
             return;
@@ -243,11 +300,22 @@ public class ClientListener extends Thread {
             objectX.removeAll(objectX);
             objectY.removeAll(objectY);
             isBall = true;
+        } catch (SocketException se) {
+            try {
+                socket.close();
+                System.out.println("Server Disconnected");
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Second client receives other balls from server
+     */
     private void receiveBalls() {
         if (game == null || id < 1)
             return;
@@ -266,7 +334,15 @@ public class ClientListener extends Thread {
                         }
                     }
                 });
-            } 
+            }
+        } catch (SocketException se) {
+            try {
+                socket.close();
+                System.out.println("Server Disconnected");
+                System.exit(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } catch (ClassNotFoundException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -275,11 +351,20 @@ public class ClientListener extends Thread {
     }
 
     private void sendChat() {
-        if (game == null || game.hud == null)
-            return;
-        
+        game.hud.btnSend.setOnAction(evt -> {
+            String msg = game.hud.tfMessage.getText().trim();
+            try {
+                oos.writeObject("CHAT:" + msg);
+                oos.flush();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+
     }
 
     private void receiveChat() {
+        
     }
 }

@@ -1,18 +1,24 @@
-## Getting Started
+## About
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+	This is the first LeBron James pacman game created by Vito Schuster and Luka Krpan.
 
-## Folder Structure
+## Goal
 
-The workspace contains two folders by default, where:
+	SINGLEPLAYER - Collect all balls without touching ghosts three times
+	MULTIPLAYER  - Collect all balls without touching ghosts once.
+	
+## Menus
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+	SINGLEPLAYER - Starts singleplayer with 2 players.
+	MULTIPLAYER - Opens the registration menu (connected through wifi)
+	SETTINGS - Change user settings
+	START - Joins the waiting room
+	READY - Sends server information that the user is ready
+	GO BACK - goes to past menu
+	
+## Movement
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+	SINGLEPLAYER - Player 1 - WASD keys
+				 - Player 2 - Arrow keys
+				 
+	MULTIPLAYER  - Player 1,2 - WASD keys

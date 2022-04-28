@@ -1,3 +1,12 @@
+
+/**
+ * Server.java - a simple GUI server implementation that runs the server and ServerThread to handle client connections  
+ * 
+ * @author V.Schuster
+ * @author L.Krpan
+ * @version 1604
+ */
+
 import server.*;
 import javafx.application.*;
 import javafx.scene.*;
@@ -17,9 +26,10 @@ public class Server extends Application {
         launch(args);
     }
 
-    @Override public void start(Stage stage) throws Exception {
+    @Override
+    public void start(Stage stage) throws Exception {
         taList.setPrefHeight(200);
-        scene = new Scene(new VBox(btnClear,taList), 250, 200);
+        scene = new Scene(new VBox(btnClear, taList), 250, 200);
         stage.setScene(scene);
         stage.show();
         new ServerThread().start();

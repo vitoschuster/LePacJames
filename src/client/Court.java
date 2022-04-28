@@ -1,45 +1,35 @@
+/**
+ * Court - Class used for inserting images to court and checking rgb collision
+ * 
+ * @author V.Schuster
+ * @author L.Krpan
+ * @version 1604
+ */
 package client;
 
 import client.runners.*;
-import javafx.application.*;
-import javafx.event.*;
-import javafx.scene.*;
 import javafx.scene.image.*;
-import javafx.scene.input.*;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.text.*;
-import javafx.scene.transform.*;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
 import javafx.stage.*;
 import javafx.geometry.*;
-import javafx.animation.*;
 import java.io.*;
-import java.security.*;
-import javafx.util.Duration;
-import java.util.*;
 import java.util.concurrent.*;
 
 public class Court extends Pane {
-    // arrayliste
     public Stage stage;
     public Image image;
     public ImageView imageView;
     private PixelReader reader;
-    private int random;
-    // private int gridWidth = 5;
-    // private int gridHeight = 5;
-    // private int score = 0;
-    // private int endBall = 0;
 
     private static final String PATH_BG = "img/basketball_court_props.png";
     private static final String PATH_BG_PROPS = "img/bgProps.png"; // bg for collision
 
+    /**
+     * Court constructor.
+     * 
+     * @param stage Stage
+     */
     public Court(Stage stage) {
         this.stage = stage;
 
@@ -53,7 +43,16 @@ public class Court extends Pane {
         this.getChildren().add(this.imageView);
     }
 
-
+    /**
+     * Checks RGB collision for pacman
+     * 
+     * @param xpos   x position of pacman
+     * @param ypos   y position of pacman
+     * @param width  width of pacman
+     * @param height height of pacman
+     * @param deg    angle of pacman
+     * @return true if collision, else false
+     */
     public boolean isCollisionMap(double xpos, double ypos, double width, double height, double deg) {
         reader = this.image.getPixelReader();
         final int pad = 3;
@@ -90,12 +89,29 @@ public class Court extends Pane {
         return false;
     }
 
+    /**
+     * Recursive method that finds random number in range of the map size and
+     * generates random coordinates until they arent in collision with the map
+     * @author V.Schuster - original 200iq 3 line method
+     * @param width  width of object
+     * @param height height of object
+     * @return point2d object where there is no collision with other objects
+     */
     public Point2D randPos(double width, double height) {
         int x = ThreadLocalRandom.current().nextInt(50, (int) this.image.getWidth() - 50);
         int y = ThreadLocalRandom.current().nextInt(50, (int) this.image.getHeight() - 50);
         return (this.isCollision(x, y, (int) width, (int) height)) ? randPos(width, height) : new Point2D(x, y);
     }
-    
+
+    /**
+     * Returns if object from randPos method touches red color
+     * 
+     * @param x      x position of object
+     * @param y      y position of object
+     * @param width  width of object
+     * @param height height of object
+     * @return true if collision, else false
+     */
     public boolean isCollision(int x, int y, int width, int height) {
         reader = this.image.getPixelReader();
         for (int i = x; i < x + width; i++) {
@@ -107,30 +123,36 @@ public class Court extends Pane {
         return false;
     }
 
+    /**
+     * Checks if Ghosts collide with walls and if they collide direction changes
+     * 
+     * @author L.Krpan - ghost collision expert
+     * @param g Ghost object
+     */
     public void handleCollision(Ghost g) {
         reader = this.image.getPixelReader();
         int x = (int) g.getTranslateX();
         int y = (int) g.getTranslateY();
         int xw = (int) g.getImage().getWidth();
         int xh = (int) g.getImage().getHeight();
-        int speed= Ghost.GHOST_SPEED;
+        int speed = Ghost.GHOST_SPEED;
 
         switch (g.moveGhost) {
             case 1:
-                if (reader.getColor(x-speed, y + xh).equals(Color.RED)
+                if (reader.getColor(x - speed, y + xh).equals(Color.RED)
                         || reader.getColor(x, y).equals(Color.RED)) {
                     g.moveGhost = 2;
-                } else if (reader.getColor(x+xw,y+xh).equals(Color.RED)
-                        || reader.getColor(x, (y + xh)+speed ).equals(Color.RED)) {
+                } else if (reader.getColor(x + xw, y + xh).equals(Color.RED)
+                        || reader.getColor(x, (y + xh) + speed).equals(Color.RED)) {
                     g.moveGhost = 3;
                 }
                 break;
             case 2:
-                if (reader.getColor(x+xw, y).equals(Color.RED)
-                        || reader.getColor(x+xw, (y + xh)).equals(Color.RED)) {
+                if (reader.getColor(x + xw, y).equals(Color.RED)
+                        || reader.getColor(x + xw, (y + xh)).equals(Color.RED)) {
                     g.moveGhost = 1;
-                } else if (reader.getColor(x+speed, (y + xh)).equals(Color.RED)
-                        || reader.getColor(x+xw, (y + xh)+speed).equals(Color.RED)) {
+                } else if (reader.getColor(x + speed, (y + xh)).equals(Color.RED)
+                        || reader.getColor(x + xw, (y + xh) + speed).equals(Color.RED)) {
                     g.moveGhost = 4;
                 }
                 break;

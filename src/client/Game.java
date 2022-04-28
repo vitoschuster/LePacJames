@@ -1,5 +1,6 @@
 package client;
 
+import static client.Constants.*;
 import client.runners.*;
 import javafx.application.*;
 import javafx.scene.*;
@@ -24,7 +25,6 @@ import javafx.scene.media.*;
 
 public class Game extends StackPane {
    // Window attributes
-
    private Court court;
    public List<Runner> runners = new ArrayList<>();
    public List<List<Ball>> balls = new ArrayList<>();
@@ -38,36 +38,44 @@ public class Game extends StackPane {
    private boolean ifCollision = false;
    private int id;
 
-   private static final int GHOST_NUM = 4;
-   private static final int GRID_WIDTH = 5;
-   private static final int GRID_HEIGHT = 5;
 
-   /* multiplayer constructor */
+   /**
+    * MultiPlayer Game constructor.
+    * 
+    * @param court      Court
+    * @param id         id of client
+    * @param numPlayers number of players
+    */
    public Game(Court court, Integer id, boolean isCoop, int numPlayers) {
-      this.isCoop = isCoop;
       this.court = court;
       this.id = id;
+      this.isCoop = isCoop;
       this.displayPlayers(numPlayers);
       this.displayGhost();
       this.displayEatables(balls);
-      this.hud = new HUD(court.stage.getScene(), isCoop);
-      this.getChildren().addAll(this.court, this.hud);
-      this.start();
-   }
-
-   /* singleplayer constructor */
-   public Game(Court court) {
-      this.court = court;
-      this.displayRunners(runners);
-      this.displayEatables(balls);
-      this.hud = new HUD(court.stage.getScene(), isCoop);
+      this.hud = new HUD(court.stage.getScene(), true);
       this.getChildren().addAll(this.court, this.hud);
       this.start();
    }
 
    /**
-    * event handling
+    * SinglePlayer Game constructor.
     * 
+    * @param court Court
+    */
+   public Game(Court court) {
+      this.court = court;
+      this.displayRunners(runners);
+      this.displayEatables(balls);
+      this.hud = new HUD(court.stage.getScene(), false);
+      this.getChildren().addAll(this.court, this.hud);
+      this.start();
+   }
+
+   /**
+    * Adding controls to main pacman
+    *
+    * @param pacman main pacman
     */
    public Pacman addPlayerControls(Pacman pacman) {
       this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, evt -> {
@@ -104,6 +112,11 @@ public class Game extends StackPane {
       return pacman;
    }
 
+   /**
+    * Adding controls to second pacman (only singlePlayer)
+    *
+    * @param pacman second pacman
+    */
    public Pacman addPlayer2Controls(Pacman pacman) {
       this.court.stage.addEventHandler(KeyEvent.KEY_PRESSED, evt -> {
          switch (evt.getCode()) {
@@ -138,31 +151,41 @@ public class Game extends StackPane {
       });
       return pacman;
    }
-   
 
-
-   /* singleplayer */
+   /**
+    * Displays all moving characters(only singleplayer)
+    *
+    * @param list ArrayList of all runners
+    */
    public void displayRunners(List<Runner> list) {
       this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
-      this.runners.add(addPlayer2Controls(new Pacman(new Point2D(40,60))));
+      this.runners.add(addPlayer2Controls(new Pacman(new Point2D(40, 60))));
       p = (Pacman) this.runners.get(0);
       p2 = (Pacman) this.runners.get(1);
-      for (int i = 0; i < GHOST_NUM; i++)
+      for (int i = 0; i < GHOST_NUM.toInt(); i++)
          this.runners.add(new Ghost(this.court, i, this.court.randPos(32, 40)));
 
       court.getChildren().addAll(list);
    }
 
-   /* multiplayer ghosts */
+   /**
+    * Displays ghosts characters(only multiplayer)
+    *
+    */
    public void displayGhost() {
-      for (int i = 0; i < GHOST_NUM; i++) {
+      for (int i = 0; i < GHOST_NUM.toInt(); i++) {
          this.ghosts.add(new Ghost(this.court, i, this.court.randPos(32, 40)));
          this.runners.add(ghosts.get(i));
       }
       this.court.getChildren().addAll(ghosts);
    }
 
-   /* multiplayer players */
+   /**
+    * Displays pacman characters and adding movement to only first one(only
+    * multiplayer)
+    *
+    * @param numPlayers number of players
+    */
    public void displayPlayers(int numPlayers) {
       for (int i = 0; i < numPlayers; i++) {
          if (i == 0) {
@@ -176,11 +199,17 @@ public class Game extends StackPane {
       this.court.getChildren().addAll(runners);
    }
 
-   /* display balls */
+   /**
+    * Displays object that the pacman can eat
+    * Creates a grid based on random positions
+    * Objects stored in a 2D arrayList
+    * 
+    * @param balls
+    */
    public void displayEatables(List<List<Ball>> balls) {
-      for (int i = 0; i < GRID_WIDTH; i++) {
+      for (int i = 0; i < GRID_WIDTH.toInt(); i++) {
          balls.add(new ArrayList<>());
-         for (int j = 0; j < GRID_HEIGHT; j++)
+         for (int j = 0; j < GRID_HEIGHT.toInt(); j++)
             balls.get(i).add(new Ball(this.court.randPos(25, 25)));
          court.getChildren().addAll(balls.get(i));
       }
@@ -194,13 +223,12 @@ public class Game extends StackPane {
          public void handle(long now) {
             for (Runner r : runners) {
                if (r instanceof Ghost) {
-                  
-                     if (!ifCollision
-                           && (p.checkCollisionWithGhost((Ghost) r) || p2.checkCollisionWithGhost((Ghost) r))) {
-                        ifCollision = true;
-                        restart(court.stage);
-                     }
-                 
+
+                  if (!ifCollision
+                        && (p.checkCollisionWithGhost((Ghost) r) || p2.checkCollisionWithGhost((Ghost) r))) {
+                     ifCollision = true;
+                     restart(court.stage);
+                  }
 
                   if (id == 0 || !isCoop) {
                      court.handleCollision((Ghost) r);
@@ -219,16 +247,18 @@ public class Game extends StackPane {
       timer.start();
    }
 
+   /**
+    * Checking if players(pacman) are in collision with the eatable objects
+    * Changing the visibility if true
+    */
    public void ballCollision() {
       for (List<Ball> ballList : balls) {
          for (Iterator<Ball> iter = ballList.iterator(); iter.hasNext();) {
             Ball ball = iter.next();
-            
-               if (p.checkCollisionWithBall(ball) || p2.checkCollisionWithBall(ball)) {
-                  ball.setVisible(false);
-               }
 
-            
+            if (p.checkCollisionWithBall(ball) || p2.checkCollisionWithBall(ball)) {
+               ball.setVisible(false);
+            }
 
             if (!ball.isVisible()) {
                iter.remove();
@@ -239,6 +269,9 @@ public class Game extends StackPane {
       }
    }
 
+   /**
+    * Playing media on game win (maximum score reached)
+    */
    public void gameWin() {
       if (!ifCollision && p.score == 25) {
          System.out.println("All eaten");
@@ -253,6 +286,9 @@ public class Game extends StackPane {
       }
    }
 
+   /**
+    * Method to reset variables and lists so the game can start over
+    */
    public void cleanup() {
       Platform.runLater(() -> {
          if (hud.lives - 1 == 0) {
@@ -268,6 +304,9 @@ public class Game extends StackPane {
       });
    }
 
+   /**
+    * Restarting the game when the player lost (hit a ghost)
+    */
    public void restart(Stage stage) {
       if (!isCoop) {
          cleanup();
@@ -289,9 +328,14 @@ public class Game extends StackPane {
       }
    }
 
-   void alertLater(AlertType type, String header, String message) {
-      Alert a = new Alert(type, message);
-      a.setHeaderText(header);
-      a.showAndWait();
+   /**
+    * Method served as a template to create an alert in a GUI Thread safe manner
+    */
+   public void alertLater(AlertType type, String header, String message) {
+      Platform.runLater(() -> {
+         Alert a = new Alert(type, message);
+         a.setHeaderText(header);
+         a.showAndWait();
+      });
    }
 } // end class Races

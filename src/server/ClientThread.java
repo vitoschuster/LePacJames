@@ -1,5 +1,12 @@
 package server;
 
+/**
+ * ClientThread - a separate Thread that is instantiated when the client makes a connection to the server
+ * 
+ * @author V.Schuster
+ * @author L.Krpan
+ * @version 1604
+ */
 import static server.ServerThread.*;
 import java.io.*;
 import java.net.*;
@@ -11,6 +18,12 @@ public class ClientThread extends Thread {
     public ObjectInputStream ois;
     private Integer id;
 
+    /**
+     * Main constructor for client thread
+     * 
+     * @param cSocket socket of the client
+     * @param id      unique id of the client connected
+     */
     public ClientThread(Socket cSocket, Integer id) {
         this.cSocket = cSocket;
         this.id = id;
@@ -37,7 +50,6 @@ public class ClientThread extends Thread {
                             doReady(split[1]);
                             break;
                         case "CHAT":
-                            System.out.println("in");
                             doChat(split[1]);
                             break;
                     }
@@ -53,6 +65,13 @@ public class ClientThread extends Thread {
                     }
                 }
             }
+        } catch (SocketException e) {
+            try {
+                System.out.println("Multiplayer cancelled");
+                cSocket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (EOFException e) {
@@ -63,6 +82,13 @@ public class ClientThread extends Thread {
         }
     }
 
+    /**
+     * Synchronized method that handles all requests from clients in the waiting
+     * lobby
+     * Alerts the clients when all players are ready to play
+     * 
+     * @param readyConf
+     */
     private synchronized void doReady(String readyConf) {
         try {
             if (!this.id.equals(0) && this.id.equals(clients.size() - 1)) {
@@ -78,6 +104,12 @@ public class ClientThread extends Thread {
         }
     }
 
+    /**
+     * Synchronized method that appends the names of connected clients to the
+     * waiting lobby text area
+     * 
+     * @param playerName
+     */
     private synchronized void doLobby(String playerName) {
         try { // updating players in lobby - sending names
             for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
@@ -95,6 +127,10 @@ public class ClientThread extends Thread {
         }
     }
 
+    /**
+     * Synchronized method used for handling chat message communication between the clients
+     * @param playerName
+     */
     private synchronized void doChat(String playerName) {
         try { // updating players in lobby - sending names
             for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {

@@ -18,6 +18,7 @@ public class HUD extends Pane {
     private int score = 0;
     public int lives = 2;
     public boolean isCoop;
+    
     public HUD(Scene scene,boolean isCoop) {
         this.isCoop=isCoop;
         this.scene = scene;
@@ -32,6 +33,9 @@ public class HUD extends Pane {
         });
     }
 
+    /**
+     * Creates a new instance of the HUD (buttons and fields around the screen)
+     */
     public void createHUD() {
         int padding = 80;
         tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
@@ -55,6 +59,10 @@ public class HUD extends Pane {
         }
     }
 
+    /**
+     * Updating the HUD with the progress of the game
+     * Shows the number of lives and score of the players
+     */
     public void update(int score, int lives) {
         this.score = score;
         Platform.runLater(() -> {
