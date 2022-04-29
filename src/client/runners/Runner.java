@@ -11,11 +11,10 @@ import javafx.scene.image.*;
 import javafx.geometry.*;
 import java.io.*;
 
-public abstract class Runner extends ImageView implements Serializable {
+public abstract class Runner extends ImageView {
 
-    private static final long serialVersionUID = 1L;
-    public Point2D pos = new Point2D(0, 0);
-    public Image image;
+    public  Point2D pos = new Point2D(0, 0);
+    public  Image image;
     public double xspeed = 0;
     public double yspeed = 0;
     public double angle = 0;

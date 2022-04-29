@@ -3,7 +3,6 @@ package server;
 import java.io.*;
 import java.util.List;
 
-import client.runners.*;
 
 public class Packet implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -11,8 +11,7 @@ import javafx.geometry.*;
 
 public class Pacman extends Runner {
 
-    private static final String IMG_PATH = "img/lepac0.gif";
-    private static final long serialVersionUID = 1L;
+    private static final String IMG_PATH = "img/lebronn.gif";
     public static int imgCount = 0;
 
     /**

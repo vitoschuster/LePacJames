@@ -38,7 +38,6 @@ public class Game extends StackPane {
    private boolean ifCollision = false;
    private int id;
 
-
    /**
     * MultiPlayer Game constructor.
     * 
@@ -107,6 +106,8 @@ public class Game extends StackPane {
                pacman.angle = 0;
                pacman.setScaleY(1);
                break;
+            default:
+               break;
          }
       });
       return pacman;
@@ -147,6 +148,8 @@ public class Game extends StackPane {
                pacman.angle = 0;
                pacman.setScaleY(1);
                break;
+            default:
+               break;
          }
       });
       return pacman;
@@ -158,8 +161,8 @@ public class Game extends StackPane {
     * @param list ArrayList of all runners
     */
    public void displayRunners(List<Runner> list) {
-      this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
-      this.runners.add(addPlayer2Controls(new Pacman(new Point2D(40, 60))));
+      this.runners.add(addPlayerControls(new Pacman(new Point2D(W.toInt() / 2 - 25, H.toInt() - 60))));
+      this.runners.add(addPlayer2Controls(new Pacman(new Point2D(W.toInt() / 2 - 25, H.toInt() - 60))));
       p = (Pacman) this.runners.get(0);
       p2 = (Pacman) this.runners.get(1);
       for (int i = 0; i < GHOST_NUM.toInt(); i++)
@@ -189,10 +192,10 @@ public class Game extends StackPane {
    public void displayPlayers(int numPlayers) {
       for (int i = 0; i < numPlayers; i++) {
          if (i == 0) {
-            this.runners.add(addPlayerControls(new Pacman(new Point2D(40, 40))));
+            this.runners.add(addPlayerControls(new Pacman(new Point2D(W.toInt() / 2 - 25, H.toInt() - 60))));
             p = (Pacman) this.runners.get(0);
          } else {
-            this.runners.add(new Pacman(new Point2D(40, 40)));
+            this.runners.add(new Pacman(new Point2D(W.toInt() / 2 - 25, H.toInt() - 60)));
             p2 = (Pacman) this.runners.get(1);
          }
       }
@@ -327,6 +330,7 @@ public class Game extends StackPane {
          player.setOnEndOfMedia(() -> System.exit(0));
       }
    }
+
 
    /**
     * Method served as a template to create an alert in a GUI Thread safe manner

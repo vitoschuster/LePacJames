@@ -72,6 +72,7 @@ public class ClientListener extends Thread {
 
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -112,6 +113,7 @@ public class ClientListener extends Thread {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -124,6 +126,7 @@ public class ClientListener extends Thread {
                 Thread.sleep(FPS.toInt());
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
         try {
@@ -165,7 +168,7 @@ public class ClientListener extends Thread {
         } catch (SocketException se) {
             try {
                 socket.close();
-                System.out.println("Server Disconnected");
+                System.out.println("Server Disconnectedd");
                 System.exit(0);
             } catch (IOException e) {
                 e.printStackTrace();

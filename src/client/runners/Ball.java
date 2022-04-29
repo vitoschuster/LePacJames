@@ -19,6 +19,8 @@ public class Ball extends Runner {
         this.pos = pos;
     }
 
-    @Override
-    public void update() {}
+    @Override 
+    public void update() {
+        //This method is empty because the balls do not yet have to be updated (in later versions this might be of use);
+    }
 }

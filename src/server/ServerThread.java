@@ -2,7 +2,7 @@ package server;
 
 /**
  * ServerThread - a separate Thread that starts the server and listens for incoming connections
- * Saves the connections to a map and gives each new client a unique identifier
+ * Saves the connections to a map and gives each new client a unique 
  * 
  * @author V.Schuster
  * @author L.Krpan

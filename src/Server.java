@@ -13,12 +13,9 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
-import javafx.geometry.*;
 
 public class Server extends Application {
-    private Stage stage;
     private Scene scene;
-    private VBox root = null;
     public TextArea taList = new TextArea();
     private Button btnClear = new Button("Clear");
 

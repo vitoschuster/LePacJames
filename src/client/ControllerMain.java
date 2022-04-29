@@ -8,6 +8,8 @@
 package client;
 
 import static client.Constants.*;
+
+
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.*;
@@ -81,6 +83,7 @@ public class ControllerMain {
         stage.setScene(new Scene(root, W.toInt(), H.toInt()));
         stage.show();
     }
+
 
     /**
      * Switches screen to main tab

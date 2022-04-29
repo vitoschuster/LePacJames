@@ -52,6 +52,8 @@ public class ClientThread extends Thread {
                         case "CHAT":
                             doChat(split[1]);
                             break;
+                        default:
+                            break;
                     }
                 } else if (obj instanceof Packet) {
                     Packet packet = (Packet) obj;
@@ -128,7 +130,9 @@ public class ClientThread extends Thread {
     }
 
     /**
-     * Synchronized method used for handling chat message communication between the clients
+     * Synchronized method used for handling chat message communication between the
+     * clients
+     * 
      * @param playerName
      */
     private synchronized void doChat(String playerName) {

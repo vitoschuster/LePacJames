@@ -4,11 +4,12 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 
 public class HUD extends Pane {
 
-    private TextField tfScore = new TextField("Score: 0");
-    private TextField tfLives = new TextField("Lives: 3");
+    private TextField tfScore = new TextField("0");
+    private TextField tfLives = new TextField("3");
     public TextArea taChat = new TextArea("Chat: \n");
     public TextField tfMessage = new TextField();
     public Button btnSend = new Button("Send");
@@ -37,14 +38,22 @@ public class HUD extends Pane {
      * Creates a new instance of the HUD (buttons and fields around the screen)
      */
     public void createHUD() {
+        Font font = Font.loadFont("file:NBA Lakers.ttf", 14);
         int padding = 80;
-        tfScore.resizeRelocate(scene.getWidth() - padding, 0, 80, 25);
+        tfScore.resizeRelocate(scene.getWidth()/2 - 49, 69, 35, 25);
+        tfScore.setPrefWidth(35);
         tfScore.setEditable(false);
         tfScore.setFocusTraversable(false);
+        tfScore.setBackground(Background.EMPTY);
+        tfScore.setFont(font);
+        
 
-        tfLives.resizeRelocate(scene.getWidth() - padding - 100, 0, 100, 25);
+        tfLives.resizeRelocate(scene.getWidth()/2 + 23.5, 69, 30, 25);
+        tfLives.setPrefWidth(30);
         tfLives.setEditable(false);
         tfLives.setFocusTraversable(false);
+        tfLives.setBackground(Background.EMPTY);
+        tfLives.setFont(font);
 
         btnChat.resizeRelocate(scene.getWidth() - padding - 100, 0, 70, 25);
         btnChat.setFocusTraversable(false);
@@ -66,9 +75,9 @@ public class HUD extends Pane {
     public void update(int score, int lives) {
         this.score = score;
         Platform.runLater(() -> {
-            tfScore.setText("Score: " + this.score);
+            tfScore.setText(this.score + "");
             if(!isCoop){
-                tfLives.setText("Lives: " + this.lives);
+                tfLives.setText(this.lives + "");
             }
         });
     }

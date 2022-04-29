@@ -22,8 +22,8 @@ public class Court extends Pane {
     public ImageView imageView;
     private PixelReader reader;
 
-    private static final String PATH_BG = "img/basketball_court_props.png";
-    private static final String PATH_BG_PROPS = "img/bgProps.png"; // bg for collision
+    private static final String PATH_BG = "img/map.png";
+    private static final String PATH_BG_PROPS = "img/mapBg.png"; // bg for collision
 
     /**
      * Court constructor.
@@ -60,30 +60,31 @@ public class Court extends Pane {
         int y = (int) ypos;
         int xw = (int) (width + x);
         int yh = (int) (height + y);
+        int xw2 = (int) (width/2 + x);
+        int yh2 = (int) (height/2 + y);
         int angle = (int) deg;
 
         switch (angle) { // pacman
             case 0:
                 if (reader.getColor(xw + pad, yh).equals(Color.RED)
-                        || reader.getColor(xw + pad, y).equals(Color.RED))
+                        || reader.getColor(xw + pad, y).equals(Color.RED) || reader.getColor(xw + pad, yh2).equals(Color.RED))
                     return true;
                 break;
             case 90:
                 if (reader.getColor(x, yh + pad).equals(Color.RED)
-                        || reader.getColor(xw, yh + pad).equals(Color.RED))
+                        || reader.getColor(xw, yh + pad).equals(Color.RED) || reader.getColor(xw2, yh + pad).equals(Color.RED))
                     return true;
                 break;
             case 270:
                 if (reader.getColor(x, y - pad).equals(Color.RED)
-                        || reader.getColor(xw, y - pad).equals(Color.RED))
+                        || reader.getColor(xw, y - pad).equals(Color.RED) || reader.getColor(xw2, y - pad).equals(Color.RED))
                     return true;
                 break;
             case 180:
                 if (reader.getColor(x - pad, y).equals(Color.RED)
-                        || reader.getColor(x - pad, yh).equals(Color.RED))
+                        || reader.getColor(x - pad, yh).equals(Color.RED) || reader.getColor(x - pad, yh2).equals(Color.RED))
                     return true;
                 break;
-
         }
 
         return false;
@@ -140,40 +141,49 @@ public class Court extends Pane {
         switch (g.moveGhost) {
             case 1:
                 if (reader.getColor(x - speed, y + xh).equals(Color.RED)
-                        || reader.getColor(x, y).equals(Color.RED)) {
+                        || reader.getColor(x, y).equals(Color.RED) || (reader.getColor(x - speed, y + xh).equals(Color.GREEN)
+                        || reader.getColor(x, y).equals(Color.GREEN))) {
                     g.moveGhost = 2;
                 } else if (reader.getColor(x + xw, y + xh).equals(Color.RED)
-                        || reader.getColor(x, (y + xh) + speed).equals(Color.RED)) {
+                        || reader.getColor(x, (y + xh) + speed).equals(Color.RED) || reader.getColor(x + xw, y + xh).equals(Color.GREEN)
+                        || reader.getColor(x, (y + xh) + speed).equals(Color.GREEN)) {
                     g.moveGhost = 3;
                 }
                 break;
             case 2:
                 if (reader.getColor(x + xw, y).equals(Color.RED)
-                        || reader.getColor(x + xw, (y + xh)).equals(Color.RED)) {
+                        || reader.getColor(x + xw, (y + xh)).equals(Color.RED) || reader.getColor(x + xw, y).equals(Color.GREEN)
+                        || reader.getColor(x + xw, (y + xh)).equals(Color.GREEN)) {
                     g.moveGhost = 1;
                 } else if (reader.getColor(x + speed, (y + xh)).equals(Color.RED)
-                        || reader.getColor(x + xw, (y + xh) + speed).equals(Color.RED)) {
+                        || reader.getColor(x + xw, (y + xh) + speed).equals(Color.RED) || (reader.getColor(x + speed, (y + xh)).equals(Color.GREEN)
+                        || reader.getColor(x + xw, (y + xh) + speed).equals(Color.GREEN))) {
                     g.moveGhost = 4;
                 }
                 break;
             case 3:
                 if (reader.getColor((x + xw), y).equals(Color.RED)
-                        || reader.getColor(x, y - speed).equals(Color.RED)) {
+                        || reader.getColor(x, y - speed).equals(Color.RED) || (reader.getColor((x + xw), y).equals(Color.GREEN)
+                        || reader.getColor(x, y - speed).equals(Color.GREEN))) {
                     g.moveGhost = 1;
                 } else if (reader.getColor(x - speed, y).equals(Color.RED)
-                        || reader.getColor(x, (y + xh)).equals(Color.RED)) {
+                        || reader.getColor(x, (y + xh)).equals(Color.RED) || reader.getColor(x - speed, y).equals(Color.GREEN)
+                        || reader.getColor(x, (y + xh)).equals(Color.GREEN)) {
                     g.moveGhost = 4;
                 }
                 break;
             case 4:
                 if (reader.getColor(x, y).equals(Color.RED)
-                        || reader.getColor((x + xw) + speed, y).equals(Color.RED)) {
+                        || reader.getColor((x + xw) + speed, y).equals(Color.RED) || reader.getColor(x, y).equals(Color.GREEN)
+                        || reader.getColor((x + xw) + speed, y).equals(Color.GREEN)) {
                     g.moveGhost = 3;
                 } else if (reader.getColor((x + xw), y - speed).equals(Color.RED)
-                        || reader.getColor((x + xw), (y + xh)).equals(Color.RED)) {
+                        || reader.getColor((x + xw), (y + xh)).equals(Color.RED) || reader.getColor((x + xw), y - speed).equals(Color.GREEN)
+                        || reader.getColor((x + xw), (y + xh)).equals(Color.GREEN)) {
                     g.moveGhost = 2;
                 }
                 break;
         }
+       
     }
 }
