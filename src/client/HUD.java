@@ -10,12 +10,14 @@ public class HUD extends Pane {
 
     private TextField tfScore = new TextField("0");
     private TextField tfLives = new TextField("3");
-    public TextArea taChat = new TextArea("Chat: \n");
+    public TextArea taChat = new TextArea("Chat: \n\n");
+    public TextArea taChat2 = new TextArea("Chat: \n\n");
     public TextField tfMessage = new TextField();
+    public TextField tfMessage2 = new TextField();
     public Button btnSend = new Button("Send");
+    public Button btnSend2 = new Button("Send");
     private Button btnChat = new Button("Chat");
     private Scene scene;
-    private Stage stage;
     private int score = 0;
     public int lives = 2;
     public boolean isCoop;
@@ -25,10 +27,16 @@ public class HUD extends Pane {
         this.scene = scene;
         this.createHUD();
         btnChat.setOnAction(evt -> {
-            stage = new Stage();
+            Stage stage = new Stage();
+            Stage stage2 = new Stage();
             Scene sceneChat = new Scene(new VBox(this.taChat, new FlowPane(this.tfMessage, this.btnSend)),
                     taChat.getPrefWidth(), taChat.getPrefHeight() + 20);
+            Scene sceneChat2 = new Scene(new VBox(this.taChat2, new FlowPane(this.tfMessage2, this.btnSend2)),
+                    taChat.getPrefWidth(), taChat.getPrefHeight() + 21);
             stage.setScene(sceneChat);
+            stage2.setScene(sceneChat2);
+            stage2.setX(scene.getWidth() + stage.getWidth());
+            stage2.show();
             stage.setX(scene.getWidth() + stage.getWidth());
             stage.show();
         });
@@ -39,7 +47,6 @@ public class HUD extends Pane {
      */
     public void createHUD() {
         Font font = Font.loadFont("file:NBA Lakers.ttf", 14);
-        int padding = 80;
         tfScore.resizeRelocate(scene.getWidth()/2 - 49, 69, 35, 25);
         tfScore.setPrefWidth(35);
         tfScore.setEditable(false);
@@ -55,16 +62,20 @@ public class HUD extends Pane {
         tfLives.setBackground(Background.EMPTY);
         tfLives.setFont(font);
 
-        btnChat.resizeRelocate(scene.getWidth() - padding - 100, 0, 70, 25);
+        btnChat.resizeRelocate(2, 0, 70, 25);
         btnChat.setFocusTraversable(false);
         taChat.setEditable(false);
         taChat.setWrapText(true);
-        taChat.setPrefSize(180, 480);
-        tfMessage.setPrefWidth(80);
+        taChat.setPrefSize(180, 380);
+        tfMessage.setPrefWidth(100);
+        taChat2.setEditable(false);
+        taChat2.setWrapText(true);
+        taChat2.setPrefSize(180, 380);
+        tfMessage2.setPrefWidth(100);
         if(!isCoop){
             this.getChildren().addAll(tfLives, tfScore);
         }else{
-            this.getChildren().addAll(tfScore, btnChat);
+            this.getChildren().addAll(tfLives,tfScore, btnChat);
         }
     }
 

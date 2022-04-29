@@ -138,6 +138,7 @@ public class Court extends Pane {
         int xh = (int) g.getImage().getHeight();
         int speed = Ghost.GHOST_SPEED;
 
+       try {
         switch (g.moveGhost) {
             case 1:
                 if (reader.getColor(x - speed, y + xh).equals(Color.RED)
@@ -184,6 +185,8 @@ public class Court extends Pane {
                 }
                 break;
         }
+       } catch (IndexOutOfBoundsException e) {
+       }
        
     }
 }

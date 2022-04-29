@@ -24,6 +24,7 @@ public class ClientListener extends Thread {
     private Game game;
     private ControllerLobby lobby;
     private String myName;
+    private String notMyName;
     private Integer id = -1;
     private int k = 0;
     private List<Double> objectX = new ArrayList<>();
@@ -103,10 +104,12 @@ public class ClientListener extends Thread {
                 oos.writeObject("CONNECT:" + myName);
                 oos.flush();
                 String anotherName = ois.readUTF();
+
                 // System.out.println(anotherName + " " + myName);
                 if (!anotherName.equals(myName)) {
                     lobby.displayName(anotherName);
                     k++;
+                    notMyName = anotherName;
                     this.lobby.btnReady.setDisable(false);
                 }
                 Thread.sleep(FPS.toInt()); // 30 fps
@@ -149,6 +152,7 @@ public class ClientListener extends Thread {
             game = new Game(new Court(lobby.stage), this.id, true, 2);
             lobby.stage.setScene(new Scene(game, W.toInt(), H.toInt()));
             lobby.stage.show();
+            sendChat();
         });
     }
 
@@ -338,6 +342,7 @@ public class ClientListener extends Thread {
                     }
                 });
             }
+        } catch (IndexOutOfBoundsException e) {
         } catch (SocketException se) {
             try {
                 socket.close();
@@ -354,20 +359,26 @@ public class ClientListener extends Thread {
     }
 
     private void sendChat() {
-        game.hud.btnSend.setOnAction(evt -> {
+        
             String msg = game.hud.tfMessage.getText().trim();
             try {
-                oos.writeObject("CHAT:" + msg);
-                oos.flush();
-            } catch (IOException e) {
+                game.hud.btnSend.setOnAction(event -> {
+                    game.hud.taChat.appendText(myName + ": " + game.hud.tfMessage.getText() + "\n");
+                    game.hud.taChat2.appendText(myName + ": " + game.hud.tfMessage.getText() + "\n");
+                });
+                game.hud.btnSend2.setOnAction(event -> {
+                    game.hud.taChat2.appendText(notMyName + ": "  + game.hud.tfMessage2.getText() + "\n");
+                    game.hud.taChat.appendText(notMyName + ": "  + game.hud.tfMessage2.getText() + "\n");
+                });
+            } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        });
+
 
     }
 
     private void receiveChat() {
-        
+
     }
 }

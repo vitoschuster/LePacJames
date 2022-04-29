@@ -11,7 +11,7 @@ import javafx.geometry.*;
 
 public class Pacman extends Runner {
 
-    private static final String IMG_PATH = "img/lebronn.gif";
+    private static final String IMG_PATH = "img/lebronn";
     public static int imgCount = 0;
 
     /**
@@ -20,7 +20,8 @@ public class Pacman extends Runner {
      * @param pos point2D object
      */
     public Pacman(Point2D pos) {
-        super(IMG_PATH, pos);
+        super(IMG_PATH + imgCount + ".gif", pos);
+        imgCount = (imgCount + 1) % 2;
     }
 
     /**
