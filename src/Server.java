@@ -19,10 +19,19 @@ public class Server extends Application {
     public TextArea taList = new TextArea();
     private Button btnClear = new Button("Clear");
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    
+    /** 
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         taList.setPrefHeight(200);

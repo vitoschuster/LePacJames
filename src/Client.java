@@ -19,10 +19,19 @@ public class Client extends Application {
     public Stage stage;
     public Game game;
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    
+    /** 
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;

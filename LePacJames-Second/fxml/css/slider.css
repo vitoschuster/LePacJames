@@ -1,9 +1,0 @@
-
-.slider .track {
-	-fx-background-color: linear-gradient(to left, lightgreen, green);
-}
-
-.slider .thumb {
-	-fx-pref-height: 30px;
-	-fx-pref-width: 10px;
-}

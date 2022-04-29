@@ -27,24 +27,52 @@ public class Packet implements Serializable {
         this.objectY=objectY;
     }
 
+    
+    /** 
+     * @return Double
+     */
     public Double getAngle() {
         return angle;
     }
+    
+    /** 
+     * @return Double
+     */
     public Double getY() {
         return y;
     }
+    
+    /** 
+     * @return Double
+     */
     public Double getX() {
         return x;
     }
+    
+    /** 
+     * @return Integer
+     */
     public Integer getId() {
         return id;
     }
+    
+    /** 
+     * @return Double
+     */
     public Double getScaleY() {
         return scaleY;
     }
+    
+    /** 
+     * @return List<Double>
+     */
     public List<Double> getObjectX(){
         return this.objectX;
     }
+    
+    /** 
+     * @return List<Double>
+     */
     public List<Double> getObjectY(){
         return this.objectY;
     }
