@@ -27,8 +27,11 @@ public class Server extends Application {
     public void start(Stage stage) throws Exception {
         taList.setPrefHeight(200);
         scene = new Scene(new VBox(btnClear, taList), 250, 200);
+        btnClear.setOnAction(evt -> {
+            taList.clear();
+        });
         stage.setScene(scene);
         stage.show();
-        new ServerThread().start();
+        new ServerThread(taList).start();
     }
 }

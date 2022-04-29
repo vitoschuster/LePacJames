@@ -277,6 +277,8 @@ public class Game extends StackPane {
     */
    public void gameWin() {
       if (!ifCollision && p.score == 25) {
+         hud.tfScore.setVisible(false);
+         hud.tfLives.setVisible(false);
          System.out.println("All eaten");
          ifCollision = true;
          String path = "video/win.mp4";
@@ -321,6 +323,8 @@ public class Game extends StackPane {
          System.out.println(g.hud.lives + " " + p.lives);
          g.hud.update(0, g.hud.lives);
       } else {
+         hud.tfScore.setVisible(false);
+         hud.tfLives.setVisible(false);
          String path = "video/lose.mp4";
          Media media = new Media(new File(path).toURI().toString());
          MediaPlayer player = new MediaPlayer(media);

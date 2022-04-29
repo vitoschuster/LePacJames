@@ -8,8 +8,8 @@ import javafx.scene.text.Font;
 
 public class HUD extends Pane {
 
-    private TextField tfScore = new TextField("0");
-    private TextField tfLives = new TextField("3");
+    public TextField tfScore = new TextField("0");
+    public TextField tfLives = new TextField("2");
     public TextArea taChat = new TextArea("Chat: \n\n");
     public TextArea taChat2 = new TextArea("Chat: \n\n");
     public TextField tfMessage = new TextField();
@@ -26,6 +26,10 @@ public class HUD extends Pane {
         this.isCoop=isCoop;
         this.scene = scene;
         this.createHUD();
+        if(this.isCoop){
+            this.tfLives.setText("1");
+            this.lives=1;
+        }
         btnChat.setOnAction(evt -> {
             Stage stage = new Stage();
             Stage stage2 = new Stage();

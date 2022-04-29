@@ -34,7 +34,7 @@ public class ClientThread extends Thread {
         try {
             this.ois = new ObjectInputStream(this.cSocket.getInputStream());
             this.oos = new ObjectOutputStream(this.cSocket.getOutputStream());
-            System.out.println("Client " + id + " connected");
+            textArea.appendText("Client " + id + " connected\n");
             this.oos.writeInt(id);
             this.oos.flush();
             while (true) {
@@ -69,7 +69,7 @@ public class ClientThread extends Thread {
             }
         } catch (SocketException e) {
             try {
-                System.out.println("Multiplayer cancelled");
+                textArea.appendText("Multiplayer done/cancelled\n");
                 cSocket.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -77,7 +77,7 @@ public class ClientThread extends Thread {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (EOFException e) {
-            System.out.println("Client disconnected");
+            textArea.appendText("Client " + id + " disconnected\n");
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,7 +96,7 @@ public class ClientThread extends Thread {
             if (!this.id.equals(0) && this.id.equals(clients.size() - 1)) {
                 for (Map.Entry<Integer, ClientThread> entry : clients.entrySet()) {
                     // entry.getValue().oos.reset();
-                    System.out.println("Client " + id + " ready");
+                    textArea.appendText("Client ready\n");
                     entry.getValue().oos.writeUTF("everyone is ready");
                     entry.getValue().oos.flush();
                 }
