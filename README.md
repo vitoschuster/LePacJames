@@ -1,3 +1,6 @@
+## Gameplay
+![image](https://user-images.githubusercontent.com/76746212/167832430-7d443137-f3de-4ef8-b901-16ad651bb459.png)
+
 ## About
 
 	This is the first LeBron James pacman game created by Vito Schuster and Luka Krpan.
