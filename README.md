@@ -1,5 +1,7 @@
 ## Gameplay
-![image](https://user-images.githubusercontent.com/76746212/167832430-7d443137-f3de-4ef8-b901-16ad651bb459.png)
+https://user-images.githubusercontent.com/76746212/167833367-3928afcc-1151-4ed7-b541-86d57f6e9f2f.mp4
+
+
 
 ## About
 
